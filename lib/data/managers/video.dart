@@ -3,26 +3,19 @@ import 'package:get_it/get_it.dart';
 
 import '/constants/export.dart';
 import '/data/export.dart';
+import "bases.dart";
 
-abstract class BaseVideoManager extends BaseManager {
-  bool isLoading = true;
-  bool paginationLoad = false;
-  bool focusSearch = false;
-  late Tag selectedTag;
-  List<Video> videos = [];
-  List<Tag> tags = [];
+abstract class BaseVideoManager extends BaseManager
+    with BasePagination, BaseCard<Video>, BaseHome {}
 
-  void initialize();
-  void paginate();
-  void filterVideoList(Tag tag);
-  void search() {
-    focusSearch = true;
-    goToPage(page: PageType.search);
-  }
-}
 
-class VideoManager extends BaseVideoManager {
-  final VideoRepository videoRepository = GetIt.I.get<VideoRepository>();
+abstract class BaseVideoSearch extends BaseManager
+    with BasePagination, BaseCard, BaseSearch {}
+
+
+class GenericVideoManager<T extends BaseVideoRepository>
+    extends BaseVideoManager {
+  final T videoRepository = GetIt.I.get<T>();
 
   List<Tag> getFilterTags() {
     return [
@@ -49,7 +42,7 @@ class VideoManager extends BaseVideoManager {
       () {
         tags = getFilterTags();
         selectedTag = tags[0];
-        videos = getVideo();
+        cards = getVideo();
         isLoading = false;
         refresh();
       },
@@ -63,7 +56,7 @@ class VideoManager extends BaseVideoManager {
     Timer(
       const Duration(milliseconds: 500),
       () {
-        videos.addAll(videoRepository.fetch());
+        cards.addAll(videoRepository.fetch());
         paginationLoad = false;
 
         refresh();
@@ -72,7 +65,7 @@ class VideoManager extends BaseVideoManager {
   }
 
   @override
-  void filterVideoList(Tag tag) {
+  void filterCardList(Tag tag) {
     selectedTag = tag;
     refresh();
     switch (tag.scope) {
@@ -87,70 +80,6 @@ class VideoManager extends BaseVideoManager {
   }
 }
 
-class StreamManager extends BaseVideoManager {
-  final StreamRepository streamRepository = GetIt.I.get<StreamRepository>();
+class VideoManager extends GenericVideoManager<VideoRepository> {}
 
-  List<Tag> getFilterTags() {
-    return [
-      Tag(
-          marker: TagMarker.recomendations,
-          name: "Reccomendations",
-          scope: TagScope.local),
-      Tag(
-          marker: TagMarker.subscriptions,
-          name: "Subscribtions",
-          scope: TagScope.local),
-      ...streamRepository.getFilterTags()
-    ];
-  }
-
-  List<Video> getVideo() {
-    return streamRepository.fetch();
-  }
-
-  @override
-  void initialize() {
-    Timer(
-      const Duration(milliseconds: 500),
-      () {
-        tags = getFilterTags();
-        selectedTag = tags[0];
-        videos = getVideo();
-        isLoading = false;
-        refresh();
-      },
-    );
-  }
-
-  @override
-  void paginate() {
-    paginationLoad = true;
-    refresh();
-    Timer(
-      const Duration(milliseconds: 500),
-      () {
-        videos.addAll(streamRepository.fetch());
-        paginationLoad = false;
-
-        refresh();
-      },
-    );
-  }
-
-  @override
-  void filterVideoList(Tag tag) {
-    selectedTag = tag;
-
-    refresh();
-
-    switch (tag.scope) {
-      case TagScope.external:
-        streamRepository.filterListByTag(tag);
-        break;
-
-      case TagScope.local:
-        streamRepository.filterListByQuery();
-        break;
-    }
-  }
-}
+class StreamManager extends GenericVideoManager<StreamRepository> {}

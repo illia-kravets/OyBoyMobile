@@ -21,7 +21,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void didChangeDependencies() {
-    context.read<UserManager>().initializeApp();
+    context.read<UserManager>().initialize();
     super.didChangeDependencies();
   }
 

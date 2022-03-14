@@ -1,6 +1,8 @@
 import 'package:oyboy/constants/defaults.dart';
 
-class Channel {
+abstract class BaseModel {}
+
+class Channel extends BaseModel{
   Channel({this.id, required this.name, required this.avatar, this.createdAt});
 
   int? id;
@@ -17,7 +19,7 @@ class Channel {
   }
 }
 
-class Video {
+class Video extends BaseModel{
   Video(
       {this.id,
       required this.name,

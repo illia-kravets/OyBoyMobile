@@ -1,22 +1,8 @@
 import "dart:async";
-import 'package:flutter/material.dart';
 import "package:get_it/get_it.dart";
 import '/data/export.dart';
 import "/constants/export.dart";
-
-class BaseManager extends ChangeNotifier {
-  AppError error = AppError();
-  PageType? page;
-
-  bool get hasError => error.msg == null ? false : true;
-
-  void refresh() => notifyListeners();
-
-  void goToPage({PageType? page}) {
-    this.page = page;
-    notifyListeners();
-  }
-}
+import "bases.dart";
 
 class UserManager extends BaseManager {
   bool isLoading = false;
@@ -25,7 +11,7 @@ class UserManager extends BaseManager {
     page = PageType.splash;
   }
 
-  void initializeApp() {
+  void initialize() {
     Timer(
       const Duration(milliseconds: 500),
       () {
@@ -59,7 +45,7 @@ class UserManager extends BaseManager {
 
   void logout() {
     page = PageType.login;
-    notifyListeners();
+    refresh();
   }
 
   void clearState() {

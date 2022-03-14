@@ -29,9 +29,29 @@ class SearchPage<T extends BaseVideoManager> extends StatelessWidget {
   }
 }
 
-class Search<T extends BaseVideoManager> extends StatelessWidget {
+class Search<T extends BaseVideoManager> extends StatefulWidget {
   Search({Key? key}) : super(key: key);
+
+  @override
+  State<Search<T>> createState() => _SearchState<T>();
+}
+
+class _SearchState<T extends BaseVideoManager> extends State<Search<T>> {
   final TextEditingController _searchController = TextEditingController();
+
+  void searchUpdate() {}
+
+  @override
+  void initState() {
+    _searchController.addListener(searchUpdate);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +65,7 @@ class Search<T extends BaseVideoManager> extends StatelessWidget {
         title: SearchInput(
           controller: _searchController,
         ),
-        actions: [Icon(Icons.abc_outlined)],
+        actions: const <Widget>[Icon(Icons.abc_outlined)],
       ),
     );
   }

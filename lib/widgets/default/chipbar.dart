@@ -19,7 +19,7 @@ class ChipBar<T extends BaseVideoManager> extends StatelessWidget {
               tag: tags[index],
               selected: tags[index].marker == selectedTag.marker,
               onSelected: (selected) =>
-                  context.read<T>().filterVideoList(tags[index]),
+                  context.read<T>().filterCardList(tags[index]),
             ));
 
     return Material(
