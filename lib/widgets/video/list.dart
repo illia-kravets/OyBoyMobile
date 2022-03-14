@@ -61,11 +61,11 @@ class _VideoListState<T extends BaseVideoManager> extends State<VideoList> {
                     Expanded(
                       child: ListView.separated(
                         controller: _controller,
-                        itemCount: videoRepository.videos.length + 1,
+                        itemCount: videoRepository.cards.length + 1,
                         itemBuilder: (context, index) {
-                          if (index < videoRepository.videos.length) {
+                          if (index < videoRepository.cards.length) {
                             return VideoCard(
-                              video: videoRepository.videos[index],
+                              video: videoRepository.cards[index],
                             );
                           } else {
                             return Column(

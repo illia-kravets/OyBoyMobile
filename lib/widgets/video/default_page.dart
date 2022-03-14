@@ -47,10 +47,9 @@ class DefaultVideoPage<T extends BaseVideoManager> extends StatelessWidget {
             ),
             actions: <Widget>[
               IconButton(
-                  onPressed: () => context.read<T>().search(),
+                  onPressed: () => context.read<T>(),
                   icon: const Icon(Icons.search))
             ],
-            // bottom: ChipBar(tags: context.read<VideoManager>().getFilterTags()),
           ),
       extendBody: extendBody,
       extendBodyBehindAppBar: extendBodyBehindAppBar,
