@@ -7,4 +7,6 @@ class TagMarker {
 
 enum FloatingButtonLocation { left, center, right }
 
+enum RequestDataType {headers, query, body}
+
 const double CHIPBAR_HEIGHT = 50.0;

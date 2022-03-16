@@ -6,7 +6,7 @@ import "/constants/export.dart";
 import "/widgets/export.dart";
 import "/data/export.dart";
 
-class SearchPage<T extends BaseVideoManager> extends StatelessWidget {
+class SearchPage<T extends GenericVideoManager> extends StatelessWidget {
   const SearchPage({Key? key}) : super(key: key);
 
   static MaterialPage videoSearch() {
@@ -29,14 +29,14 @@ class SearchPage<T extends BaseVideoManager> extends StatelessWidget {
   }
 }
 
-class Search<T extends BaseVideoManager> extends StatefulWidget {
+class Search<T extends GenericVideoManager> extends StatefulWidget {
   Search({Key? key}) : super(key: key);
 
   @override
   State<Search<T>> createState() => _SearchState<T>();
 }
 
-class _SearchState<T extends BaseVideoManager> extends State<Search<T>> {
+class _SearchState<T extends GenericVideoManager> extends State<Search<T>> {
   final TextEditingController _searchController = TextEditingController();
 
   void searchUpdate() {}

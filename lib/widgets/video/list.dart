@@ -8,7 +8,7 @@ import "/widgets/export.dart";
 import "/constants/export.dart";
 import 'card.dart';
 
-class VideoList<T extends BaseVideoManager> extends StatefulWidget {
+class VideoList<T extends GenericVideoManager> extends StatefulWidget {
   const VideoList({Key? key, this.showChipBar = false}) : super(key: key);
 
   final bool showChipBar;
@@ -16,7 +16,7 @@ class VideoList<T extends BaseVideoManager> extends StatefulWidget {
   State<VideoList> createState() => _VideoListState<T>();
 }
 
-class _VideoListState<T extends BaseVideoManager> extends State<VideoList> {
+class _VideoListState<T extends GenericVideoManager> extends State<VideoList> {
   late ScrollController _controller;
   late bool _showUpButton;
   late T videoRepository;
@@ -39,6 +39,7 @@ class _VideoListState<T extends BaseVideoManager> extends State<VideoList> {
   @override
   Widget build(BuildContext context) {
     videoRepository = context.watch<T>();
+    ThemeData theme = Theme.of(context);
     return videoRepository.isLoading
         ? const Center(
             child: Loader(
@@ -69,13 +70,18 @@ class _VideoListState<T extends BaseVideoManager> extends State<VideoList> {
                             );
                           } else {
                             return Column(
-                              children: const [
-                                Loader(
+                              children: [
+                                videoRepository.hasNext 
+                                ? const Loader(
                                   width: 40,
                                   height: 40,
                                   strokeWidth: 4,
+                                )
+                                : Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Text("That's all the folks", style: theme.textTheme.bodyText1,),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 25,
                                 )
                               ],

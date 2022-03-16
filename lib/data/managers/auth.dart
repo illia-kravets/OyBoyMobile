@@ -5,12 +5,12 @@ import "/constants/export.dart";
 import "bases.dart";
 
 class UserManager extends BaseManager {
-  bool isLoading = false;
 
   UserManager() {
     page = PageType.splash;
   }
 
+  @override
   void initialize() {
     Timer(
       const Duration(milliseconds: 500),

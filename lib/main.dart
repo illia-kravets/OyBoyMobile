@@ -8,6 +8,7 @@ import '/utils/get_it.dart';
 
 void main() {
   startGet();
+  registerModels();
   runApp(const MyApp());
 }
 
@@ -28,6 +29,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
+
     _appRouter = AppRouter(
         userManager: _userManager,
         videoManager: _videoManager,
@@ -46,7 +48,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<VideoManager>(
           create: (context) => _videoManager,
         ),
-        ChangeNotifierProvider(create: (context) => _steamManager)
+        ChangeNotifierProvider<StreamManager>(create: (context) => _steamManager)
       ],
       child: MaterialApp.router(
         title: 'Flutter Demo',

@@ -6,7 +6,7 @@ import "/data/managers/video.dart";
 import "/widgets/default/default_page.dart";
 import 'list.dart';
 
-class DefaultVideoPage<T extends BaseVideoManager> extends StatelessWidget {
+class DefaultVideoPage<T extends GenericVideoManager> extends StatelessWidget {
   const DefaultVideoPage(
       {Key? key,
       this.appBar,
@@ -40,14 +40,13 @@ class DefaultVideoPage<T extends BaseVideoManager> extends StatelessWidget {
                         color: Color.fromARGB(255, 224, 0, 112),
                         fontSize: 18,
                         letterSpacing: 3,
-                        // fontFamily: FontFa
                       ),
                     ))
               ],
             ),
             actions: <Widget>[
               IconButton(
-                  onPressed: () => context.read<T>(),
+                  onPressed: () => context.read<T>().goToPage(page: PageType.search),
                   icon: const Icon(Icons.search))
             ],
           ),

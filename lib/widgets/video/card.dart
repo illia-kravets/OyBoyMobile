@@ -41,7 +41,7 @@ class VideoCard extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 25.0,
                       // backgroundColor: Colors.grey,
-                      backgroundImage: AssetImage(video.channel!.avatar),
+                      backgroundImage: AssetImage(video.channel!.avatar ?? ""),
                     ),
                   ),
                   const SizedBox(width: 4),

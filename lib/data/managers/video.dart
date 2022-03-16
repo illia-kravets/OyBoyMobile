@@ -1,3 +1,5 @@
+// ignore_for_file: curly_braces_in_flow_control_structures
+
 import 'dart:async';
 import 'package:get_it/get_it.dart';
 
@@ -5,19 +7,13 @@ import '/constants/export.dart';
 import '/data/export.dart';
 import "bases.dart";
 
-abstract class BaseVideoManager extends BaseManager
-    with BasePagination, BaseCard<Video>, BaseHome {}
-
-
-abstract class BaseVideoSearch extends BaseManager
-    with BasePagination, BaseCard, BaseSearch {}
-
 
 class GenericVideoManager<T extends BaseVideoRepository>
-    extends BaseVideoManager {
-  final T videoRepository = GetIt.I.get<T>();
+    extends CRUDManager<Video, T> {
+  List<Tag> tags = [];
+  Tag? selectedTag;
 
-  List<Tag> getFilterTags() {
+  Future<List<Tag>> getFilterTags() async {
     return [
       Tag(
           marker: TagMarker.recomendations,
@@ -27,56 +23,26 @@ class GenericVideoManager<T extends BaseVideoRepository>
           marker: TagMarker.subscriptions,
           name: "Subscribtions",
           scope: TagScope.local),
-      ...videoRepository.getFilterTags()
+      ...await repository.getTags()
     ];
   }
 
-  List<Video> getVideo() {
-    return videoRepository.fetch();
-  }
-
   @override
-  void initialize() {
-    Timer(
-      const Duration(milliseconds: 500),
-      () {
-        tags = getFilterTags();
-        selectedTag = tags[0];
-        cards = getVideo();
-        isLoading = false;
-        refresh();
-      },
-    );
-  }
-
-  @override
-  void paginate() {
-    paginationLoad = true;
+  Future<void> initialize() async {
+    isLoading = true;
+    tags = await getFilterTags();
+    selectedTag = tags[0];
+    cards = await repository.list();
+    isLoading = false;
     refresh();
-    Timer(
-      const Duration(milliseconds: 500),
-      () {
-        cards.addAll(videoRepository.fetch());
-        paginationLoad = false;
-
-        refresh();
-      },
-    );
   }
 
-  @override
-  void filterCardList(Tag tag) {
+  Future<void> filterCardList(Tag tag) async {
     selectedTag = tag;
     refresh();
-    switch (tag.scope) {
-      case TagScope.external:
-        videoRepository.filterListByTag(tag);
-        break;
-
-      case TagScope.local:
-        videoRepository.filterListByQuery();
-        break;
-    }
+    if (tag.scope == TagScope.external) repository.query({"tag_id": tag.id});
+    else repository.query({"q": tag.marker});
+    cards = await repository.list();
   }
 }
 

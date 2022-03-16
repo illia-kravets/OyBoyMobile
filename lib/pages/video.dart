@@ -4,7 +4,7 @@ import "/constants/export.dart";
 import '/data/export.dart';
 import "/widgets/export.dart";
 
-class VideoPage<T extends BaseVideoManager> extends StatelessWidget {
+class VideoPage<T extends GenericVideoManager> extends StatelessWidget {
   const VideoPage({
     Key? key,
   }) : super(key: key);

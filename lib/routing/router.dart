@@ -36,14 +36,13 @@ class AppRouter extends RouterDelegate<AppLink>
       key: navigatorKey,
       onPopPage: _handlePopPage,
       pages: [
-        if (userManager.page == PageType.splash) ...[
-          SplashScreen.page(),
-        ] else if (userManager.page == PageType.login) ...[
-          LoginPage.page(),
-        ] else if (userManager.page == PageType.video) ...[
+        if (userManager.page == PageType.splash) ...[SplashScreen.page()],
+        if (userManager.page == PageType.login) ...[LoginPage.page()],
+        if (userManager.page == PageType.video) ...[
           VideoPage.videoPage(),
           if (videoManager.page == PageType.search) SearchPage.videoSearch()
-        ] else if (userManager.page == PageType.stream) ...[
+        ], 
+        if (userManager.page == PageType.stream) ...[
           VideoPage.streamPage(),
           if (streamManager.page == PageType.search) SearchPage.streamSearch()
         ]

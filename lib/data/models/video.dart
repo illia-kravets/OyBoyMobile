@@ -1,16 +1,16 @@
 import 'package:oyboy/constants/defaults.dart';
 
-abstract class BaseModel {}
+class BaseModel {}
 
 class Channel extends BaseModel{
-  Channel({this.id, required this.name, required this.avatar, this.createdAt});
+  Channel({this.id, this.name, this.avatar, this.createdAt});
 
   int? id;
-  String name;
-  String avatar;
+  String? name;
+  String? avatar;
   String? createdAt;
 
-  Channel fromJson(Map<dynamic, dynamic> data) {
+  factory Channel.fromJson(Map<dynamic, dynamic> data) {
     return Channel(
         id: data["id"],
         name: data["name"],
@@ -54,7 +54,7 @@ class Video extends BaseModel{
   }
 }
 
-class Tag {
+class Tag extends BaseModel{
   Tag(
       {required this.name,
       this.id,

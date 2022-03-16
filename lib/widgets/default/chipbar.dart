@@ -4,20 +4,20 @@ import "package:provider/provider.dart";
 import '/data/export.dart';
 import "/constants/export.dart";
 
-class ChipBar<T extends BaseVideoManager> extends StatelessWidget {
+class ChipBar<T extends GenericVideoManager> extends StatelessWidget {
   const ChipBar({Key? key, required this.tags}) : super(key: key);
 
   final List<Tag> tags;
 
   @override
   Widget build(BuildContext context) {
-    Tag selectedTag = context.select((T v) => v.selectedTag);
+    Tag? selectedTag = context.select((T v) => v.selectedTag);
 
     List<Widget> children = List.generate(
         tags.length,
         (index) => CustomChoiceChip(
               tag: tags[index],
-              selected: tags[index].marker == selectedTag.marker,
+              selected: tags[index].marker == selectedTag?.marker,
               onSelected: (selected) =>
                   context.read<T>().filterCardList(tags[index]),
             ));
