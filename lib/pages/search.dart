@@ -1,26 +1,25 @@
 import "package:flutter/material.dart";
-import 'package:flutter/services.dart';
 import "package:provider/provider.dart";
 
 import "/constants/export.dart";
 import "/widgets/export.dart";
 import "/data/export.dart";
 
-class SearchPage<T extends GenericVideoManager> extends StatelessWidget {
+class SearchPage<T extends SearchVideoGeneric> extends StatelessWidget {
   const SearchPage({Key? key}) : super(key: key);
 
   static MaterialPage videoSearch() {
     return const MaterialPage(
         name: OyBoyPages.videoSearchPath,
         key: ValueKey(OyBoyPages.videoSearchPath),
-        child: SearchPage<VideoManager>());
+        child: SearchPage<VideoSearchManager>());
   }
 
   static MaterialPage streamSearch() {
     return const MaterialPage(
         name: OyBoyPages.streamSearchPath,
         key: ValueKey(OyBoyPages.streamSearchPath),
-        child: SearchPage<StreamManager>());
+        child: SearchPage<SearchVideoGeneric>());
   }
 
   @override
@@ -29,14 +28,14 @@ class SearchPage<T extends GenericVideoManager> extends StatelessWidget {
   }
 }
 
-class Search<T extends GenericVideoManager> extends StatefulWidget {
+class Search<T extends SearchVideoGeneric> extends StatefulWidget {
   Search({Key? key}) : super(key: key);
 
   @override
   State<Search<T>> createState() => _SearchState<T>();
 }
 
-class _SearchState<T extends GenericVideoManager> extends State<Search<T>> {
+class _SearchState<T extends SearchVideoGeneric> extends State<Search<T>> {
   final TextEditingController _searchController = TextEditingController();
 
   void searchUpdate() {}

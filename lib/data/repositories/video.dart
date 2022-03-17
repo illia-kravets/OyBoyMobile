@@ -8,7 +8,6 @@ import 'package:get_it/get_it.dart';
 import "/settings.dart";
 import "/constants/export.dart";
 
-
 abstract class BaseRepository {
   Response response = Response();
   Request request = Request();
@@ -16,59 +15,83 @@ abstract class BaseRepository {
 
   Uri combineUrl(String url) => Uri.parse("$host$url?${request.queryString}");
 
-  void parseResponse(http.Response response) => this.response = Response(code: response.statusCode, data: jsonDecode(response.body));
+  void parseResponse(http.Response response) => this.response =
+      Response(code: response.statusCode, data: jsonDecode(response.body));
 
-  void prepareRequest({Map query=const {}, Map body=const {}, Map headers=const {}, Map kwargs=const {}}) =>
-    this
-      ..query(query)
-      ..body(body)
-      ..headers(headers);
-  
+  void prepareRequest(
+          {Map query = const {},
+          Map body = const {},
+          Map headers = const {},
+          Map kwargs = const {}}) =>
+      this
+        ..query(query)
+        ..body(body)
+        ..headers(headers);
 
   void query(Map data) => request.update(data: data);
   void body(Map data) => request.update(data: data, type: RequestDataType.body);
-  void headers(Map data) => request.update(data: data, type: RequestDataType.headers);
+  void headers(Map data) =>
+      request.update(data: data, type: RequestDataType.headers);
 
-  Future<Response> delete(String url, {Map query=const {}, Map headers=const {}, Map kwargs=const {}}) async {
+  Future<Response> delete(String url,
+      {Map query = const {},
+      Map headers = const {},
+      Map kwargs = const {}}) async {
     prepareRequest(query: query, headers: headers, kwargs: kwargs);
     parseResponse(await http.delete(combineUrl(url), headers: request.headers));
-    return response; 
+    return response;
   }
 
-  Future<Response> get(String url, {Map query=const {}, Map headers=const {}, Map kwargs=const {}}) async {
+  Future<Response> get(String url,
+      {Map query = const {},
+      Map headers = const {},
+      Map kwargs = const {}}) async {
     prepareRequest(query: query, headers: headers, kwargs: kwargs);
     parseResponse(await http.get(combineUrl(url), headers: request.headers));
-    return response; 
+    return response;
   }
 
-  Future<Response> post(String url, {Map body=const {}, Map query=const {}, Map headers=const {}, Map kwargs=const {}}) async {
+  Future<Response> post(String url,
+      {Map body = const {},
+      Map query = const {},
+      Map headers = const {},
+      Map kwargs = const {}}) async {
     prepareRequest(body: body, query: query, headers: headers, kwargs: kwargs);
-    parseResponse(await http.post(combineUrl(url), headers: request.headers, body: request.body));
-    return response; 
+    parseResponse(await http.post(combineUrl(url),
+        headers: request.headers, body: request.body));
+    return response;
   }
 
-  Future<Response> patch(String url, {Map body=const {}, Map query=const {}, Map headers=const {}, Map kwargs=const {}}) async {
+  Future<Response> patch(String url,
+      {Map body = const {},
+      Map query = const {},
+      Map headers = const {},
+      Map kwargs = const {}}) async {
     prepareRequest(body: body, query: query, headers: headers, kwargs: kwargs);
-    parseResponse(await http.patch(combineUrl(url), headers: request.headers, body: request.body));
-    return response; 
+    parseResponse(await http.patch(combineUrl(url),
+        headers: request.headers, body: request.body));
+    return response;
   }
 }
-
 
 class SequrityBase extends BaseRepository {
   bool useAuth = true;
 
   @override
-  void prepareRequest({Map query=const {}, Map body=const {}, Map headers=const {}, Map kwargs=const {}}) {
+  void prepareRequest(
+      {Map query = const {},
+      Map body = const {},
+      Map headers = const {},
+      Map kwargs = const {}}) {
     bool auth = kwargs["auth"] ?? useAuth;
     if (auth) {
       // TODO - add auth headers logic
       headers.addAll({});
     }
-    super.prepareRequest(query: query, body: body, headers: headers, kwargs: kwargs);
+    super.prepareRequest(
+        query: query, body: body, headers: headers, kwargs: kwargs);
   }
 }
-
 
 class OrderingBase extends BaseRepository {
   void ordering(String key, {bool ascending = true}) {
@@ -77,9 +100,8 @@ class OrderingBase extends BaseRepository {
   }
 }
 
-
 class PaginationBase extends BaseRepository {
-  bool get hasNext => response.next != null; 
+  bool get hasNext => response.next != null;
 
   Future<dynamic> next() async {
     if (response.next == null) return null;
@@ -90,13 +112,14 @@ class PaginationBase extends BaseRepository {
   }
 }
 
-
-class CRUDGeneric<T extends BaseModel> extends OrderingBase with PaginationBase {
+class CRUDGeneric<T extends BaseModel> extends OrderingBase
+    with PaginationBase {
   String endpoint = "";
-  
+
   @override
-  Uri combineUrl(String url, {bool isAction=false}) => Uri.parse("$host${isAction ? endpoint : ''}$url?${request.queryString}");
-  
+  Uri combineUrl(String url, {bool isAction = false}) =>
+      Uri.parse("$host${isAction ? endpoint : ''}$url?${request.queryString}");
+
   Future<List<T>> list() async {
     List<Map> data = [];
     return data.map((e) => parseObj(e)).toList();
@@ -107,11 +130,11 @@ class CRUDGeneric<T extends BaseModel> extends OrderingBase with PaginationBase 
     return parseObj(data);
   }
 
-  void update(dynamic id, T instance) async {}
+  Future<void> update(dynamic id, T instance) async {}
 
-  void remove(dynamic id) async {}
+  Future<void> remove(dynamic id) async {}
 
-  void create(T instance) async {}
+  Future<void> create(T instance) async {}
 
   @override
   Future<List<T>> next() async {
@@ -128,26 +151,25 @@ class CRUDGeneric<T extends BaseModel> extends OrderingBase with PaginationBase 
 
   @override
   bool get hasNext => true || response.next != null;
-  
+
   T parseObj(Map data) => GetIt.I.get<T>(param1: data);
 }
 
+class TagRepository extends SequrityBase with CRUDGeneric<Tag> {}
 
-class TagRepository extends SequrityBase with CRUDGeneric<Tag>{}
+class SuggestionRepository extends SequrityBase with CRUDGeneric<Suggestion> {}
 
-
-abstract class BaseVideoRepository extends SequrityBase with CRUDGeneric<Video> {
+abstract class BaseVideoRepository extends SequrityBase
+    with CRUDGeneric<Video> {
   TagRepository tagRepository = GetIt.I.get<TagRepository>();
 
   Future<List<Tag>> getTags();
 }
 
-
 class VideoRepository extends BaseVideoRepository {
   VideoRepository();
   @override
   Future<List<Video>> list() async {
-
     return List.generate(
         10,
         (index) => Video(

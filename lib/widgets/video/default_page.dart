@@ -6,7 +6,7 @@ import "/data/managers/video.dart";
 import "/widgets/default/default_page.dart";
 import 'list.dart';
 
-class DefaultVideoPage<T extends GenericVideoManager> extends StatelessWidget {
+class DefaultVideoPage<T extends HomeVideoGeneric> extends StatelessWidget {
   const DefaultVideoPage(
       {Key? key,
       this.appBar,

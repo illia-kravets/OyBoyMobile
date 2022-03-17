@@ -2,7 +2,7 @@ import 'package:oyboy/constants/defaults.dart';
 
 class BaseModel {}
 
-class Channel extends BaseModel{
+class Channel extends BaseModel {
   Channel({this.id, this.name, this.avatar, this.createdAt});
 
   int? id;
@@ -19,7 +19,7 @@ class Channel extends BaseModel{
   }
 }
 
-class Video extends BaseModel{
+class Video extends BaseModel {
   Video(
       {this.id,
       required this.name,
@@ -54,7 +54,7 @@ class Video extends BaseModel{
   }
 }
 
-class Tag extends BaseModel{
+class Tag extends BaseModel {
   Tag(
       {required this.name,
       this.id,
@@ -72,5 +72,27 @@ class Tag extends BaseModel{
 
   static List<Tag> fromJsonList(List<Map> data) {
     return data.map((e) => fromJson(e)).toList();
+  }
+}
+
+class Suggestion extends BaseModel {
+  Suggestion(
+      {required this.text, required this.type, this.searched = false, this.id});
+
+  final int? id;
+  final String text;
+  final String type;
+  final bool searched;
+
+  factory Suggestion.fromJson(Map<dynamic, dynamic> data) {
+    return Suggestion(
+        id: data["id"],
+        text: data["text"],
+        type: data["type"],
+        searched: data["searched"]);
+  }
+
+  static List<Suggestion> fromJsonList(List<Map> data) {
+    return data.map((e) => Suggestion.fromJson(e)).toList();
   }
 }

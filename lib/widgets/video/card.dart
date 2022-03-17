@@ -17,7 +17,9 @@ class VideoCard extends StatelessWidget {
             theme.primaryColor,
             Colors.white,
           ], begin: Alignment.bottomCenter, end: Alignment.topCenter),
-          borderRadius: BorderRadius.circular(20)),
+          borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(10))),
       child: Container(
         height: 300,
         padding: const EdgeInsets.all(3),

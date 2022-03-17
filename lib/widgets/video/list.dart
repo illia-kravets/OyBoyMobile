@@ -1,3 +1,5 @@
+// ignore_for_file: curly_braces_in_flow_control_structures
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import "package:provider/provider.dart";
@@ -8,7 +10,7 @@ import "/widgets/export.dart";
 import "/constants/export.dart";
 import 'card.dart';
 
-class VideoList<T extends GenericVideoManager> extends StatefulWidget {
+class VideoList<T extends HomeVideoGeneric> extends StatefulWidget {
   const VideoList({Key? key, this.showChipBar = false}) : super(key: key);
 
   final bool showChipBar;
@@ -16,10 +18,40 @@ class VideoList<T extends GenericVideoManager> extends StatefulWidget {
   State<VideoList> createState() => _VideoListState<T>();
 }
 
-class _VideoListState<T extends GenericVideoManager> extends State<VideoList> {
+class _VideoListState<T extends HomeVideoGeneric> extends State<VideoList> {
+  @override
+  Widget build(BuildContext context) {
+    T repository = context.watch<T>();
+
+    return repository.isLoading
+        ? const Center(
+            child: Loader(
+              strokeWidth: 4,
+              height: 35,
+              width: 35,
+            ),
+          )
+        : Stack(
+            children: [
+              if (widget.showChipBar) ChipBar<T>(tags: repository.tags),
+              GenericCardList<T>()
+            ],
+          );
+  }
+}
+
+class GenericCardList<T extends VideoGeneric> extends StatefulWidget {
+  const GenericCardList({Key? key}) : super(key: key);
+
+  @override
+  State<GenericCardList> createState() => _GenericCardListState<T>();
+}
+
+class _GenericCardListState<T extends VideoGeneric>
+    extends State<GenericCardList> {
+  late T repository;
   late ScrollController _controller;
   late bool _showUpButton;
-  late T videoRepository;
 
   @override
   void initState() {
@@ -31,99 +63,83 @@ class _VideoListState<T extends GenericVideoManager> extends State<VideoList> {
   }
 
   @override
-  void dispose() {
-    _controller.removeListener(scrollListener);
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    videoRepository = context.watch<T>();
     ThemeData theme = Theme.of(context);
-    return videoRepository.isLoading
-        ? const Center(
-            child: Loader(
-              strokeWidth: 4,
-              height: 35,
-              width: 35,
+    repository = context.watch<T>();
+    return Stack(
+      children: [
+        Column(
+          children: [
+            const SizedBox(
+              height: CHIPBAR_HEIGHT,
             ),
-          )
-        : Stack(
-            children: [
-              if (widget.showChipBar) ChipBar<T>(tags: videoRepository.tags),
-              Padding(
-                padding: const EdgeInsets.only(left: 8, right: 8, top: 10),
-                child: Column(
-                  children: [
-                    if (widget.showChipBar)
-                      const SizedBox(
-                        height: CHIPBAR_HEIGHT,
-                      ),
-                    Expanded(
-                      child: ListView.separated(
-                        controller: _controller,
-                        itemCount: videoRepository.cards.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index < videoRepository.cards.length) {
-                            return VideoCard(
-                              video: videoRepository.cards[index],
-                            );
-                          } else {
-                            return Column(
-                              children: [
-                                videoRepository.hasNext 
-                                ? const Loader(
-                                  width: 40,
-                                  height: 40,
-                                  strokeWidth: 4,
-                                )
-                                : Padding(
-                                  padding: const EdgeInsets.only(bottom: 8.0),
-                                  child: Text("That's all the folks", style: theme.textTheme.bodyText1,),
+            Expanded(
+              child: ListView.separated(
+                controller: _controller,
+                itemCount: repository.cards.length + 1,
+                itemBuilder: (context, index) {
+                  if (index < repository.cards.length) {
+                    return VideoCard(
+                      video: repository.cards[index],
+                    );
+                  } else {
+                    return Column(
+                      children: [
+                        repository.hasNext
+                            ? const Loader(
+                                width: 40,
+                                height: 40,
+                                strokeWidth: 4,
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: Text(
+                                  "That's all the folks",
+                                  style: theme.textTheme.bodyText1,
                                 ),
-                                const SizedBox(
-                                  height: 25,
-                                )
-                              ],
-                            );
-                          }
-                        },
-                        separatorBuilder: (context, index) => const SizedBox(
-                          height: 15,
-                        ),
-                      ),
-                    )
-                  ],
+                              ),
+                        const SizedBox(
+                          height: 25,
+                        )
+                      ],
+                    );
+                  }
+                },
+                separatorBuilder: (context, index) => const SizedBox(
+                  height: 15,
                 ),
               ),
-              AnimatedPositioned(
-                duration: const Duration(milliseconds: 200),
-                bottom: _showUpButton ? 80 : 0,
-                right: 25,
-                child: AnimatedOpacity(
-                  opacity: _showUpButton ? 1.0 : 0,
-                  duration: const Duration(milliseconds: 200),
-                  child: InkWell(
-                    child: Container(
-                      height: 45,
-                      width: 45,
-                      decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(30)),
-                      child: const Icon(
-                        Icons.keyboard_arrow_up,
-                        size: 45,
-                        color: Colors.white,
-                      ),
-                    ),
-                    onTap: () => _controller.animateTo(0,
-                        duration: const Duration(milliseconds: 200),
-                        curve: Curves.bounceIn),
-                  ),
+            ),
+          ],
+        ),
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 200),
+          bottom: _showUpButton ? 80 : 0,
+          right: 25,
+          child: AnimatedOpacity(
+            opacity: _showUpButton ? 1.0 : 0,
+            duration: const Duration(milliseconds: 200),
+            child: InkWell(
+              child: Container(
+                height: 45,
+                width: 45,
+                decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(30)),
+                child: const Icon(
+                  Icons.keyboard_arrow_up,
+                  size: 45,
+                  color: Colors.white,
                 ),
-              )
-            ],
-          );
+              ),
+              onTap: () => _controller.animateTo(0,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.bounceIn),
+            ),
+          ),
+        )
+      ],
+    );
   }
 
   void boolSetter(bool show) {
@@ -141,7 +157,7 @@ class _VideoListState<T extends GenericVideoManager> extends State<VideoList> {
       if (_controller.position.pixels == 0.0)
         showUpButton = false;
       else
-        videoRepository.paginate();
+        repository.paginate();
     } else {
       switch (direction) {
         case ScrollDirection.forward:
@@ -154,5 +170,11 @@ class _VideoListState<T extends GenericVideoManager> extends State<VideoList> {
           break;
       }
     }
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(scrollListener);
+    super.dispose();
   }
 }

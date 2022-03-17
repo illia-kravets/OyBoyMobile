@@ -4,7 +4,7 @@ import "package:provider/provider.dart";
 import '/data/export.dart';
 import "/constants/export.dart";
 
-class ChipBar<T extends GenericVideoManager> extends StatelessWidget {
+class ChipBar<T extends HomeVideoGeneric> extends StatelessWidget {
   const ChipBar({Key? key, required this.tags}) : super(key: key);
 
   final List<Tag> tags;
