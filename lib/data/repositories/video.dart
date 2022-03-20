@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-
 import '/data/export.dart';
 import 'package:http/http.dart' as http;
 import 'package:get_it/get_it.dart';
@@ -110,6 +108,11 @@ class PaginationBase extends BaseRepository {
     request.update(data: url.queryParameters);
     return get(url.path);
   }
+
+  void ordering(String key, {bool ascending = true}) {
+    key = ascending ? key : "-$key";
+    request.update(data: {"ordering": key});
+  }
 }
 
 class CRUDGeneric<T extends BaseModel> extends OrderingBase
@@ -146,6 +149,7 @@ class CRUDGeneric<T extends BaseModel> extends OrderingBase
 
   @override
   void ordering(String key, {bool ascending = true}) {
+    
     super.ordering(key, ascending: ascending);
   }
 
@@ -157,7 +161,15 @@ class CRUDGeneric<T extends BaseModel> extends OrderingBase
 
 class TagRepository extends SequrityBase with CRUDGeneric<Tag> {}
 
-class SuggestionRepository extends SequrityBase with CRUDGeneric<Suggestion> {}
+class SuggestionRepository extends SequrityBase with CRUDGeneric<Suggestion> {
+  @override
+  Future<List<Suggestion>> list() async {
+    return [
+      Suggestion(text: "test1", searched: true, type: "video")
+    ];
+  }
+}
+
 
 abstract class BaseVideoRepository extends SequrityBase
     with CRUDGeneric<Video> {

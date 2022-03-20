@@ -66,15 +66,12 @@ abstract class SearchVideoGeneric<T extends BaseVideoRepository>
     refresh();
   }
 
-  Future<void> filterCardList({Suggestion? suggestion, String? text}) async {
+  Future<void> search({String? text}) async {
+    if (text == null) return;
     isLoading = true;
     refresh();
-    if (text != null) {
-      repository.query({"q": text});
-      await suggestionRepository.create(Suggestion(text: text, type: "video"));
-    } else
-      repository.query({"q": suggestion?.text});
-
+    repository.query({"q": text});
+    await suggestionRepository.create(Suggestion(text: text, type: "video"));
     cards = await repository.list();
     isLoading = false;
     refresh();
