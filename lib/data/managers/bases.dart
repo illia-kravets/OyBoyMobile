@@ -7,6 +7,7 @@ abstract class BaseManager extends ChangeNotifier {
   AppError error = AppError();
   PageType? page;
   bool isLoading = false;
+  static Type? parent;
 
   bool get hasError => error.msg == null ? false : true;
 
@@ -38,7 +39,6 @@ abstract class BaseSearch {
 class CRUDManager<M extends BaseModel, T extends CRUDGeneric<M>> extends BaseManager with BasePagination, BaseOrdering {
   List<M> cards = [];
   T repository = GetIt.I.get<T>();
-
   bool get hasNext => repository.hasNext;
 
   @override

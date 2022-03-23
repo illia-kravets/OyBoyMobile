@@ -10,15 +10,9 @@ import "/widgets/export.dart";
 import "/constants/export.dart";
 import 'card.dart';
 
-class VideoList<T extends HomeVideoGeneric> extends StatefulWidget {
-  const VideoList({Key? key, this.showChipBar = false}) : super(key: key);
+class VideoList<T extends HomeVideoGeneric> extends StatelessWidget {
+  const VideoList({Key? key}) : super(key: key);
 
-  final bool showChipBar;
-  @override
-  State<VideoList> createState() => _VideoListState<T>();
-}
-
-class _VideoListState<T extends HomeVideoGeneric> extends State<VideoList> {
   @override
   Widget build(BuildContext context) {
     T repository = context.watch<T>();
@@ -33,25 +27,29 @@ class _VideoListState<T extends HomeVideoGeneric> extends State<VideoList> {
           )
         : Stack(
             children: [
-              if (widget.showChipBar) ChipBar<T>(tags: repository.tags),
-              GenericCardList<T>()
+              if (repository.tags.isNotEmpty) ChipBar<T>(tags: repository.tags),
+              GenericCardList<T>(showChipBar: repository.tags.isNotEmpty)
             ],
           );
   }
 }
 
-class GenericCardList<T extends VideoGeneric> extends StatefulWidget {
-  const GenericCardList({Key? key}) : super(key: key);
 
+class GenericCardList<T extends VideoGeneric> extends StatefulWidget {
+  const GenericCardList({Key? key, this.showChipBar=false}) : super(key: key);
+
+  final bool showChipBar;
   @override
   State<GenericCardList> createState() => _GenericCardListState<T>();
 }
+
 
 class _GenericCardListState<T extends VideoGeneric>
     extends State<GenericCardList> {
   late T repository;
   late ScrollController _controller;
   late bool _showUpButton;
+
 
   @override
   void initState() {
@@ -70,6 +68,7 @@ class _GenericCardListState<T extends VideoGeneric>
       children: [
         Column(
           children: [
+            if (widget.showChipBar)
             const SizedBox(
               height: CHIPBAR_HEIGHT,
             ),

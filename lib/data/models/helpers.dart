@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import "/constants/export.dart";
 
 class AppError implements Exception {
@@ -67,4 +69,45 @@ class Request {
     query = {};
     body = {};
   }
+}
+
+class Tuple2<T, S> {
+  Tuple2({this.value1, this.value2});
+
+  T? value1;
+  S? value2;
+}
+
+class FilterAction {
+  FilterAction({
+    required this.type,
+    required this.value,
+    required this.title,
+    this.head=false,
+    this.selected=false,
+  });
+
+  final String type;
+  final String value;
+  final String title;
+  final bool head;
+  final bool selected;
+
+  FilterAction copyWith({
+    String? type,
+    String? value,
+    String? title,
+    bool? head,
+    bool? selected,
+  }) {
+    return FilterAction(
+      type: type ?? this.type,
+      value: value ?? this.value,
+      title: title ?? this.title,
+      head: head ?? this.head,
+      selected: selected ?? this.selected,
+    );
+  }
+
+  Map get query => {type: value};
 }
