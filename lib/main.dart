@@ -26,6 +26,7 @@ class _MyAppState extends State<MyApp> {
   final UserManager _userManager = UserManager();
   final VideoManager _videoManager = VideoManager();
   final StreamManager _steamManager = StreamManager();
+  final ShortManager _shortManager = ShortManager();
 
   @override
   void initState() {
@@ -33,7 +34,8 @@ class _MyAppState extends State<MyApp> {
     _appRouter = AppRouter(
         userManager: _userManager,
         videoManager: _videoManager,
-        streamManager: _steamManager);
+        streamManager: _steamManager,
+        shortManager: _shortManager);
     super.initState();
   }
 
@@ -48,7 +50,8 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<VideoManager>(
           create: (context) => _videoManager,
         ),
-        ChangeNotifierProvider<StreamManager>(create: (context) => _steamManager)
+        ChangeNotifierProvider<StreamManager>(create: (context) => _steamManager),
+        ChangeNotifierProvider<ShortManager>(create: (context) => _shortManager)
       ],
       child: MaterialApp.router(
         title: 'Flutter Demo',

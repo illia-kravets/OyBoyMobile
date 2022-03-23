@@ -22,7 +22,7 @@ class OyBoyTheme {
       subtitle2: GoogleFonts.dmSans(
           fontSize: 10.0, fontWeight: FontWeight.normal, color: Colors.black),
       bodyText1: GoogleFonts.poppins(
-          fontSize: 18.0, fontWeight: FontWeight.w500, color: Colors.black),
+          fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.black),
       bodyText2: GoogleFonts.poppins(
           fontSize: 14.0, fontWeight: FontWeight.w500, color: Colors.black),
       button: GoogleFonts.poppins(
@@ -46,7 +46,7 @@ class OyBoyTheme {
       subtitle2: GoogleFonts.dmSans(
           fontSize: 10.0, fontWeight: FontWeight.normal, color: Colors.white),
       bodyText1: GoogleFonts.poppins(
-          fontSize: 18.0, fontWeight: FontWeight.w300, color: Colors.white),
+          fontSize: 16.0, fontWeight: FontWeight.w300, color: Colors.white),
       bodyText2: GoogleFonts.poppins(
           fontSize: 14.0, fontWeight: FontWeight.w300, color: Colors.white),
       button: GoogleFonts.poppins(
@@ -74,11 +74,12 @@ class OyBoyTheme {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         )),
         chipTheme: const ChipThemeData(
-            selectedColor: Colors.transparent,
+            backgroundColor: Colors.white,
+            selectedColor: Colors.white,
             side: BorderSide(color: appColor, width: 1.5),
-            // disabledColor: Colors.transparent,
             selectedShadowColor: appColor,
-            shadowColor: Colors.transparent),
+            shadowColor: Colors.transparent,
+            elevation: 5),
         textTheme: textLightTheme);
   }
 
@@ -104,6 +105,7 @@ class OyBoyTheme {
           disabledColor: Colors.transparent,
           selectedShadowColor: Colors.white,
           shadowColor: Colors.transparent,
+          elevation: 5
         ),
         textTheme: textDarkTheme);
   }

@@ -25,6 +25,7 @@ class ChipBar<T extends HomeVideoGeneric> extends StatelessWidget {
     return Material(
       elevation: 4,
       child: Container(
+        color: Colors.white,
         padding: const EdgeInsets.only(left: 16, right: 16),
         height: CHIPBAR_HEIGHT,
         child: ListView.separated(

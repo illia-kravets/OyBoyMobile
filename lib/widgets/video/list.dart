@@ -68,6 +68,7 @@ class _GenericCardListState<T extends VideoGeneric>
       children: [
         Column(
           children: [
+            if (widget.showChipBar)
             const SizedBox(
               height: CHIPBAR_HEIGHT,
             ),

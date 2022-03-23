@@ -1,10 +1,16 @@
 class OyBoyPages {
   static const String splashPath = "/splash";
   static const String loginPath = "/login";
-  static const String videoPath = "/video";
-  static const String shortPath = "/short";
   static const String profilePath = "/profile";
+
+  static const String shortPath = "/short";
+  static const String shortCreatePath = "/short/create";
+
   static const String streamPath = "/stream";
-  static const String streamSearchPath = "/streamSearch";
-  static const String videoSearchPath = "/videoSearch";
+  static const String streamSearchPath = "/stream/search";
+  static const String streamCreatePath = "/stream/create";
+
+  static const String videoPath = "/video";
+  static const String videoSearchPath = "/video/search";
+  static const String videoCreatePath = "/video/create";
 }

@@ -15,7 +15,8 @@ class DefaultPage extends StatelessWidget {
       this.bottomNavigationBar,
       this.backgroundColor,
       this.extendBody = false,
-      this.extendBodyBehindAppBar = false})
+      this.extendBodyBehindAppBar = false,
+      this.endDrawer})
       : super(key: key);
 
   final PreferredSizeWidget? appBar;
@@ -27,6 +28,7 @@ class DefaultPage extends StatelessWidget {
   final bool extendBodyBehindAppBar;
   final Widget? bottomNavigationBar;
   final Color? backgroundColor;
+  final Widget? endDrawer;
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +62,7 @@ class DefaultPage extends StatelessWidget {
       floatingActionButtonLocation: floatingActionButtonLocation ??
           FloatingActionButtonLocation.centerDocked,
       drawer: drawer,
+      endDrawer: endDrawer,
       extendBody: extendBody,
       extendBodyBehindAppBar: extendBodyBehindAppBar,
       bottomNavigationBar: FABBottomBar(
@@ -122,17 +125,17 @@ class CreateModal extends StatelessWidget {
       ModalRow(
         icon: Icons.play_circle_outline,
         text: "Upload video",
-        onTap: () {},
+        onTap: () => context.read<VideoManager>().goToPage(page: PageType.create),
       ),
       ModalRow(
         icon: Icons.slow_motion_video,
         text: "Upload short",
-        onTap: () {},
+        onTap: () => context.read<ShortManager>().goToPage(page: PageType.create),
       ),
       ModalRow(
         icon: Icons.live_tv,
         text: "Start live",
-        onTap: () {},
+        onTap: () => context.read<StreamManager>().goToPage(page: PageType.create),
       ),
       const SizedBox(
         height: 10,

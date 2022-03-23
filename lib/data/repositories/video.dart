@@ -72,7 +72,7 @@ abstract class BaseRepository {
   }
 }
 
-class SequrityBase extends BaseRepository {
+mixin SequrityBase on BaseRepository {
   bool useAuth = true;
 
   @override
@@ -91,14 +91,14 @@ class SequrityBase extends BaseRepository {
   }
 }
 
-class OrderingBase extends BaseRepository {
+mixin OrderingBase on BaseRepository {
   void ordering(String key, {bool ascending = true}) {
     key = ascending ? key : "-$key";
     request.update(data: {"ordering": key});
   }
 }
 
-class PaginationBase extends BaseRepository {
+mixin PaginationBase on BaseRepository {
   bool get hasNext => response.next != null;
 
   Future<dynamic> next() async {
@@ -115,8 +115,8 @@ class PaginationBase extends BaseRepository {
   }
 }
 
-class CRUDGeneric<T extends BaseModel> extends OrderingBase
-    with PaginationBase {
+class CRUDGeneric<T extends BaseModel> extends BaseRepository 
+  with OrderingBase, PaginationBase {
   String endpoint = "";
 
   @override
@@ -124,7 +124,11 @@ class CRUDGeneric<T extends BaseModel> extends OrderingBase
       Uri.parse("$host${isAction ? endpoint : ''}$url?${request.queryString}");
 
   Future<List<T>> list() async {
-    List<Map> data = [];
+    List<Map> data = [
+      {"id": 1, "name": "test", "marker": "test"}, 
+      {"id": 2, "name": "HD", "marker": "hd"}, 
+      {"id": 3, "name": "War", "marker": "war"}
+    ];
     return data.map((e) => parseObj(e)).toList();
   }
 
@@ -147,21 +151,21 @@ class CRUDGeneric<T extends BaseModel> extends OrderingBase
     return await list();
   }
 
-  @override
-  void ordering(String key, {bool ascending = true}) {
+  // @override
+  // void ordering(String key, {bool ascending = true}) {
     
-    super.ordering(key, ascending: ascending);
-  }
+  //   super.ordering(key, ascending: ascending);
+  // }
 
-  @override
-  bool get hasNext => true || response.next != null;
+  // @override
+  // bool get hasNext => true || response.next != null;
 
   T parseObj(Map data) => GetIt.I.get<T>(param1: data);
 }
 
-class TagRepository extends SequrityBase with CRUDGeneric<Tag> {}
+class TagRepository extends CRUDGeneric<Tag> with SequrityBase {}
 
-class SuggestionRepository extends SequrityBase with CRUDGeneric<Suggestion> {
+class SuggestionRepository extends CRUDGeneric<Suggestion> with SequrityBase {
   @override
   Future<List<Suggestion>> list() async {
     return [
@@ -171,8 +175,8 @@ class SuggestionRepository extends SequrityBase with CRUDGeneric<Suggestion> {
 }
 
 
-abstract class BaseVideoRepository extends SequrityBase
-    with CRUDGeneric<Video> {
+abstract class BaseVideoRepository extends CRUDGeneric<Video>
+    with SequrityBase {
   TagRepository tagRepository = GetIt.I.get<TagRepository>();
 
   Future<List<Tag>> getTags();
