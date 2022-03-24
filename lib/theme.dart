@@ -6,17 +6,17 @@ class OyBoyTheme {
 
   static TextTheme textLightTheme = TextTheme(
       headline1: GoogleFonts.poppins(
-          fontSize: 32.0, fontWeight: FontWeight.w600, color: Colors.black),
+          fontSize: 32.0, fontWeight: FontWeight.normal, color: Colors.black),
       headline2: GoogleFonts.poppins(
-          fontSize: 28.0, fontWeight: FontWeight.w600, color: Colors.black),
+          fontSize: 28.0, fontWeight: FontWeight.normal, color: Colors.black),
       headline3: GoogleFonts.poppins(
-          fontSize: 24.0, fontWeight: FontWeight.w600, color: Colors.black),
+          fontSize: 24.0, fontWeight: FontWeight.normal, color: Colors.black),
       headline4: GoogleFonts.poppins(
-          fontSize: 20.0, fontWeight: FontWeight.w600, color: Colors.black),
+          fontSize: 20.0, fontWeight: FontWeight.normal, color: Colors.black),
       headline5: GoogleFonts.poppins(
-          fontSize: 16.0, fontWeight: FontWeight.w600, color: Colors.black),
+          fontSize: 16.0, fontWeight: FontWeight.normal, color: Colors.black),
       headline6: GoogleFonts.poppins(
-          fontSize: 12.0, fontWeight: FontWeight.w600, color: Colors.black),
+          fontSize: 12.0, fontWeight: FontWeight.normal, color: Colors.black),
       subtitle1: GoogleFonts.dmSans(
           fontSize: 12.0, fontWeight: FontWeight.normal, color: Colors.black),
       subtitle2: GoogleFonts.dmSans(
@@ -30,17 +30,17 @@ class OyBoyTheme {
 
   static TextTheme textDarkTheme = TextTheme(
       headline1: GoogleFonts.poppins(
-          fontSize: 32.0, fontWeight: FontWeight.w600, color: Colors.white),
+          fontSize: 32.0, fontWeight: FontWeight.w400, color: Colors.white),
       headline2: GoogleFonts.poppins(
-          fontSize: 28.0, fontWeight: FontWeight.w600, color: Colors.white),
+          fontSize: 28.0, fontWeight: FontWeight.w400, color: Colors.white),
       headline3: GoogleFonts.poppins(
-          fontSize: 24.0, fontWeight: FontWeight.w600, color: Colors.white),
+          fontSize: 24.0, fontWeight: FontWeight.w400, color: Colors.white),
       headline4: GoogleFonts.poppins(
-          fontSize: 20.0, fontWeight: FontWeight.w600, color: Colors.white),
+          fontSize: 20.0, fontWeight: FontWeight.w400, color: Colors.white),
       headline5: GoogleFonts.poppins(
-          fontSize: 16.0, fontWeight: FontWeight.w600, color: Colors.white),
+          fontSize: 16.0, fontWeight: FontWeight.w400, color: Colors.white),
       headline6: GoogleFonts.poppins(
-          fontSize: 12.0, fontWeight: FontWeight.w600, color: Colors.white),
+          fontSize: 12.0, fontWeight: FontWeight.w400, color: Colors.white),
       subtitle1: GoogleFonts.dmSans(
           fontSize: 12.0, fontWeight: FontWeight.normal, color: Colors.white),
       subtitle2: GoogleFonts.dmSans(
@@ -54,6 +54,16 @@ class OyBoyTheme {
 
   static ThemeData get lightTheme {
     return ThemeData(
+        inputDecorationTheme: InputDecorationTheme(
+          counterStyle: textLightTheme.subtitle1,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Colors.grey)),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: appColor)),
+        ),
         primaryColor: appColor,
         brightness: Brightness.light,
         appBarTheme: const AppBarTheme(
@@ -100,13 +110,12 @@ class OyBoyTheme {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         )),
         chipTheme: const ChipThemeData(
-          selectedColor: Colors.transparent,
-          side: BorderSide(color: appColor, width: 1.5),
-          disabledColor: Colors.transparent,
-          selectedShadowColor: Colors.white,
-          shadowColor: Colors.transparent,
-          elevation: 5
-        ),
+            selectedColor: Colors.transparent,
+            side: BorderSide(color: appColor, width: 1.5),
+            disabledColor: Colors.transparent,
+            selectedShadowColor: Colors.white,
+            shadowColor: Colors.transparent,
+            elevation: 5),
         textTheme: textDarkTheme);
   }
 }
