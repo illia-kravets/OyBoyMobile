@@ -10,6 +10,7 @@ class AppRouter extends RouterDelegate<AppLink>
   final VideoManager videoManager;
   final StreamManager streamManager;
   final ShortManager shortManager;
+  final ProfileManager profileManager;
 
   @override
   final GlobalKey<NavigatorState> navigatorKey;
@@ -17,12 +18,14 @@ class AppRouter extends RouterDelegate<AppLink>
       {required this.userManager,
       required this.videoManager,
       required this.streamManager,
-      required this.shortManager})
+      required this.shortManager,
+      required this.profileManager})
       : navigatorKey = GlobalKey<NavigatorState>() {
     userManager.addListener(notifyListeners);
     videoManager.addListener(notifyListeners);
     streamManager.addListener(notifyListeners);
     shortManager.addListener(notifyListeners);
+    profileManager.addListener(notifyListeners);
   }
 
   @override
@@ -31,6 +34,7 @@ class AppRouter extends RouterDelegate<AppLink>
     videoManager.removeListener(notifyListeners);
     streamManager.removeListener(notifyListeners);
     shortManager.removeListener(notifyListeners);
+    profileManager.removeListener(notifyListeners);
     super.dispose();
   }
 
@@ -49,6 +53,10 @@ class AppRouter extends RouterDelegate<AppLink>
         if (userManager.page == PageType.stream) ...[
           VideoPage.streamPage(),
           if (streamManager.page == PageType.search) SearchPage.streamSearch(),
+        ],
+        if (userManager.page == PageType.profile) ...[
+          ProfilePageSelector.profile(),
+          if (profileManager.page == PageType.settings) ProfilePageSelector.profileSettings()
         ],
         if (videoManager.page == PageType.create) CreatePage.videoCreate(),
         if (streamManager.page == PageType.create) CreatePage.streamCreate(),

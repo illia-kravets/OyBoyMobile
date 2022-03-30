@@ -125,17 +125,26 @@ class CreateModal extends StatelessWidget {
       ModalRow(
         icon: Icons.play_circle_outline,
         text: "Upload video",
-        onTap: () => context.read<VideoManager>().goToPage(page: PageType.create),
+        onTap: () {
+          context.read<VideoManager>().goToPage(page: PageType.create);
+          Navigator.pop(context);
+        },
       ),
       ModalRow(
         icon: Icons.slow_motion_video,
         text: "Upload short",
-        onTap: () => context.read<ShortManager>().goToPage(page: PageType.create),
+        onTap: () {
+          context.read<ShortManager>().goToPage(page: PageType.create);
+          Navigator.pop(context);
+        },
       ),
       ModalRow(
         icon: Icons.live_tv,
         text: "Start live",
-        onTap: () => context.read<StreamManager>().goToPage(page: PageType.create),
+        onTap: () {
+          context.read<StreamManager>().goToPage(page: PageType.create);
+          Navigator.pop(context);
+        },
       ),
       const SizedBox(
         height: 10,

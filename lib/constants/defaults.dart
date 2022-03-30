@@ -1,3 +1,5 @@
+import 'package:image_picker/image_picker.dart';
+
 import "/data/models/helpers.dart";
 import "package:flutter/material.dart";
 
@@ -6,6 +8,37 @@ enum TagScope { local, external }
 enum FloatingButtonLocation { left, center, right }
 
 enum RequestDataType {headers, query, body}
+
+enum CreateType { video, stream, short }
+
+extension CreateValue on CreateType {
+  String get value {
+    switch(this) {
+      case CreateType.video:
+        return "video";
+      case CreateType.short:
+        return "short";
+      case CreateType.stream:
+        return "stream";
+    }
+  }
+}
+
+enum MediaType { video, image }
+
+extension MediaPicker on MediaType {
+  Function get picker {
+    return this == MediaType.image 
+      ? ImagePicker().pickImage
+      : ImagePicker().pickVideo;
+  }
+
+  String get name {
+    return this == MediaType.image 
+      ? "image"
+      : "video";
+  }
+}
 
 const double CHIPBAR_HEIGHT = 50.0;
 

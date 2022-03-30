@@ -8,6 +8,7 @@ void startGet() {
   GetIt.I.registerSingleton<VideoRepository>(VideoRepository());
   GetIt.I.registerSingleton<StreamRepository>(StreamRepository());
   GetIt.I.registerSingleton<ShortRepository>(ShortRepository());
+  GetIt.I.registerSingleton<ProfileRepository>(ProfileRepository());
 }
 
 void registerModels() {

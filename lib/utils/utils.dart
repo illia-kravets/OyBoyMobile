@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '/data/export.dart';
 
-void showSnackbar(BuildContext context, String text) {
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+void showSnackbar(BuildContext context, String text, {Color? color}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(text), backgroundColor: color,)
+  );
 }
 
 void handleError(BuildContext context, AppError error) {
@@ -25,15 +27,17 @@ class Loader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color primaryColor = Theme.of(context).primaryColor;
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SizedBox(
-        child: CircularProgressIndicator(
-          color: primaryColor,
-          strokeWidth: strokeWidth ?? 3,
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          child: CircularProgressIndicator(
+            color: primaryColor,
+            strokeWidth: strokeWidth ?? 3,
+          ),
+          height: height,
+          width: width,
         ),
-        height: height,
-        width: width,
       ),
     );
   }

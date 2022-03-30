@@ -177,3 +177,5 @@ class _GenericCardListState<T extends VideoGeneric>
     super.dispose();
   }
 }
+
+class Test extends enum with

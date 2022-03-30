@@ -7,7 +7,7 @@ import '/constants/export.dart';
 import '/data/export.dart';
 
 class VideoGeneric<T extends BaseVideoRepository>
-    extends CRUDManager<Video, T> {}
+    extends FullCRUD<Video, T> {}
 
 class HomeVideoGeneric<T extends BaseVideoRepository> extends VideoGeneric<T> {
   List<Tag> tags = [];
@@ -16,13 +16,14 @@ class HomeVideoGeneric<T extends BaseVideoRepository> extends VideoGeneric<T> {
   Future<List<Tag>> getFilterTags() async {
     return [
       Tag(
-          marker: TagMarker.recomendations,
+          id: TagMarker.recomendations,
           name: "Reccomendations",
           scope: TagScope.local),
       Tag(
-          marker: TagMarker.subscriptions,
+          id: TagMarker.subscriptions,
           name: "Subscribtions",
-          scope: TagScope.local),
+          scope: TagScope.local
+      ),
       ...await repository.getTags()
     ];
   }
@@ -43,25 +44,23 @@ class HomeVideoGeneric<T extends BaseVideoRepository> extends VideoGeneric<T> {
     if (tag.scope == TagScope.external)
       repository.query({"tag_id": tag.id});
     else
-      repository.query({"q": tag.marker});
+      repository.query({"q": tag.id});
     cards = await repository.list();
   }
 }
 
 
 abstract class SearchVideoGeneric<T extends BaseVideoRepository>
-    extends VideoGeneric<T> {
+    extends FilterCRUD<Video, T> {
   
   SuggestionRepository suggestionRepository =
       GetIt.I.get<SuggestionRepository>();
 
   bool isFocused = true;
   String? searchText;
-
   List<Tag> _tags = [];
-  List<FilterAction> _selectedFilters = [];
   List<Suggestion> suggestions = [];
-  List<FilterAction> appliedFilters = [];
+  
 
   @override
   void initialize() async {
@@ -99,57 +98,6 @@ abstract class SearchVideoGeneric<T extends BaseVideoRepository>
     refresh();
   }
 
-  Future<void> applyFilter() async {
-    isLoading = true;
-    appliedFilters = [..._selectedFilters];
-    refresh();
-    List tagIds = [];
-    for (var e in appliedFilters) {
-      if (e.type != FilterType.tag) repository.query(e.query);
-      else tagIds.add(e.value);
-    }
-    if (tagIds.isNotEmpty) repository.query({"tags": tagIds.join(",")});
-    cards = await repository.list();
-    isLoading = false;
-    refresh();
-  }
-
-  void addFilter(FilterAction? filter) {
-    if (filter == null) return;
-    _selectedFilters.removeWhere((e) => e.type == filter.type && e.type != FilterType.tag);
-    if (!filter.head) _selectedFilters.add(filter);
-    refresh();
-  }
-
-  void popSelectedFilter(FilterAction filter, {bool useRefresh = true}) {
-    _selectedFilters.removeWhere((e) => e.type == filter.type && e.value == filter.value);
-    if (useRefresh) refresh();
-  }
-
-  Future<void> popFilter(FilterAction filter) async {
-    popSelectedFilter(filter, useRefresh: false);
-    applyFilter();
-  }
-
-  List<FilterAction> get filters {
-    return [
-      ...Filters.video.map((e) {
-        for (var item in _selectedFilters) {
-          if (item.type == e.type && item.value == e.value) 
-            return e.copyWith(selected: true);
-        }
-        return e;
-      }).toList(),
-      ..._filterTags.map((e) {
-        for (var item in _selectedFilters) {
-          if (item.type == e.type && item.value == e.value) 
-            return e.copyWith(selected: true);
-        }
-        return e;
-      }).toList(),
-    ];
-  }
-
   List<FilterAction> get _filterTags {
     return List.generate(
       _tags.length, (i) => FilterAction(
@@ -159,6 +107,23 @@ abstract class SearchVideoGeneric<T extends BaseVideoRepository>
       )
     );
   }
+
+  @override
+  List<FilterAction> get filters {
+    return [
+      ...super.filters,
+      ..._filterTags.map((e) {
+        for (var item in selectedFilters) {
+          if (item.type == e.type && item.value == e.value) 
+            return e.copyWith(selected: true);
+        }
+        return e;
+      }).toList(),
+    ];
+  }
+
+  @override
+  List<FilterAction> get filterSource => Filters.video;
 }
 
 class VideoManager extends HomeVideoGeneric<VideoRepository> {}

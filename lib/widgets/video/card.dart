@@ -31,7 +31,7 @@ class VideoCard extends StatelessWidget {
             decoration: BoxDecoration(
                 color: Colors.grey,
                 image: DecorationImage(
-                    image: AssetImage(video.banner), fit: BoxFit.fill)),
+                    image: AssetImage(video.banner ?? ""), fit: BoxFit.fill)),
           ),
           Expanded(
             child: Container(
@@ -69,7 +69,7 @@ class VideoCard extends StatelessWidget {
                                 width: 100,
                               ),
                               Text(
-                                video.createdAt,
+                                video.createdAt ?? "",
                                 style: theme.textTheme.bodyText2,
                               )
                             ],
