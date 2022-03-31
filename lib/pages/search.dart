@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
@@ -15,7 +17,8 @@ class SearchPage<T extends SearchVideoGeneric> extends StatelessWidget {
         child: ChangeNotifierProvider<VideoSearchManager>(
           create:(context) => VideoSearchManager(), 
           child: const SearchPage<VideoSearchManager>()
-        )
+        ),
+        arguments: const {"filterManagerType": VideoSearchManager}
     );
   }
 
@@ -26,7 +29,9 @@ class SearchPage<T extends SearchVideoGeneric> extends StatelessWidget {
         child: ChangeNotifierProvider<StreamSearchManager>(
           create:(context) => StreamSearchManager(), 
           child: const SearchPage<StreamSearchManager>()
-        ));
+        ),
+        arguments: const {"filterManagerType": StreamSearchManager}
+    );
   }
 
   @override
@@ -113,7 +118,7 @@ class _SearchAppBarState<T extends SearchVideoGeneric> extends State<SearchAppBa
       elevation: 0,
       titleSpacing: 0,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
+        icon: const Icon(Icons.arrow_back_ios),
         onPressed: () => Navigator.of(context).pop(),
         color: theme.primaryColor
       ),
@@ -228,13 +233,7 @@ class SearchResult<T extends SearchVideoGeneric> extends StatelessWidget {
         endDrawer: FilterDrawer<T>(),
         body: Column(
           children: [
-            Selector<T, List<FilterAction>>(
-              selector: (_, manager) => manager.appliedFilters,
-              builder: (_, filters, __) => FiltersRow(
-                filters: filters, 
-                onCancel: (FilterAction e) => manager.popFilter(e)  
-              ), 
-            ),
+            FiltersRow<T>(),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               color: Colors.white,
@@ -250,207 +249,5 @@ class SearchResult<T extends SearchVideoGeneric> extends StatelessWidget {
           ],
         ),
       );
-  }
-}
-
-class FiltersRow extends StatelessWidget {
-  const FiltersRow({ Key? key, required this.filters, required this.onCancel }) : super(key: key);
-  final List<FilterAction> filters;
-  final ValueChanged<FilterAction> onCancel;
-  
-  @override
-  Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-    return filters.isEmpty 
-    ? const SizedBox() 
-    : Container(
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      height: CHIPBAR_HEIGHT,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: filters.length, 
-        itemBuilder: (_, i) => Chip(
-          shadowColor: theme.primaryColor,
-          label: Text(filters[i].title, style: theme.textTheme.bodyText2,),
-          deleteIcon: Icon(Icons.close, color: theme.primaryColor,),
-          onDeleted: () => onCancel(filters[i])
-        ), 
-        separatorBuilder: (_, i) => const SizedBox(width: 4),
-      ),
-    );
-  }
-}
-
-class FilterDrawer<T extends SearchVideoGeneric>  extends StatelessWidget {
-  const FilterDrawer({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-    TextStyle? fieldStyle = theme.textTheme.bodyText1;
-    T manager = context.watch<T>();
-
-    return SafeArea(
-      child: Drawer(child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Filters", style: theme.textTheme.headline3),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Ordering", style: fieldStyle,), 
-                FilterDropdown(
-                  filterType: FilterType.ordering,
-                  onChanged: (FilterAction? v) => manager.addFilter(v), 
-                  items: manager.filters
-                )
-              ]
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Filter", style: fieldStyle,), 
-                FilterDropdown(
-                  filterType: FilterType.relevation,
-                  onChanged: (FilterAction? v) => manager.addFilter(v), 
-                  items: manager.filters
-                )
-              ]
-            ),
-            Column(children: [
-              Flex(direction: Axis.horizontal, children: [Text("Characteristics", style: fieldStyle,)]),
-              FilterCharacteristics(
-                items: manager.filters,
-                filterType: FilterType.tag,
-                onSelect: (selected, filter) {
-                  if (selected) {
-                    manager.addFilter(filter);
-                  } else {
-                    manager.popSelectedFilter(filter);
-                  }
-                },
-              )
-            ]),
-            Container(
-              alignment: Alignment.center,
-              child: SizedBox(
-                width: 100,
-                child: ElevatedButton(
-                  onPressed: () {
-                    manager.applyFilter();
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("Apply", style: theme.textTheme.button,)
-                ),
-              ),
-            )
-          ],
-        ),
-      ))
-    );
-  }
-}
-
-class FilterDropdown extends StatelessWidget {
-  FilterDropdown({
-    Key? key, 
-    required this.onChanged, 
-    required List<FilterAction> items,
-    this.filterType
-  }) : super(key: key) {
-    this.items = selectedItems(items);
-  }
-
-  final ValueChanged<FilterAction?> onChanged;
-  final String? filterType;
-  late List<FilterAction> items;
-
-  @override
-  Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-    return DropdownButton<FilterAction>(
-      value: value,
-      style: theme.textTheme.bodyText2,
-      items: List.generate(
-        items.length, 
-        (i) => DropdownMenuItem(
-          child: Text(items[i].title), 
-          value: items[i],
-        )
-      ), 
-      onChanged: onChanged,
-    );
-  }
-
-  List<FilterAction> selectedItems(List<FilterAction> items) {
-    List<FilterAction> filters = [];
-    if (filterType == null) return items;
-    for (var item in items) {
-      if (item.type == filterType) filters.add(item);
-    }
-    return filters;
-  }
-
-  FilterAction? get value {
-    FilterAction? selected;
-    FilterAction? head;
-    
-    for (var e in items) {
-      if(e.selected) selected = e;
-      if(e.head) head = e;
-    }
-
-    assert(head != null, "Default filter must be specified");
-    if (selected != null) return selected;
-    return head;
-  }
-}
-
-class FilterCharacteristics extends StatelessWidget {
-  FilterCharacteristics({
-    Key? key, 
-    required this.onSelect, 
-    required List<FilterAction> items,
-    this.filterType
-  }) : super(key: key) {
-    this.items = selectedItems(items);
-  }
-
-  final Function(bool selected, FilterAction filter) onSelect;
-  final String? filterType;
-  late List<FilterAction> items;
-
-  @override
-  Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-    return Wrap(
-      spacing: 6,
-      children: [
-        ...List.generate(
-          items.length,
-          (i) => FilterChip(
-            showCheckmark: false,
-            avatar: items[i].selected
-              ? Icon(Icons.check, color: theme.primaryColor)
-              : null,
-            label: Text(items[i].title), 
-            selected: items[i].selected,
-            onSelected: (selected) => onSelect(selected, items[i]),
-          )
-        )
-      ],
-    );
-  }
-
-  List<FilterAction> selectedItems(List<FilterAction> items) {
-    List<FilterAction> filters = [];
-    if (filterType == null) return items;
-    for (var item in items) {
-      if (item.type == filterType) filters.add(item);
-    }
-    return filters;
   }
 }

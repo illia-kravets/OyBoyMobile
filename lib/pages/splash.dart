@@ -9,6 +9,7 @@ class SplashScreen extends StatefulWidget {
 
   static MaterialPage page() {
     return const MaterialPage(
+      
         name: OyBoyPages.splashPath,
         key: ValueKey(OyBoyPages.splashPath),
         child: SplashScreen());

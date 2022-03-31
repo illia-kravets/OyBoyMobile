@@ -34,22 +34,19 @@ class VideoList<T extends HomeVideoGeneric> extends StatelessWidget {
   }
 }
 
-
-class GenericCardList<T extends VideoGeneric> extends StatefulWidget {
-  const GenericCardList({Key? key, this.showChipBar=false}) : super(key: key);
+class GenericCardList<T extends CRUDManager> extends StatefulWidget {
+  const GenericCardList({Key? key, this.showChipBar = false}) : super(key: key);
 
   final bool showChipBar;
   @override
   State<GenericCardList> createState() => _GenericCardListState<T>();
 }
 
-
-class _GenericCardListState<T extends VideoGeneric>
+class _GenericCardListState<T extends CRUDManager>
     extends State<GenericCardList> {
   late T repository;
   late ScrollController _controller;
   late bool _showUpButton;
-
 
   @override
   void initState() {
@@ -69,9 +66,9 @@ class _GenericCardListState<T extends VideoGeneric>
         Column(
           children: [
             if (widget.showChipBar)
-            const SizedBox(
-              height: CHIPBAR_HEIGHT,
-            ),
+              const SizedBox(
+                height: CHIPBAR_HEIGHT,
+              ),
             Expanded(
               child: ListView.separated(
                 controller: _controller,

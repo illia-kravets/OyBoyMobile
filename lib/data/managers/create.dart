@@ -1,28 +1,67 @@
 import 'dart:async';
 import 'package:get_it/get_it.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '/constants/export.dart';
 import '/data/export.dart';
 
 class CreateManager extends BaseManager {
-  String _name = "";
-  String _description = "";
+  VideoRepository repository = GetIt.I.get<VideoRepository>();
+
+  String name = "";
+  String description = "";
+
   List<Tag> tags = [];
+  String tagStr = "";
+  bool _tagInputSelected = false;
+
+  XFile? banner;
+  XFile? video;
 
   @override
   void initialize() {}
 
-  set name(String v) {
-    _name = v;
+  void publish ({required String name, required String type, String? description}) {
+    List createTags = List.generate(tags.length, (i) => {"name": tags[i].name});
+
+    // repository
+    //   ..body({"tags": createTags})
+    //   ..create(Video(name: name, description: description, type: type));
+  }
+
+  void addTag(String text) {
+    for(var tag in tags) {
+      if (tag.name == text) return;
+    }
+    tags.add(Tag(name: text));
+  }
+
+  void popTag(Tag tag) {
+    tags = tags.where((e) => e.name != tag.name).toList();
     refresh();
   }
 
-  String get name => _name;
+  void updateTag(String text) {
+    if (tagStr == text) return;
+    tagStr = text;
+    if (text.endsWith(" ") && tagStr.isNotEmpty) {
+      for(var x in text.split(" ")) {
+        if (x != "") addTag(x);
+      }
+      tagStr = " ";
+    }
+    if (text == "" && tags.isNotEmpty) tagStr = " ${tags.removeLast().name}";
+    refresh();
+    return;
+  }
 
-  set description(String v) {
-    _description = v;
+  set tagInputSelected(bool v) {
+    if (v == _tagInputSelected) return;
+    _tagInputSelected = v;
     refresh();
   }
 
-  String get description => _description;
+  bool get tagInputSelected => _tagInputSelected;
+
+  bool get hasTagContent => tagStr.isNotEmpty || tags.isNotEmpty || _tagInputSelected;
 }

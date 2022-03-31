@@ -118,13 +118,6 @@ class _LoginTextFieldState extends State<LoginTextField> {
           obscureText: widget.isPassword ? _showPassword : false,
           decoration: InputDecoration(
             hintText: widget.hint,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Colors.grey)),
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: primaryColor)),
             suffixIcon: widget.isPassword
                 ? IconButton(
                     icon: Icon(

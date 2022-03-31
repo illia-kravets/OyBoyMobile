@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import "/constants/export.dart";
 
+class BaseModel {}
+
 class AppError implements Exception {
   AppError({this.msg});
   String? msg;
@@ -24,7 +26,7 @@ class Request {
 
   Map<String, String> headers;
   Map<String, dynamic> query;
-  Map<String, dynamic> body;
+  Map<dynamic, dynamic> body;
 
   String get queryString => Uri(queryParameters: query).query;
 

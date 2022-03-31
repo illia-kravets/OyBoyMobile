@@ -1,7 +1,9 @@
 class OyBoyPages {
   static const String splashPath = "/splash";
   static const String loginPath = "/login";
+
   static const String profilePath = "/profile";
+  static const String profileSettingsPath = "/profileSettings";
 
   static const String shortPath = "/short";
   static const String shortCreatePath = "/short/create";
