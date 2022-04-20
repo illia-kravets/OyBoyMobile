@@ -7,19 +7,23 @@ enum TagScope { local, external }
 
 enum FloatingButtonLocation { left, center, right }
 
-enum RequestDataType {headers, query, body}
+enum RequestDataType { headers, query, body }
 
-enum CreateType { video, stream, short }
+enum VideoType { video, stream, short, favourite }
 
-extension CreateValue on CreateType {
+enum ScrollableType { list, grid }
+
+extension CreateValue on VideoType {
   String get value {
-    switch(this) {
-      case CreateType.video:
+    switch (this) {
+      case VideoType.video:
         return "video";
-      case CreateType.short:
+      case VideoType.short:
         return "short";
-      case CreateType.stream:
+      case VideoType.stream:
         return "stream";
+      case VideoType.favourite:
+        return "favourite";
     }
   }
 }
@@ -28,15 +32,13 @@ enum MediaType { video, image }
 
 extension MediaPicker on MediaType {
   Function get picker {
-    return this == MediaType.image 
-      ? ImagePicker().pickImage
-      : ImagePicker().pickVideo;
+    return this == MediaType.image
+        ? ImagePicker().pickImage
+        : ImagePicker().pickVideo;
   }
 
   String get name {
-    return this == MediaType.image 
-      ? "image"
-      : "video";
+    return this == MediaType.image ? "image" : "video";
   }
 }
 
@@ -58,19 +60,49 @@ class FilterType {
   static const String tag = "tag";
 }
 
-
 class Filters {
   static List<FilterAction> get video {
     return [
       // Ordering filters
-      FilterAction(type: FilterType.ordering, value: "", title: "Default", head: true),
-      FilterAction(type: FilterType.ordering, value: "duration", title: "By Duration"),
-      FilterAction(type: FilterType.ordering, value: "upload_date", title: "By Upload date"),
+      FilterAction(
+          type: FilterType.ordering, value: "", title: "Default", head: true),
+      FilterAction(
+          type: FilterType.ordering, value: "duration", title: "By Duration"),
+      FilterAction(
+          type: FilterType.ordering,
+          value: "upload_date",
+          title: "By Upload date"),
 
       // Relevation filters
-      FilterAction(type: FilterType.relevation, value: "", title: "All", head: true),
-      FilterAction(type: FilterType.relevation, value: "recommendation", title: "Recomendations"),
-      FilterAction(type: FilterType.relevation, value: "subscription", title: "Subscriptions"),
+      FilterAction(
+          type: FilterType.relevation, value: "", title: "All", head: true),
+      FilterAction(
+          type: FilterType.relevation,
+          value: "recommendation",
+          title: "Recomendations"),
+      FilterAction(
+          type: FilterType.relevation,
+          value: "subscription",
+          title: "Subscriptions"),
     ];
+  }
+}
+
+enum AppIcon { video, stream, short, favourite, profile }
+
+extension IconValue on AppIcon {
+  IconData get icon {
+    switch (this) {
+      case AppIcon.video:
+        return Icons.play_circle_outline;
+      case AppIcon.short:
+        return Icons.slow_motion_video;
+      case AppIcon.stream:
+        return Icons.camera_outlined;
+      case AppIcon.favourite:
+        return Icons.stars_outlined;
+      case AppIcon.profile:
+        return Icons.supervised_user_circle_outlined;
+    }
   }
 }

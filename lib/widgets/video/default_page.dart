@@ -52,7 +52,7 @@ class DefaultVideoPage<T extends HomeVideoGeneric> extends StatelessWidget {
           ),
       extendBody: extendBody,
       extendBodyBehindAppBar: extendBodyBehindAppBar,
-      body: body ?? VideoList<T>(),
+      body: body ?? HomeVideoList<T>(),
     );
   }
 }

@@ -6,8 +6,8 @@ import 'package:get_it/get_it.dart';
 import '/constants/export.dart';
 import '/data/export.dart';
 
-class VideoGeneric<T extends BaseVideoRepository>
-    extends FullCRUD<Video, T> {}
+abstract class VideoGeneric<T extends BaseVideoRepository>
+    extends CRUDManager<T> {}
 
 class HomeVideoGeneric<T extends BaseVideoRepository> extends VideoGeneric<T> {
   List<Tag> tags = [];
@@ -42,29 +42,29 @@ class HomeVideoGeneric<T extends BaseVideoRepository> extends VideoGeneric<T> {
     selectedTag = tag;
     refresh();
     if (tag.scope == TagScope.external)
-      repository.query({"tag_id": tag.id});
+      repository.query({"tag": tag.name});
     else
       repository.query({"q": tag.id});
     cards = await repository.list();
+    await Future.delayed(Duration(seconds: 1));
   }
 }
 
 
-abstract class SearchVideoGeneric<T extends BaseVideoRepository>
-    extends FilterCRUD<Video, T> {
+class SearchVideoGeneric<T extends BaseVideoRepository>
+    extends FilterCRUDManager<T> {
   
   SuggestionRepository suggestionRepository =
       GetIt.I.get<SuggestionRepository>();
 
   bool isFocused = true;
   String? searchText;
-  List<Tag> _tags = [];
+  List _tags = [];
   List<Suggestion> suggestions = [];
   
 
   @override
   void initialize() async {
-    super.initialize();
     filterSuggesions();
     suggestions = await suggestionRepository.list();
     refresh();
@@ -149,4 +149,3 @@ class StreamSearchManager extends SearchVideoGeneric<StreamRepository> {
     suggestionRepository.query({"type": "stram"});
   }
 }
-

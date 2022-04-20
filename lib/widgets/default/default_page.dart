@@ -71,22 +71,22 @@ class DefaultPage extends StatelessWidget {
         // showUnselectedLabels: true,
         actions: [
           PageNavigationItem(
-              icon: Icons.play_circle_outline,
+              icon: AppIcon.video.icon,
               selected: userManager.page == PageType.video,
               title: 'Video',
               onPress: () => userManager.goToPage(page: PageType.video)),
           PageNavigationItem(
-              icon: Icons.slow_motion_video,
+              icon: AppIcon.short.icon,
               selected: userManager.page == PageType.short,
               title: "Shorts",
               onPress: () => userManager.goToPage(page: PageType.short)),
           PageNavigationItem(
-              icon: Icons.live_tv,
+              icon: AppIcon.stream.icon,
               selected: userManager.page == PageType.stream,
               title: "Stream",
               onPress: () => userManager.goToPage(page: PageType.stream)),
           PageNavigationItem(
-              icon: Icons.account_circle,
+              icon: AppIcon.profile.icon,
               selected: userManager.page == PageType.profile,
               title: "Profile",
               onPress: () => userManager.goToPage(page: PageType.profile))
@@ -123,7 +123,7 @@ class CreateModal extends StatelessWidget {
         ),
       ),
       ModalRow(
-        icon: Icons.play_circle_outline,
+        icon: AppIcon.video.icon,
         text: "Upload video",
         onTap: () {
           context.read<VideoManager>().goToPage(page: PageType.create);
@@ -131,7 +131,7 @@ class CreateModal extends StatelessWidget {
         },
       ),
       ModalRow(
-        icon: Icons.slow_motion_video,
+        icon: AppIcon.short.icon,
         text: "Upload short",
         onTap: () {
           context.read<ShortManager>().goToPage(page: PageType.create);
@@ -139,7 +139,7 @@ class CreateModal extends StatelessWidget {
         },
       ),
       ModalRow(
-        icon: Icons.live_tv,
+        icon: AppIcon.stream.icon,
         text: "Start live",
         onTap: () {
           context.read<StreamManager>().goToPage(page: PageType.create);

@@ -56,7 +56,7 @@ class VideoCreatePage extends StatelessWidget {
           style: theme.textTheme.headline4,
         ),
       ),
-      body: const BaseCreatePage(createType: CreateType.video),
+      body: const BaseCreatePage(createType: VideoType.video),
     );
   }
 }
@@ -79,7 +79,7 @@ class StreamCreatePage extends StatelessWidget {
           style: theme.textTheme.headline4,
         ),
       ),
-      body: const BaseCreatePage(createType: CreateType.stream)
+      body: const BaseCreatePage(createType: VideoType.stream)
     );
   }
 }
@@ -102,14 +102,14 @@ class ShortCreatePage extends StatelessWidget {
           style: theme.textTheme.headline4,
         ),
       ),
-      body: const BaseCreatePage(createType: CreateType.short),
+      body: const BaseCreatePage(createType: VideoType.short),
     );
   }
 }
 
 class BaseCreatePage extends StatefulWidget {
   const BaseCreatePage({Key? key, required this.createType}) : super(key: key);
-  final CreateType createType;
+  final VideoType createType;
 
   @override
   State<BaseCreatePage> createState() => _BaseCreatePageState();
@@ -200,7 +200,7 @@ class _BaseCreatePageState extends State<BaseCreatePage> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (widget.createType != CreateType.stream)
+                      if (widget.createType != VideoType.stream)
                       ...[
                         Expanded(
                           flex: 1, 
@@ -265,7 +265,7 @@ class _BaseCreatePageState extends State<BaseCreatePage> {
                               );
                             }
                           }, 
-                          child: widget.createType == CreateType.stream 
+                          child: widget.createType == VideoType.stream 
                             ? Text("Start live", style: theme.textTheme.button,)
                             : Text("Publish", style: theme.textTheme.button)
                         ),
@@ -283,7 +283,7 @@ class _BaseCreatePageState extends State<BaseCreatePage> {
 
   void showMediaModal (MediaType type) {
     Duration? maxDuration;
-    if (widget.createType == CreateType.short && type != MediaType.image) maxDuration = const Duration(seconds: 30);
+    if (widget.createType == VideoType.short && type != MediaType.image) maxDuration = const Duration(seconds: 30);
     
     showFileModalBottomSheet(
       context: context,
@@ -299,7 +299,7 @@ class _BaseCreatePageState extends State<BaseCreatePage> {
 
   Widget chooseButtonText () {
     TextStyle? style = Theme.of(context).textTheme.button;
-    return widget.createType == CreateType.video 
+    return widget.createType == VideoType.video 
       ? Text("Choose video", style: style,)
       : Column(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -4,10 +4,9 @@ import "package:provider/provider.dart";
 import "/constants/export.dart";
 import "/data/export.dart";
 
-class FiltersRow<T extends FilterManagerBase> extends StatelessWidget {
+class FiltersRow<T extends FilterCRUDManager> extends StatelessWidget {
   const FiltersRow({ Key? key }) : super(key: key);
   
-
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
@@ -35,8 +34,10 @@ class FiltersRow<T extends FilterManagerBase> extends StatelessWidget {
   }
 }
 
-class FilterDrawer<T extends FilterManagerBase>  extends StatelessWidget {
-  const FilterDrawer({Key? key}) : super(key: key);
+class FilterDrawer<T extends FilterCRUDManager>  extends StatelessWidget {
+  const FilterDrawer({Key? key, this.hasTags=false}) : super(key: key);
+
+  final bool hasTags;
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +74,7 @@ class FilterDrawer<T extends FilterManagerBase>  extends StatelessWidget {
                 )
               ]
             ),
+            if (hasTags)
             Column(children: [
               Flex(direction: Axis.horizontal, children: [Text("Characteristics", style: fieldStyle,)]),
               FilterCharacteristics(

@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:oyboy/widgets/profile/data_page.dart';
 import "/constants/export.dart";
 import "/widgets/export.dart";
 import "/utils/utils.dart";
@@ -22,6 +23,14 @@ class ProfilePageSelector {
       child: ProfileSettingsPage()
     );
   }
+
+  static MaterialPage detailList<T extends FilterCRUDManager>({required VideoType videoType}) {
+    return MaterialPage(
+      name: OyBoyPages.profileDetailPath,
+      key: const ValueKey(OyBoyPages.profileDetailPath),
+      child: DataPage<T>(videoType: videoType, appBarTitle: "My ${videoType.value}",)
+    );
+  }
 }
 
 class ProfilePage extends StatefulWidget {
@@ -31,37 +40,137 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStateMixin {
+
+  late TabController _tabController;
   late ProfileManager manager;
+  final Map tabs = {
+    0: VideoType.video,
+    1: VideoType.short,
+    2: VideoType.favourite
+  };
+
+  void onTabChange() {}
 
   @override
   void initState() {
+    _tabController = TabController(vsync: this, length: tabs.length);
+    _tabController.addListener(onTabChange);
     manager = context.read<ProfileManager>();
     manager.initialize();
+    context.read<VideoDetailManager>().initialize();
+    context.read<ShortDetailManager>().initialize();
+    context.read<FavouriteDetailManager>().initialize();
     super.initState();
   }
 
   @override
+  void dispose() {
+    _tabController.removeListener(onTabChange);
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    bool loading = context.select((ProfileManager m) => m.isLoading);
+    manager = context.watch<ProfileManager>();
     return DefaultPage(
-      body: SafeArea(
-        child: loading
-          ? const Loader(
-              strokeWidth: 4,
-              height: 35,
-              width: 35,
-            )
-          : Column(
-            children: const [
-              ProfileInfo()
-            
-            ],
-          ),
+        extendBody: true,
+        body: manager.isLoading 
+        ? const Loader(
+            strokeWidth: 4,
+            height: 35,
+            width: 35,
+          ) 
+        : SafeArea(
+          child: NestedScrollView(
+            physics: const NeverScrollableScrollPhysics(),
+            headerSliverBuilder: (context, boxIsScrolled) {
+              return <Widget> [
+                SliverAppBar(
+                  titleSpacing: 10,
+                  backgroundColor: Colors.grey[50],
+                  collapsedHeight: 375,
+                  expandedHeight: 375,
+                  flexibleSpace: const ProfileInfo(),
+                ),
+                SliverPersistentHeader(
+                  delegate: PreferedSizeSliverDelegate(
+                    color: Colors.grey[50],
+                    child: TabBar(
+                      controller: _tabController,
+                      tabs: [
+                        Tab(icon: Icon(AppIcon.video.icon)),
+                        Tab(icon: Icon(AppIcon.short.icon)),
+                        Tab(icon: Icon(AppIcon.favourite.icon)),
+                      ],
+                    ),
+                  ),
+                  floating: true,
+                  pinned: true,
+                )
+              ];
+            },
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                VideoCardList<VideoDetailManager>(
+                  config: CardConfig(
+                    active: !context.select((VideoDetailManager v) => v.isLoading),
+                    paginate: false,
+                    endText: "",
+                    onPageEnd: () => manager.goToPage(page: PageType.detail, videoType: VideoType.video)
+                  ),
+                ),
+                VideoCardGrid<ShortDetailManager>(
+                  config: CardConfig(
+                    active: !context.select((ShortDetailManager v) => v.isLoading),
+                    paginate: false,
+                    onPageEnd: () => manager.goToPage(page: PageType.detail, videoType: VideoType.short)
+                  ),
+                ),
+                VideoCardList<FavouriteDetailManager>(
+                  config: CardConfig(
+                    active: !context.select((FavouriteDetailManager v) => v.isLoading),
+                    paginate: false,
+                    endText: "",
+                    onPageEnd: () => manager.goToPage(page: PageType.detail, videoType: VideoType.favourite)
+                  ),
+                ),
+              ]
+            ),
+          )
         ),
     );
   }
 }
+
+
+class PreferedSizeSliverDelegate extends SliverPersistentHeaderDelegate{
+  PreferedSizeSliverDelegate({required this.child, this.color});
+  final PreferredSizeWidget child;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: color,
+      child: child,
+    );
+  }
+
+  @override
+  double get maxExtent => child.preferredSize.height;
+
+  @override
+  double get minExtent => child.preferredSize.height;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+    return false;
+  }
+}
+
 
 
 class ProfileInfo extends StatelessWidget {
@@ -72,71 +181,85 @@ class ProfileInfo extends StatelessWidget {
     ProfileManager manager = context.read<ProfileManager>();
     Profile profile = context.select((ProfileManager m) => m.profile);
     ThemeData theme = Theme.of(context);
-    final data = ModalRoute.of(context)!.settings.arguments;
+    
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(25, 20, 25, 10),
-      child: Stack(
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 20,),
-                CircleAvatar(
-                  radius: 60,
-                  backgroundImage: AssetImage(profile.photo ?? ""),
-                ),
-                const SizedBox(height: 10,),
-                Text(profile.username ?? "", style: theme.textTheme.headline4),
-                const SizedBox(height: 4,),
-                Text(profile.fullName ?? "", style: theme.textTheme.headline4),
-                const SizedBox(height: 10,),
-                Text(profile.description ?? "", style: theme.textTheme.bodyText2, textAlign: TextAlign.center),
-                const SizedBox(height: 10,),
-                IntrinsicHeight(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 4),
-                        child: Column(
-                          children: [
-                            Text(profile.subscriptions.toString(), style: theme.textTheme.bodyText1,),
-                            Text("Subscriptions", style: theme.textTheme.headline6),
-                          ]
-                        ),
-                      ),
-                      const VerticalDivider(width: 1, color: Colors.grey),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 4),
-                        child: Column(
-                          children: [
-                            Text(profile.subscribers.toString(), style: theme.textTheme.bodyText1,),
-                            Text("Subscribers", style: theme.textTheme.headline6),
-                          ]
-                        ),
-                      )
-                    ],
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(25, 10, 25, 10),
+        child: Stack(
+          children: [
+            SizedBox(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20,),
+                  CircleAvatar(
+                    radius: 60,
+                    backgroundImage: AssetImage(profile.photo ?? ""),
                   ),
-                )
-              ],
+                  const SizedBox(height: 10,),
+                  Text(profile.username ?? "", style: theme.textTheme.headline4),
+                  const SizedBox(height: 4,),
+                  Text(profile.fullName ?? "", style: theme.textTheme.headline4),
+                  const SizedBox(height: 10,),
+                  if(profile.description != null && profile.description!.isNotEmpty)
+                  Tooltip(
+                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.all(15),
+                    message: profile.description,
+                    triggerMode: TooltipTriggerMode.tap,
+                    child: Text(
+                      profile.description ?? "", 
+                      style: theme.textTheme.bodyText2, 
+                      textAlign: TextAlign.center,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis
+                    ),
+                  ),
+                  const SizedBox(height: 10,),
+                  IntrinsicHeight(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 4),
+                          child: Column(
+                            children: [
+                              Text(profile.subscriptions.toString(), style: theme.textTheme.bodyText1,),
+                              Text("Subscriptions", style: theme.textTheme.headline6),
+                            ]
+                          ),
+                        ),
+                        const VerticalDivider(width: 1, color: Colors.grey),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 4),
+                          child: Column(
+                            children: [
+                              Text(profile.subscribers.toString(), style: theme.textTheme.bodyText1,),
+                              Text("Subscribers", style: theme.textTheme.headline6),
+                            ]
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Positioned(
-            top: 0, 
-            right: -5,
-            child: IconButton(
-              icon: Icon(Icons.settings_outlined, color: theme.primaryColor,), 
-              onPressed: () => manager.goToPage(page: PageType.settings)
+            Positioned(
+              top: 0, 
+              right: -5,
+              child: IconButton(
+                icon: Icon(Icons.settings_outlined, color: theme.primaryColor,), 
+                onPressed: () => manager.goToPage(page: PageType.settings)
+              )
             )
-          )
-        ],
-      ),
+          ],
+        ),
     );
   }
 }
+
 
 
 class ProfileSettingsPage extends StatefulWidget {

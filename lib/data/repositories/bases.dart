@@ -44,7 +44,7 @@ abstract class BaseRepository {
       {Map query = const {},
       Map headers = const {},
       Map kwargs = const {}}) async {
-    prepareRequest(query: query, headers: headers, kwargs: kwargs);
+    // prepareRequest(query: query, headers: headers, kwargs: kwargs);
     parseResponse(await http.get(combineUrl(url), headers: request.headers));
     return response;
   }
@@ -102,7 +102,7 @@ mixin PaginationRepository on BaseRepository {
   bool get hasNext => response.next != null;
 
   Future<dynamic> next() async {
-    if (response.next == null) return null;
+    if (response.next == null) return [];
     request.clear();
     Uri url = Uri.parse(response.next ?? "");
     request.update(data: url.queryParameters);
@@ -115,16 +115,24 @@ mixin PaginationRepository on BaseRepository {
   }
 }
 
+mixin FilterRepository on BaseRepository {
+  List<FilterAction> get filters => throw UnimplementedError("Filters not implemented");
+}
+
 class CRUDGeneric<T extends BaseModel> extends BaseRepository 
-  with OrderingRepository, PaginationRepository {
-  String endpoint = "";
+  with OrderingRepository, PaginationRepository, FilterRepository {
+
+  String get endpoint => throw UnimplementedError("endpoint must be implemented");
 
   @override
   Uri combineUrl(String url, {bool isAction = false}) =>
-      Uri.parse("$host${isAction ? endpoint : ''}$url?${request.queryString}");
+      Uri.parse("$host$endpoint/$url?${request.queryString}");
 
-  Future<List<T>> list() async {
-    return [];
+  Future<List> list() async {
+    await get("");
+    return response.data.map((x) {
+      return parseObj(x);
+    }).toList();
   }
 
   Future<T> retrieve(dynamic id) async {
@@ -139,11 +147,11 @@ class CRUDGeneric<T extends BaseModel> extends BaseRepository
   Future<void> create(T instance) async {}
 
   @override
-  Future<List<T>> next() async {
-    request.clear();
-    Uri url = Uri.parse(response.next ?? "");
-    request.update(data: url.queryParameters);
-    return await list();
+  Future<List> next() async {
+    List data = await super.next();
+    return data.map((x) {
+      return parseObj(x);
+    }).toList();
   }
 
   T parseObj(Map data) => GetIt.I.get<T>(param1: data);

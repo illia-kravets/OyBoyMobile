@@ -230,7 +230,7 @@ class SearchResult<T extends SearchVideoGeneric> extends StatelessWidget {
     return DefaultPage(
         appBar: appBar,
         extendBody: true,
-        endDrawer: FilterDrawer<T>(),
+        endDrawer: FilterDrawer<T>(hasTags: true,),
         body: Column(
           children: [
             FiltersRow<T>(),

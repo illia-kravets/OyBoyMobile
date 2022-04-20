@@ -56,6 +56,14 @@ class OyBoyTheme {
 
   static ThemeData get lightTheme {
     return ThemeData(
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: appColor
+        ),
+        tabBarTheme: const TabBarTheme(
+          indicator: BoxDecoration(border: Border(bottom: BorderSide(color: appColor, width: 2))),
+          labelColor: appColor,
+          unselectedLabelColor: Colors.grey
+        ),
         inputDecorationTheme: InputDecorationTheme(
           counterStyle: textLightTheme.bodyText2,
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
