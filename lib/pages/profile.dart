@@ -23,7 +23,6 @@ class ProfilePageSelector {
       child: ProfileSettingsPage()
     );
   }
-
   static MaterialPage detailList<T extends FilterCRUDManager>({required VideoType videoType}) {
     return MaterialPage(
       name: OyBoyPages.profileDetailPath,
@@ -172,7 +171,6 @@ class PreferedSizeSliverDelegate extends SliverPersistentHeaderDelegate{
 }
 
 
-
 class ProfileInfo extends StatelessWidget {
   const ProfileInfo({ Key? key }) : super(key: key);
 
@@ -259,8 +257,6 @@ class ProfileInfo extends StatelessWidget {
     );
   }
 }
-
-
 
 class ProfileSettingsPage extends StatefulWidget {
   const ProfileSettingsPage({ Key? key }) : super(key: key);

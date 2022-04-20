@@ -264,8 +264,8 @@ class _BaseCreatePageState extends State<BaseCreatePage> {
                                 description: _descriptionController.text
                               );
                             }
-                          }, 
-                          child: widget.createType == VideoType.stream 
+                          },
+                          child: widget.createType == VideoType.stream
                             ? Text("Start live", style: theme.textTheme.button,)
                             : Text("Publish", style: theme.textTheme.button)
                         ),
@@ -284,7 +284,6 @@ class _BaseCreatePageState extends State<BaseCreatePage> {
   void showMediaModal (MediaType type) {
     Duration? maxDuration;
     if (widget.createType == VideoType.short && type != MediaType.image) maxDuration = const Duration(seconds: 30);
-    
     showFileModalBottomSheet(
       context: context,
       type: type,
@@ -299,7 +298,7 @@ class _BaseCreatePageState extends State<BaseCreatePage> {
 
   Widget chooseButtonText () {
     TextStyle? style = Theme.of(context).textTheme.button;
-    return widget.createType == VideoType.video 
+    return widget.createType == VideoType.video
       ? Text("Choose video", style: style,)
       : Column(
         mainAxisAlignment: MainAxisAlignment.center,

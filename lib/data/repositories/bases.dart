@@ -152,6 +152,7 @@ class CRUDGeneric<T extends BaseModel> extends BaseRepository
     return data.map((x) {
       return parseObj(x);
     }).toList();
+
   }
 
   T parseObj(Map data) => GetIt.I.get<T>(param1: data);

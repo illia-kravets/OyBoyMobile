@@ -1,21 +1,9 @@
 
 import '/data/export.dart';
 import "/constants/export.dart";
-import 'package:get_it/get_it.dart';
 
 
 class TagRepository extends CRUDGeneric<Tag> with SequrityBase {
-  
-  // @override
-  // Future<List<Tag>> list() async {
-  //   List<Map> data = [
-  //     {"id": "1", "name": "test", "marker": "test"}, 
-  //     {"id": "2", "name": "HD", "marker": "hd"}, 
-  //     {"id": "3", "name": "War", "marker": "war"}
-  //   ];
-  //   return data.map((e) => parseObj(e)).toList();
-  // }
-
   @override
   String get endpoint => "video/tag";
 }

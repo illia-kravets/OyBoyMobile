@@ -9,6 +9,6 @@ enum PageType {
   profile, 
   search, 
   create, 
-  settings, 
+  settings,
   detail
 }

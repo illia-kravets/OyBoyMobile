@@ -116,4 +116,3 @@ abstract class CRUDManager<T extends CRUDGeneric>
 
 abstract class FilterCRUDManager<T extends CRUDGeneric>
     extends CRUDManager<T> with FilterMixin {}
-

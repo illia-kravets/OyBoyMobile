@@ -8,7 +8,6 @@ import '/data/export.dart';
 
 abstract class VideoGeneric<T extends BaseVideoRepository>
     extends CRUDManager<T> {}
-
 class HomeVideoGeneric<T extends BaseVideoRepository> extends VideoGeneric<T> {
   List<Tag> tags = [];
   Tag? selectedTag;
@@ -53,16 +52,16 @@ class HomeVideoGeneric<T extends BaseVideoRepository> extends VideoGeneric<T> {
 
 class SearchVideoGeneric<T extends BaseVideoRepository>
     extends FilterCRUDManager<T> {
-  
+
   SuggestionRepository suggestionRepository =
       GetIt.I.get<SuggestionRepository>();
 
   bool isFocused = true;
   String? searchText;
   List _tags = [];
+
   List<Suggestion> suggestions = [];
   
-
   @override
   void initialize() async {
     filterSuggesions();

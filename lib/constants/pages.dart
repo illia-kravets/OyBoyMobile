@@ -4,6 +4,7 @@ class OyBoyPages {
 
   static const String profilePath = "/profile";
   static const String profileSettingsPath = "/profileSettings";
+
   static const String profileDetailPath = "/profileDetailList";
 
   static const String shortPath = "/short";
