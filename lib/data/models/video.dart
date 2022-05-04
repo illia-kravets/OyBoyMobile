@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:oyboy/constants/defaults.dart';
+
 import './helpers.dart';
+import 'dart:convert' show utf8;
 
 class Channel extends BaseModel {
   Channel(
@@ -16,7 +20,6 @@ class Channel extends BaseModel {
   String? descriprion;
 
   factory Channel.fromJson(Map<dynamic, dynamic> data) {
-    
     return Channel(
         id: data["id"],
         name: data["title"],
@@ -24,6 +27,20 @@ class Channel extends BaseModel {
         avatar: data["avatar"],
         createdAt: data["created_at"].split("T")[0]);
   }
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'avatar': avatar,
+      "createdAt": createdAt,
+      "description": descriprion
+    };
+  }
+
+  @override
+  String toJson() => json.encode(toMap());
 }
 
 class Video extends BaseModel {
@@ -51,7 +68,6 @@ class Video extends BaseModel {
   Channel? channel;
 
   static Video fromJson(Map<dynamic, dynamic> data) {
-    
     return Video(
         name: data["name"],
         duration: data["duration"],
@@ -65,10 +81,22 @@ class Video extends BaseModel {
   static List<Video> fromJsonList(List<Map> data) {
     return data.map((e) => fromJson(e)).toList();
   }
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {'name': name, 'desription': description};
+  }
+
+  @override
+  String toJson() => json.encode(toMap());
 }
 
 class Tag extends BaseModel {
-  Tag({required this.name, this.id, this.scope = TagScope.external});
+  Tag(
+      {required this.name,
+      this.id,
+      this.scope = TagScope.external,
+      this.description});
 
   String? id;
   String name;
@@ -76,12 +104,21 @@ class Tag extends BaseModel {
   TagScope scope;
 
   static Tag fromJson(Map<dynamic, dynamic> data) {
-    return Tag(id: data["id"], name: data["title"]);
+    return Tag(
+        id: data["id"], name: data["title"], description: data["description"]);
   }
 
   static List<Tag> fromJsonList(List<Map> data) {
     return data.map((e) => fromJson(e)).toList();
   }
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {'name': name, 'desription': description};
+  }
+
+  @override
+  String toJson() => json.encode(toMap());
 }
 
 class Suggestion extends BaseModel {
@@ -97,11 +134,30 @@ class Suggestion extends BaseModel {
     return Suggestion(
         id: data["id"],
         text: data["text"],
-        type: data["type"],
+        type: data["video_type"],
         searched: data["searched"]);
   }
 
   static List<Suggestion> fromJsonList(List<Map> data) {
     return data.map((e) => Suggestion.fromJson(e)).toList();
   }
+
+  factory Suggestion.fromMap(Map<String, dynamic> map) {
+    return Suggestion(
+      id: map['id']?.toInt(),
+      text: map['text'] ?? '',
+      type: map['type'] ?? '',
+    );
+  }
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'text': text,
+      'video_type': type,
+    };
+  }
+
+  @override
+  String toJson() => json.encode(toMap());
 }

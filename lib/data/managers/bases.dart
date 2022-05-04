@@ -7,6 +7,7 @@ abstract class BaseManager extends ChangeNotifier {
   AppError error = AppError();
   PageType? page;
   bool isLoading = false;
+  bool cardsLoading = false;
   static Type? parent;
 
   bool get hasError => error.msg == null ? false : true;
@@ -20,14 +21,12 @@ abstract class BaseManager extends ChangeNotifier {
   }
 }
 
-abstract class BaseCRUDManager<T extends CRUDGeneric>
-    extends BaseManager {
+abstract class BaseCRUDManager<T extends CRUDGeneric> extends BaseManager {
   List<dynamic> cards = [];
   T repository = GetIt.I.get<T>();
 }
 
-mixin PaginationMixin<T extends CRUDGeneric>
-    on BaseCRUDManager<T> {
+mixin PaginationMixin<T extends CRUDGeneric> on BaseCRUDManager<T> {
   bool paginationLoad = false;
 
   Future paginate() async {
@@ -43,9 +42,7 @@ mixin PaginationMixin<T extends CRUDGeneric>
   bool get hasNext => repository.hasNext;
 }
 
-mixin OrderingMixin<T extends CRUDGeneric>
-    on BaseCRUDManager<T> {
-  
+mixin OrderingMixin<T extends CRUDGeneric> on BaseCRUDManager<T> {
   void orderBy(String key, {bool ascending = true}) async {
     isLoading = true;
     refresh();
@@ -56,8 +53,7 @@ mixin OrderingMixin<T extends CRUDGeneric>
   }
 }
 
-mixin FilterMixin<T extends CRUDGeneric>
-    on BaseCRUDManager<T> {
+mixin FilterMixin<T extends CRUDGeneric> on BaseCRUDManager<T> {
   List<FilterAction> selectedFilters = [];
   List<FilterAction> appliedFilters = [];
 
@@ -71,7 +67,7 @@ mixin FilterMixin<T extends CRUDGeneric>
 
   void popSelectedFilter(FilterAction filter, {bool useRefresh = true}) {
     selectedFilters
-        .removeWhere((e) => e.type == filter.type && e.value == filter.value);
+        .removeWhere((e) => e.type == filter.type && e.title == filter.title);
     if (useRefresh) refresh();
   }
 
@@ -81,19 +77,19 @@ mixin FilterMixin<T extends CRUDGeneric>
   }
 
   Future applyFilter() async {
-    isLoading = true;
+    cardsLoading = true;
     appliedFilters = [...selectedFilters];
     refresh();
-    List tagIds = [];
+    List tagTitles = [];
     for (var e in appliedFilters) {
       if (e.type != FilterType.tag)
         repository.query(e.query);
       else
-        tagIds.add(e.value);
+        tagTitles.add(e.title);
     }
-    if (tagIds.isNotEmpty) repository.query({"tags": tagIds.join(",")});
+    repository.query({"tags": tagTitles.join(",")});
     cards = await repository.list();
-    isLoading = false;
+    cardsLoading = false;
     refresh();
   }
 
@@ -111,8 +107,8 @@ mixin FilterMixin<T extends CRUDGeneric>
       throw UnimplementedError("filterSource filters must be provided");
 }
 
-abstract class CRUDManager<T extends CRUDGeneric>
-    extends BaseCRUDManager<T> with OrderingMixin, PaginationMixin {}
+abstract class CRUDManager<T extends CRUDGeneric> extends BaseCRUDManager<T>
+    with OrderingMixin, PaginationMixin {}
 
-abstract class FilterCRUDManager<T extends CRUDGeneric>
-    extends CRUDManager<T> with FilterMixin {}
+abstract class FilterCRUDManager<T extends CRUDGeneric> extends CRUDManager<T>
+    with FilterMixin {}

@@ -47,9 +47,14 @@ class VideoCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            video.name,
-                            style: theme.textTheme.headline5,
+                          SizedBox(
+                            width: 275,
+                            child: Text(
+                              video.name,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: theme.textTheme.headline5,
+                            ),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,

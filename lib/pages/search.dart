@@ -6,6 +6,7 @@ import "package:provider/provider.dart";
 import "/constants/export.dart";
 import "/widgets/export.dart";
 import "/data/export.dart";
+import "/utils/utils.dart";
 
 class SearchPage<T extends SearchVideoGeneric> extends StatelessWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -15,11 +16,9 @@ class SearchPage<T extends SearchVideoGeneric> extends StatelessWidget {
         name: OyBoyPages.videoSearchPath,
         key: const ValueKey(OyBoyPages.videoSearchPath),
         child: ChangeNotifierProvider<VideoSearchManager>(
-          create:(context) => VideoSearchManager(), 
-          child: const SearchPage<VideoSearchManager>()
-        ),
-        arguments: const {"filterManagerType": VideoSearchManager}
-    );
+            create: (context) => VideoSearchManager(),
+            child: const SearchPage<VideoSearchManager>()),
+        arguments: const {"filterManagerType": VideoSearchManager});
   }
 
   static MaterialPage streamSearch() {
@@ -27,11 +26,9 @@ class SearchPage<T extends SearchVideoGeneric> extends StatelessWidget {
         name: OyBoyPages.streamSearchPath,
         key: const ValueKey(OyBoyPages.streamSearchPath),
         child: ChangeNotifierProvider<StreamSearchManager>(
-          create:(context) => StreamSearchManager(), 
-          child: const SearchPage<StreamSearchManager>()
-        ),
-        arguments: const {"filterManagerType": StreamSearchManager}
-    );
+            create: (context) => StreamSearchManager(),
+            child: const SearchPage<StreamSearchManager>()),
+        arguments: const {"filterManagerType": StreamSearchManager});
   }
 
   @override
@@ -44,17 +41,22 @@ class Search<T extends SearchVideoGeneric> extends StatelessWidget {
   const Search({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     bool focused = context.select((T v) => v.isFocused);
     PreferredSizeWidget appBar = SearchAppBar<T>();
     return focused
-      ? SuggestionWidget<T>(appBar: appBar,) 
-      : SearchResult<T>(appBar: appBar,);
+        ? SuggestionWidget<T>(
+            appBar: appBar,
+          )
+        : SearchResult<T>(
+            appBar: appBar,
+          );
   }
 }
 
-class SearchAppBar<T extends SearchVideoGeneric> extends StatefulWidget implements PreferredSizeWidget {
-  const SearchAppBar({ Key? key }) : super(key: key);
+class SearchAppBar<T extends SearchVideoGeneric> extends StatefulWidget
+    implements PreferredSizeWidget {
+  const SearchAppBar({Key? key}) : super(key: key);
 
   @override
   State<SearchAppBar> createState() => _SearchAppBarState<T>();
@@ -63,16 +65,18 @@ class SearchAppBar<T extends SearchVideoGeneric> extends StatefulWidget implemen
   Size get preferredSize => Size.fromHeight(AppBar().preferredSize.height);
 }
 
-class _SearchAppBarState<T extends SearchVideoGeneric> extends State<SearchAppBar> {
+class _SearchAppBarState<T extends SearchVideoGeneric>
+    extends State<SearchAppBar> {
   late TextEditingController _controller;
   late FocusNode _focusNode;
   late bool _showClear;
   late T searchManager;
-  
-  void searchUpdate() {
 
-    if (_controller.text.isEmpty && _showClear) setState(() => _showClear = false);
-    if (_controller.text.isNotEmpty && !_showClear) setState(() => _showClear = true);
+  void searchUpdate() {
+    if (_controller.text.isEmpty && _showClear)
+      setState(() => _showClear = false);
+    if (_controller.text.isNotEmpty && !_showClear)
+      setState(() => _showClear = true);
     searchManager.updateSuggesions(_controller.text);
   }
 
@@ -115,17 +119,16 @@ class _SearchAppBarState<T extends SearchVideoGeneric> extends State<SearchAppBa
     ThemeData theme = Theme.of(context);
     bool focused = context.select((T v) => v.isFocused);
     return AppBar(
-      elevation: 0,
-      titleSpacing: 0,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios),
-        onPressed: () => Navigator.of(context).pop(),
-        color: theme.primaryColor
-      ),
-      title: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        height: 55,
-        child: TextFormField(
+        elevation: 0,
+        titleSpacing: 0,
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () => Navigator.of(context).pop(),
+            color: theme.primaryColor),
+        title: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          height: 55,
+          child: TextFormField(
             autofocus: focused,
             focusNode: _focusNode,
             onFieldSubmitted: onSubmit,
@@ -134,67 +137,66 @@ class _SearchAppBarState<T extends SearchVideoGeneric> extends State<SearchAppBa
             textInputAction: TextInputAction.search,
             cursorColor: theme.primaryColor,
             decoration: InputDecoration(
-              hintText: "Search...",
-              contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-              enabledBorder:
-                  const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
-              focusedBorder:
-                  const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
-              suffixIcon: _showClear
-                ? GestureDetector(onTap: () {
-                    _controller.clear();
-                    context.read<T>().searchText = '';
-                    _focusNode.requestFocus();
-                  }, 
-                  child: Icon(Icons.close, color: theme.primaryColor,)
-                )
-                : null
+                hintText: "Search...",
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+                enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey)),
+                focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey)),
+                suffixIcon: _showClear
+                    ? GestureDetector(
+                        onTap: () {
+                          _controller.clear();
+                          context.read<T>().searchText = '';
+                          _focusNode.requestFocus();
+                        },
+                        child: Icon(
+                          Icons.close,
+                          color: theme.primaryColor,
+                        ))
+                    : null),
+          ),
+        ),
+        actions: <Widget>[
+          if (!focused)
+            Container(
+              padding: const EdgeInsets.only(left: 10),
+              child: GestureDetector(
+                  onTap: () => Scaffold.of(context).openEndDrawer(),
+                  child: Icon(Icons.filter_alt, color: theme.primaryColor)),
             ),
-        ),
-    ),
-    
-    actions: <Widget>[
-      if (!focused) Container(
-        padding: const EdgeInsets.only(left: 10),
-        child: GestureDetector(
-          onTap: () => Scaffold.of(context).openEndDrawer(), 
-          child: Icon(Icons.filter_alt, 
-          color: theme.primaryColor)
-        ),
-      ),
-      const SizedBox(width: 10)]
-  );
+          const SizedBox(width: 10)
+        ]);
   }
 }
 
 class SuggestionWidget<T extends SearchVideoGeneric> extends StatelessWidget {
-  const SuggestionWidget({ Key? key, this.appBar }) : super(key: key);  
+  const SuggestionWidget({Key? key, this.appBar}) : super(key: key);
   final PreferredSizeWidget? appBar;
 
   @override
   Widget build(BuildContext context) {
-    List<Suggestion> suggestions = context.select((T v) => v.suggestions);
-    
+    List suggestions = context.select((T v) => v.suggestions);
+
     return Scaffold(
-      appBar: appBar,
-      body: ListView.builder(
-          itemCount: suggestions.length, 
-          itemBuilder: ((context, index) => 
-            SuggestionLine(
-              suggestion: suggestions[index], 
-              onTap: (Suggestion s) {
-                context.read<T>().search(text: s.text);
-                FocusScope.of(context).unfocus();
-              },
-            )
-          )
-        )
-    );
+        appBar: appBar,
+        body: ListView.builder(
+            itemCount: suggestions.length,
+            itemBuilder: ((context, index) => SuggestionLine(
+                  suggestion: suggestions[index],
+                  onTap: (Suggestion s) {
+                    context.read<T>().search(text: s.text);
+                    FocusScope.of(context).unfocus();
+                  },
+                ))));
   }
 }
 
 class SuggestionLine extends StatelessWidget {
-  const SuggestionLine({ Key? key, required this.suggestion, required this.onTap}) : super(key: key);
+  const SuggestionLine(
+      {Key? key, required this.suggestion, required this.onTap})
+      : super(key: key);
 
   final Suggestion suggestion;
   final ValueChanged<Suggestion> onTap;
@@ -205,10 +207,15 @@ class SuggestionLine extends StatelessWidget {
     return InkWell(
       onTap: () => onTap(suggestion),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16), 
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
         child: Row(children: [
-          Icon(suggestion.searched ? Icons.history : Icons.search, size: 26,),
-          const SizedBox(width: 12,),
+          Icon(
+            suggestion.searched ? Icons.history : Icons.search,
+            size: 26,
+          ),
+          const SizedBox(
+            width: 12,
+          ),
           Text(suggestion.text, style: data.textTheme.bodyText1)
         ]),
       ),
@@ -217,37 +224,62 @@ class SuggestionLine extends StatelessWidget {
 }
 
 class SearchResult<T extends SearchVideoGeneric> extends StatelessWidget {
-  const SearchResult({ Key? key, this.appBar }) : super(key: key);
+  const SearchResult({Key? key, this.appBar}) : super(key: key);
 
   final PreferredSizeWidget? appBar;
 
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    String? searchText = context.select((T v) => v.searchText);
-    T manager = context.read<T>();
+    T manager = context.watch<T>();
 
     return DefaultPage(
-        appBar: appBar,
-        extendBody: true,
-        endDrawer: FilterDrawer<T>(hasTags: true,),
-        body: Column(
-          children: [
-            FiltersRow<T>(),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              color: Colors.white,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text("Search results for: ", style: theme.textTheme.bodyText2),
-                  Text(searchText ?? "", style: theme.textTheme.button,),
-                ],
-              ),
+      appBar: appBar,
+      extendBody: true,
+      endDrawer: FilterDrawer<T>(
+        hasTags: true,
+      ),
+      body: manager.isLoading
+          ? loader
+          : Column(
+              children: [
+                FiltersRow<T>(),
+                if (manager.cards.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    color: Colors.white,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("Search results for: ",
+                            style: theme.textTheme.bodyText2),
+                        Text(
+                          manager.searchText ?? "",
+                          style: theme.textTheme.button,
+                        ),
+                      ],
+                    ),
+                  ),
+                manager.cardsLoading
+                    ? loader
+                    : Expanded(
+                        child: GenericCardList<T>(
+                        cardConfig: CardConfig(
+                            emptyListText:
+                                "Nothing was fount for request: ${manager.searchText}"),
+                      )),
+              ],
             ),
-            Expanded(child: GenericCardList<T>()),
-          ],
+    );
+  }
+
+  Widget get loader => const Expanded(
+        child: Center(
+          child: Loader(
+            strokeWidth: 4,
+            height: 35,
+            width: 35,
+          ),
         ),
       );
-  }
 }

@@ -10,8 +10,6 @@ import "/widgets/export.dart";
 import "/constants/export.dart";
 import 'card.dart';
 
-
-
 class HomeVideoList<T extends HomeVideoGeneric> extends StatefulWidget {
   const HomeVideoList({Key? key}) : super(key: key);
 
@@ -19,49 +17,59 @@ class HomeVideoList<T extends HomeVideoGeneric> extends StatefulWidget {
   State<HomeVideoList> createState() => _HomeVideoListState<T>();
 }
 
-class _HomeVideoListState<T extends HomeVideoGeneric> extends State<HomeVideoList<T>> {
+class _HomeVideoListState<T extends HomeVideoGeneric>
+    extends State<HomeVideoList<T>> {
   @override
   void initState() {
     context.read<T>().initialize();
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     T repository = context.watch<T>();
     bool hasTags = repository.tags.isNotEmpty;
 
     return repository.isLoading
-        ? const Center(
-            child: Loader(
-              strokeWidth: 4,
-              height: 35,
-              width: 35,
-            ),
-          )
+        ? loader
         : Stack(
             children: [
               Column(
                 children: [
                   if (hasTags)
-                  const SizedBox(
-                    height: CHIPBAR_HEIGHT,
-                  ),
-                  Expanded(
-                    child: GenericCardList<T>()
-                  )
+                    const SizedBox(
+                      height: CHIPBAR_HEIGHT,
+                    ),
+                  repository.cardLoading
+                      ? loader
+                      : Expanded(child: GenericCardList<T>())
                 ],
               ),
               if (hasTags) ChipBar<T>(tags: repository.tags),
             ],
           );
   }
+
+  Widget get loader => const Expanded(
+        child: Center(
+          child: Loader(
+            strokeWidth: 4,
+            height: 35,
+            width: 35,
+          ),
+        ),
+      );
 }
 
 class GenericCardList<T extends CRUDManager> extends StatefulWidget {
-  const GenericCardList({Key? key, this.scrollableType = ScrollableType.list}) : super(key: key);
+  const GenericCardList(
+      {Key? key,
+      this.scrollableType = ScrollableType.list,
+      this.cardConfig = const CardConfig()})
+      : super(key: key);
 
   final ScrollableType scrollableType;
+  final CardConfig cardConfig;
 
   @override
   State<GenericCardList> createState() => _GenericCardListState<T>();
@@ -83,14 +91,19 @@ class _GenericCardListState<T extends CRUDManager>
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
     repository = context.watch<T>();
-    
+
     return Stack(
       children: [
         widget.scrollableType == ScrollableType.list
-         ? VideoCardList<T>(controller: _controller,)
-         : VideoCardGrid<T>(controller: _controller,),
+            ? VideoCardList<T>(
+                controller: _controller,
+                config: widget.cardConfig,
+              )
+            : VideoCardGrid<T>(
+                controller: _controller,
+                config: widget.cardConfig,
+              ),
         AnimatedPositioned(
           duration: const Duration(milliseconds: 200),
           bottom: _showUpButton ? 80 : 0,
@@ -133,7 +146,6 @@ class _GenericCardListState<T extends CRUDManager>
     ScrollDirection direction = _controller.position.userScrollDirection;
 
     if (_controller.position.atEdge) {
-
       if (_controller.position.pixels == 0.0)
         showUpButton = false;
       else
@@ -159,15 +171,14 @@ class _GenericCardListState<T extends CRUDManager>
   }
 }
 
-
 class CardConfig {
-  const CardConfig({
-    this.endText="That's all the folks", 
-    this.count=3, 
-    this.active, 
-    this.paginate, 
-    this.onPageEnd}
-  );
+  const CardConfig(
+      {this.endText = "That's all the folks",
+      this.count = 3,
+      this.active,
+      this.paginate,
+      this.onPageEnd,
+      this.emptyListText = "Nothing was found!"});
 
   final bool? active;
   final int count;
@@ -175,6 +186,7 @@ class CardConfig {
   final bool? paginate;
   final Function()? onPageEnd;
   final String endText;
+  final String emptyListText;
 
   bool get activityAssert {
     if (active != null) return count > 0;
@@ -182,32 +194,27 @@ class CardConfig {
   }
 
   bool get paginateAssert {
-    if(paginate != null) {
+    if (paginate != null) {
       if (paginate == false) return onPageEnd != null;
     }
     return true;
   }
 }
 
-
 class VideoCardList<T extends CRUDManager> extends StatelessWidget {
-  VideoCardList({ 
-    Key? key, 
-    this.primary, 
-    this.physics, 
-    this.shrinkWrap=false, 
-    this.controller,
-    this.config=const CardConfig()
-  }) : assert(
-        config.activityAssert, 
-        "If you provide active - count must be > 0"
-      ),
-      assert(
-        config.paginateAssert,
-        "onPageEnd callback must be provided if paginate=false"
-      ),
-      super(key: key);
-  
+  VideoCardList(
+      {Key? key,
+      this.primary,
+      this.physics,
+      this.shrinkWrap = false,
+      this.controller,
+      this.config = const CardConfig()})
+      : assert(
+            config.activityAssert, "If you provide active - count must be > 0"),
+        assert(config.paginateAssert,
+            "onPageEnd callback must be provided if paginate=false"),
+        super(key: key);
+
   final bool? primary;
   final bool shrinkWrap;
   final ScrollPhysics? physics;
@@ -217,20 +224,38 @@ class VideoCardList<T extends CRUDManager> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     T repository = context.watch<T>();
+    ThemeData theme = Theme.of(context);
 
-    return config.active != null && !config.active!
-      ? ListView.separated(
-        primary: primary,
-        shrinkWrap: shrinkWrap,
-        physics: physics,
-        controller: controller,
-        itemCount: config.count,
+    if (config.active != null && !config.active!)
+      return ListView.separated(
+          primary: primary,
+          shrinkWrap: shrinkWrap,
+          physics: physics,
+          controller: controller,
+          itemCount: config.count,
           separatorBuilder: (context, index) => const SizedBox(
-          height: 10,
+                height: 10,
+              ),
+          itemBuilder: (context, index) => const LoadingVideoCard());
+    if (repository.cards.isEmpty)
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset('assets/images/404.jpg'),
+              Text(
+                config.emptyListText,
+                style: theme.textTheme.headline4,
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
         ),
-        itemBuilder: (context, index) => const LoadingVideoCard()
-      )
-      : ListView.separated(
+      );
+    return ListView.separated(
       primary: primary,
       shrinkWrap: shrinkWrap,
       physics: physics,
@@ -244,7 +269,8 @@ class VideoCardList<T extends CRUDManager> extends StatelessWidget {
         } else {
           return Column(
             children: [
-              paginateContent(context, repository.hasNext && repository.cards.isNotEmpty),
+              paginateContent(
+                  context, repository.hasNext && repository.cards.isNotEmpty),
               const SizedBox(
                 height: 25,
               )
@@ -258,16 +284,16 @@ class VideoCardList<T extends CRUDManager> extends StatelessWidget {
     );
   }
 
-  Widget paginateContent (BuildContext context, bool hasNext) {
+  Widget paginateContent(BuildContext context, bool hasNext) {
     ThemeData theme = Theme.of(context);
     if (hasNext) {
-      if (config.paginate ?? true) 
+      if (config.paginate ?? true)
         return const Loader(
-            width: 40,
-            height: 40,
-            strokeWidth: 4,
+          width: 40,
+          height: 40,
+          strokeWidth: 4,
         );
-      else 
+      else
         return GestureDetector(
           onTap: config.onPageEnd,
           child: Container(
@@ -276,17 +302,17 @@ class VideoCardList<T extends CRUDManager> extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 10),
             width: double.infinity,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color.fromARGB(255, 237, 100, 255), Colors.white]
-              ),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: theme.primaryColor, width: 1.2)
+                gradient: const LinearGradient(
+                    colors: [Color.fromARGB(255, 237, 100, 255), Colors.white]),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: theme.primaryColor, width: 1.2)),
+            child: Text(
+              "Show more",
+              style: theme.textTheme.bodyText1,
             ),
-            child: Text("Show more", style: theme.textTheme.bodyText1,),
           ),
         );
-    }
-    else 
+    } else
       return Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
         child: Text(
@@ -298,23 +324,19 @@ class VideoCardList<T extends CRUDManager> extends StatelessWidget {
 }
 
 class VideoCardGrid<T extends CRUDManager> extends StatelessWidget {
-  VideoCardGrid({ 
-    Key? key, 
-    this.primary, 
-    this.physics, 
-    this.shrinkWrap=false, 
-    this.controller,
-    this.config=const CardConfig()
-  }) : assert(
-        config.activityAssert, 
-        "If you provide active - count must be > 0"
-      ),
-      assert(
-        config.paginateAssert,
-        "onPageEnd callback must be provided if paginate=false"
-      ),
-      super(key: key);
-  
+  VideoCardGrid(
+      {Key? key,
+      this.primary,
+      this.physics,
+      this.shrinkWrap = false,
+      this.controller,
+      this.config = const CardConfig()})
+      : assert(
+            config.activityAssert, "If you provide active - count must be > 0"),
+        assert(config.paginateAssert,
+            "onPageEnd callback must be provided if paginate=false"),
+        super(key: key);
+
   final bool? primary;
   final bool shrinkWrap;
   final ScrollPhysics? physics;
@@ -327,65 +349,72 @@ class VideoCardGrid<T extends CRUDManager> extends StatelessWidget {
     ThemeData theme = Theme.of(context);
     repository = context.watch<T>();
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.white,
-            theme.primaryColor,
-            Colors.white
-          ]
-        )
-      ),
-      child: Container(
-        height: 900,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: [
-              Colors.white,
-              theme.primaryColor.withOpacity(0),
-              Colors.white
-            ]
-          ),
-        ),
-        child: config.active != null && !config.active!
-          ? GridView.builder(
-            physics: physics,
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 380,
-              crossAxisSpacing: 3,
-              mainAxisSpacing: 3,
-              childAspectRatio: 2.2 / 3
+    return repository.cards.isEmpty
+        ? Expanded(
+            child: Column(
+              children: [
+                Image.asset('assets/images/404.jpg'),
+                Text(
+                  config.emptyListText,
+                  style: theme.textTheme.headline3,
+                )
+              ],
             ),
-            itemCount: repository.cards.length,
-            itemBuilder: (_, i) => const LoadingShortVideoCard()// ShortVideoCard(video: repository.cards[i])
           )
-          : GridView.builder(
-            physics: physics,
-            controller: controller,
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 380,
-              crossAxisSpacing: 3,
-              mainAxisSpacing: 3,
-              childAspectRatio: 2.2 / 3
-            ),
-            itemCount: gridCount,
-            itemBuilder: (c, i) {
-              if (i < repository.cards.length)
-                return ShortVideoCard(video: repository.cards[i],);
-              else return gridEdgeContent(c, i);
-            }
-          )  
-      ),
-    );
+        : Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.white, theme.primaryColor, Colors.white])),
+            child: Container(
+                height: 900,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        Colors.white,
+                        theme.primaryColor.withOpacity(0),
+                        Colors.white
+                      ]),
+                ),
+                child: config.active != null && !config.active!
+                    ? GridView.builder(
+                        physics: physics,
+                        gridDelegate:
+                            const SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 380,
+                                crossAxisSpacing: 3,
+                                mainAxisSpacing: 3,
+                                childAspectRatio: 2.2 / 3),
+                        itemCount: repository.cards.length,
+                        itemBuilder: (_, i) =>
+                            const LoadingShortVideoCard() // ShortVideoCard(video: repository.cards[i])
+                        )
+                    : GridView.builder(
+                        physics: physics,
+                        controller: controller,
+                        gridDelegate:
+                            const SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 380,
+                                crossAxisSpacing: 3,
+                                mainAxisSpacing: 3,
+                                childAspectRatio: 2.2 / 3),
+                        itemCount: gridCount,
+                        itemBuilder: (c, i) {
+                          if (i < repository.cards.length)
+                            return ShortVideoCard(
+                              video: repository.cards[i],
+                            );
+                          else
+                            return gridEdgeContent(c, i);
+                        })),
+          );
   }
 
   bool get usePagination => repository.hasNext && (config.paginate ?? true);
-  
+
   int get gridCount {
     int count = repository.cards.length;
     if (!usePagination) count += 1;
@@ -393,40 +422,35 @@ class VideoCardGrid<T extends CRUDManager> extends StatelessWidget {
     return count;
   }
 
-  Widget gridEdgeContent (BuildContext context, int index) {
+  Widget gridEdgeContent(BuildContext context, int index) {
     ThemeData theme = Theme.of(context);
-    if (index == repository.cards.length && !usePagination) 
+    if (index == repository.cards.length && !usePagination)
       return Container(
-        padding: const EdgeInsets.all(5),
-        color: Colors.grey[50],
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: RadialGradient(
-              colors: [Colors.white, Color.fromARGB(255, 237, 100, 255)],
-              radius: 2
-            ), 
-            borderRadius: BorderRadius.all(Radius.circular(10))
-          ),
-          child: ElevatedButton(
-            onPressed: config.onPageEnd,
-            style: ElevatedButton.styleFrom(
-              primary: Colors.transparent,
-              shadowColor: Colors.transparent
+          padding: const EdgeInsets.all(5),
+          color: Colors.grey[50],
+          child: Container(
+            decoration: const BoxDecoration(
+                gradient: RadialGradient(
+                    colors: [Colors.white, Color.fromARGB(255, 237, 100, 255)],
+                    radius: 2),
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: ElevatedButton(
+              onPressed: config.onPageEnd,
+              style: ElevatedButton.styleFrom(
+                  primary: Colors.transparent, shadowColor: Colors.transparent),
+              child: Text("Show more", style: theme.textTheme.bodyText1),
             ),
-            child: Text("Show more", style: theme.textTheme.bodyText1),
-          ),
-        )
-      );
+          ));
     if (usePagination)
-        return Container(
-          color: Colors.white,
-          child: const Loader(
-              width: 40,
-              height: 40,
-              strokeWidth: 4,
-          ),
-        );
-      
+      return Container(
+        color: Colors.white,
+        child: const Loader(
+          width: 40,
+          height: 40,
+          strokeWidth: 4,
+        ),
+      );
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Text(
@@ -436,4 +460,3 @@ class VideoCardGrid<T extends CRUDManager> extends StatelessWidget {
     );
   }
 }
-

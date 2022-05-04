@@ -17,7 +17,7 @@ class ChipBar<T extends HomeVideoGeneric> extends StatelessWidget {
         tags.length,
         (index) => CustomChoiceChip(
               tag: tags[index],
-              selected: tags[index].id == selectedTag?.id,
+              selected: tags[index].name == selectedTag?.name,
               onSelected: (selected) =>
                   context.read<T>().filterCardList(tags[index]),
             ));

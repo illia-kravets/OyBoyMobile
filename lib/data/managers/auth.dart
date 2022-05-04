@@ -5,42 +5,35 @@ import "/constants/export.dart";
 import "bases.dart";
 
 class UserManager extends BaseManager {
+  late AuthRepository repository;
 
   UserManager() {
     page = PageType.splash;
   }
 
   @override
-  void initialize() {
-    Timer(
-      const Duration(milliseconds: 500),
-      () {
-        page = PageType.login;
-        refresh();
-      },
-    );
+  void initialize() async {
+    repository = GetIt.I.get<AuthRepository>();
+    page = PageType.login;
+    if (await repository.checkAuth()) page = PageType.video;
+    refresh();
   }
 
   void login({required String username, required String password}) async {
     isLoading = true;
     refresh();
 
-    Response data = await GetIt.I
-        .get<AuthRepository>()
-        .authorize(username: username, password: password);
+    bool isAuthorized =
+        await repository.authorize(username: username, password: password);
 
-    Timer(
-      const Duration(milliseconds: 500),
-      () {
-        clearState();
-        if (!data.success) {
-          error = AppError(msg: data.text);
-          return refresh();
-        }
-        page = PageType.video;
-        refresh();
-      },
-    );
+    if (isAuthorized) {
+      page = PageType.video;
+      return refresh();
+    }
+
+    clearState();
+    error = AppError(msg: repository.response.text);
+    return refresh();
   }
 
   void logout() {
