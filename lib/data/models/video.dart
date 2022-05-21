@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:oyboy/constants/defaults.dart';
 
 import './helpers.dart';
+import 'dart:convert' show utf8;
 
 class Channel extends BaseModel {
   Channel(

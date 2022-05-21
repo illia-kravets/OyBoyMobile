@@ -15,7 +15,7 @@ abstract class BaseRepository {
   Uri combineUrl(String url) => Uri.parse("$host$url?${request.queryString}");
 
   void parseResponse(http.Response response) => this.response =
-      Response(code: response.statusCode, data: jsonDecode(response.body));
+      Response(code: response.statusCode, data: jsonDecode(utf8.decode(response.bodyBytes)));
 
   void prepareRequest({Map? query, Map? body, Map? headers, Map? kwargs}) =>
       this
@@ -46,6 +46,7 @@ abstract class BaseRepository {
       Map kwargs = const {}}) async {
     prepareRequest(query: query, headers: headers, kwargs: kwargs);
     parseResponse(await http.get(combineUrl(url), headers: request.headers));
+    
     return response;
   }
 
