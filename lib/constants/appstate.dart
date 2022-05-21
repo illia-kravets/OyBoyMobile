@@ -9,8 +9,6 @@ enum PageType {
   profile, 
   search, 
   create, 
-  settings, 
-  myVideos, 
-  myShorts, 
-  favourite
+  settings,
+  detail
 }

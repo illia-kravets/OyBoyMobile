@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import "/constants/export.dart";
 
-class BaseModel {}
+abstract class BaseModel {
+  Map<String, dynamic> toMap();
+  String toJson();
+}
 
 class AppError implements Exception {
   AppError({this.msg});
@@ -22,23 +25,28 @@ class Response {
 }
 
 class Request {
-  Request({this.headers=const {}, this.query=const {}, this.body=const {}});
+  Request({Map<String, String>? headers, Map<String, String>? query, Map? body})
+      : this.headers = headers ?? {},
+        this.query = query ?? {},
+        this.body = body ?? {};
 
   Map<String, String> headers;
-  Map<String, dynamic> query;
-  Map<dynamic, dynamic> body;
+  Map<String, String> query;
+  Map body;
 
   String get queryString => Uri(queryParameters: query).query;
 
-  Request update({RequestDataType? type, dynamic data=const {}}) {
+  Request update({RequestDataType? type, dynamic data}) {
+    data = data ?? {};
     switch (type) {
       case RequestDataType.headers:
-        headers.addAll(data);
+        headers = {...data, ...headers};
         break;
       case RequestDataType.query:
-        query.addAll(data);
+        query = {...data, ...query};
         break;
       case RequestDataType.body:
+        body = {...data, ...body};
         body.addAll(data);
         break;
       default:
@@ -65,7 +73,7 @@ class Request {
     }
     return this;
   }
-  
+
   void flush() {
     headers = {};
     query = {};
@@ -85,8 +93,8 @@ class FilterAction {
     required this.type,
     required this.value,
     required this.title,
-    this.head=false,
-    this.selected=false,
+    this.head = false,
+    this.selected = false,
   });
 
   final String type;

@@ -1,77 +1,54 @@
-
 import '/data/export.dart';
-import 'package:get_it/get_it.dart';
-
+import "/constants/export.dart";
+import "package:get_it/get_it.dart";
 
 class TagRepository extends CRUDGeneric<Tag> with SequrityBase {
-  
   @override
-  Future<List<Tag>> list() async {
-    List<Map> data = [
-      {"id": "1", "name": "test", "marker": "test"}, 
-      {"id": "2", "name": "HD", "marker": "hd"}, 
-      {"id": "3", "name": "War", "marker": "war"}
-    ];
-    return data.map((e) => parseObj(e)).toList();
-  }
+  String get endpoint => "video/tag";
 }
 
 class SuggestionRepository extends CRUDGeneric<Suggestion> with SequrityBase {
   @override
-  Future<List<Suggestion>> list() async {
-    return [
-      Suggestion(text: "test1", searched: true, type: "video")
-    ];
-  }
+  String get endpoint => "video/suggestion";
 }
-
 
 abstract class BaseVideoRepository extends CRUDGeneric<Video>
     with SequrityBase {
   TagRepository tagRepository = GetIt.I.get<TagRepository>();
 
-  Future<List<Tag>> getTags();
+  @override
+  void prepareRequest({Map? query, Map? body, Map? headers, Map? kwargs}) {
+    query = {"dtype": videoType, ...(query ?? {})};
+    super.prepareRequest(
+        query: query, body: body, headers: headers, kwargs: kwargs);
+  }
+
+  Future<List> getTags() async {
+    tagRepository.query({"video_type": videoType});
+    return await tagRepository.list();
+  }
+
+  String get videoType =>
+      throw UnimplementedError("Video type must be implemented");
+
+  @override
+  String get endpoint => "video/video";
 }
 
 class VideoRepository extends BaseVideoRepository {
   VideoRepository();
-  @override
-  Future<List<Video>> list() async {
-    return List.generate(
-        10,
-        (index) => Video(
-            name: "Test desctiption lorem ipsum",
-            duration: "23:10",
-            createdAt: "20.02.2022",
-            viewCount: 100,
-            banner: "assets/images/video.jpg",
-            channel:
-                Channel(avatar: "assets/images/avatar.png", name: "test")));
-  }
 
   @override
-  Future<List<Tag>> getTags() async {
-    return await tagRepository.list();
-  }
+  List<FilterAction> get filters => Filters.video;
+
+  @override
+  String get videoType => VideoType.video.value;
 }
 
 class StreamRepository extends BaseVideoRepository {
   @override
-  Future<List<Video>> list() async {
-    return List.generate(
-        10,
-        (index) => Video(
-            name: "Test desctiption lorem ipsum",
-            duration: "23:10",
-            createdAt: "20.02.2022",
-            viewCount: 100,
-            banner: "assets/images/stream.jpg",
-            channel: Channel(
-                avatar: "assets/images/streamAvatar.png", name: "test")));
-  }
+  String get videoType => VideoType.stream.value;
 
   @override
-  Future<List<Tag>> getTags() async {
-    return tagRepository.list();
-  }
+  List<FilterAction> get filters => Filters.video;
 }

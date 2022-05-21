@@ -35,7 +35,9 @@ class FiltersRow<T extends FilterCRUDManager> extends StatelessWidget {
 }
 
 class FilterDrawer<T extends FilterCRUDManager>  extends StatelessWidget {
-  const FilterDrawer({Key? key}) : super(key: key);
+  const FilterDrawer({Key? key, this.hasTags=false}) : super(key: key);
+
+  final bool hasTags;
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +74,7 @@ class FilterDrawer<T extends FilterCRUDManager>  extends StatelessWidget {
                 )
               ]
             ),
+            if (hasTags)
             Column(children: [
               Flex(direction: Axis.horizontal, children: [Text("Characteristics", style: fieldStyle,)]),
               FilterCharacteristics(

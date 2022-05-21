@@ -7,11 +7,12 @@ import '/constants/export.dart';
 import '/data/export.dart';
 
 abstract class VideoGeneric<T extends BaseVideoRepository>
-    extends CRUDManager<Video, T> {}
+    extends CRUDManager<T> {}
 
 class HomeVideoGeneric<T extends BaseVideoRepository> extends VideoGeneric<T> {
   List<Tag> tags = [];
   Tag? selectedTag;
+  bool cardLoading = false;
 
   Future<List<Tag>> getFilterTags() async {
     return [
@@ -22,8 +23,7 @@ class HomeVideoGeneric<T extends BaseVideoRepository> extends VideoGeneric<T> {
       Tag(
           id: TagMarker.subscriptions,
           name: "Subscribtions",
-          scope: TagScope.local
-      ),
+          scope: TagScope.local),
       ...await repository.getTags()
     ];
   }
@@ -31,6 +31,7 @@ class HomeVideoGeneric<T extends BaseVideoRepository> extends VideoGeneric<T> {
   @override
   Future<void> initialize() async {
     isLoading = true;
+    repository.request.flush();
     tags = await getFilterTags();
     selectedTag = tags[0];
     cards = await repository.list();
@@ -40,27 +41,30 @@ class HomeVideoGeneric<T extends BaseVideoRepository> extends VideoGeneric<T> {
 
   Future<void> filterCardList(Tag tag) async {
     selectedTag = tag;
+    cardLoading = true;
     refresh();
+    repository.request.flush();
     if (tag.scope == TagScope.external)
-      repository.query({"tag_id": tag.id});
+      repository.query({"tags": tag.name});
     else
       repository.query({"q": tag.id});
+
     cards = await repository.list();
+    cardLoading = false;
+    refresh();
   }
 }
 
-
 class SearchVideoGeneric<T extends BaseVideoRepository>
-    extends FilterCRUDManager<Video, T> {
-  
+    extends FilterCRUDManager<T> {
   SuggestionRepository suggestionRepository =
       GetIt.I.get<SuggestionRepository>();
 
   bool isFocused = true;
   String? searchText;
-  List<Tag> _tags = [];
-  List<Suggestion> suggestions = [];
-  
+  List _tags = [];
+
+  List suggestions = [];
 
   @override
   void initialize() async {
@@ -70,14 +74,11 @@ class SearchVideoGeneric<T extends BaseVideoRepository>
     _tags = await GetIt.I.get<TagRepository>().list();
   }
 
-  void filterSuggesions() =>
-      suggestionRepository.ordering("searched", ascending: false);
-
   void updateSuggesions([String text = ""]) async {
     if (text.length < 3) return;
     suggestionRepository.request.flush();
     filterSuggesions();
-    suggestionRepository.query({"text": text});
+    suggestionRepository.query({"search": text});
     suggestions = await suggestionRepository.list();
     refresh();
   }
@@ -90,7 +91,8 @@ class SearchVideoGeneric<T extends BaseVideoRepository>
     appliedFilters = [];
     refresh();
     repository.request.flush();
-    repository.query({"q": text});
+    suggestionRepository.request.flush();
+    repository.query({"search": text});
     await suggestionRepository.create(Suggestion(text: text, type: "video"));
     cards = await repository.list();
     isLoading = false;
@@ -99,12 +101,11 @@ class SearchVideoGeneric<T extends BaseVideoRepository>
 
   List<FilterAction> get _filterTags {
     return List.generate(
-      _tags.length, (i) => FilterAction(
-        type: FilterType.tag, 
-        value: _tags[i].id.toString(), 
-        title: _tags[i].name
-      )
-    );
+        _tags.length,
+        (i) => FilterAction(
+            type: FilterType.tag,
+            value: _tags[i].id.toString(),
+            title: _tags[i].name));
   }
 
   @override
@@ -113,12 +114,17 @@ class SearchVideoGeneric<T extends BaseVideoRepository>
       ...super.filters,
       ..._filterTags.map((e) {
         for (var item in selectedFilters) {
-          if (item.type == e.type && item.value == e.value) 
+          if (item.type == e.type && item.title == e.title)
             return e.copyWith(selected: true);
         }
         return e;
       }).toList(),
     ];
+  }
+
+  void filterSuggesions() {
+    suggestionRepository.ordering("searched", ascending: false);
+    suggestionRepository.query({"video_type": repository.videoType});
   }
 
   @override
@@ -131,21 +137,8 @@ class StreamManager extends HomeVideoGeneric<StreamRepository> {}
 
 class VideoSearchManager extends SearchVideoGeneric<VideoRepository> {
   static Type? parent = VideoManager;
-
-  @override
-  void filterSuggesions() {
-    super.filterSuggesions();
-    suggestionRepository.query({"type": "video"});
-  }
 }
 
 class StreamSearchManager extends SearchVideoGeneric<StreamRepository> {
   static Type? parent = StreamManager;
-
-  @override
-  void filterSuggesions() {
-    super.filterSuggesions();
-    suggestionRepository.query({"type": "stram"});
-  }
 }
-

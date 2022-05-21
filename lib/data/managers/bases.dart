@@ -7,6 +7,7 @@ abstract class BaseManager extends ChangeNotifier {
   AppError error = AppError();
   PageType? page;
   bool isLoading = false;
+  bool cardsLoading = false;
   static Type? parent;
 
   bool get hasError => error.msg == null ? false : true;
@@ -18,42 +19,30 @@ abstract class BaseManager extends ChangeNotifier {
     this.page = page;
     notifyListeners();
   }
-
-  List get cards => throw UnimplementedError();
 }
 
-abstract class BaseCRUDManager<M extends BaseModel, T extends CRUDGeneric>
-    extends BaseManager {
+abstract class BaseCRUDManager<T extends CRUDGeneric> extends BaseManager {
   List<dynamic> cards = [];
   T repository = GetIt.I.get<T>();
-
-  // @override
-  // List<M> get cards => _cards;
-
-  // set cards(List<M> c) => _cards = c;
 }
 
-mixin PaginationMixin<M extends BaseModel, D extends CRUDGeneric>
-    on BaseCRUDManager<M, D> {
+mixin PaginationMixin<T extends CRUDGeneric> on BaseCRUDManager<T> {
   bool paginationLoad = false;
 
-  // @override
   Future paginate() async {
     if (!repository.hasNext) return;
     paginationLoad = true;
     refresh();
+    await Future.delayed(Duration(milliseconds: 200));
     cards.addAll(await repository.next());
     paginationLoad = false;
     refresh();
   }
 
-  // @override
   bool get hasNext => repository.hasNext;
 }
 
-mixin OrderingMixin<M extends BaseModel, D extends CRUDGeneric>
-    on BaseCRUDManager<M, D> {
-  // @override
+mixin OrderingMixin<T extends CRUDGeneric> on BaseCRUDManager<T> {
   void orderBy(String key, {bool ascending = true}) async {
     isLoading = true;
     refresh();
@@ -64,12 +53,10 @@ mixin OrderingMixin<M extends BaseModel, D extends CRUDGeneric>
   }
 }
 
-mixin FilterMixin<M extends BaseModel, D extends CRUDGeneric>
-    on BaseCRUDManager<M, D> {
+mixin FilterMixin<T extends CRUDGeneric> on BaseCRUDManager<T> {
   List<FilterAction> selectedFilters = [];
   List<FilterAction> appliedFilters = [];
 
-  // @override
   void addFilter(FilterAction? filter) {
     if (filter == null) return;
     selectedFilters
@@ -78,39 +65,36 @@ mixin FilterMixin<M extends BaseModel, D extends CRUDGeneric>
     refresh();
   }
 
-  // @override
   void popSelectedFilter(FilterAction filter, {bool useRefresh = true}) {
     selectedFilters
-        .removeWhere((e) => e.type == filter.type && e.value == filter.value);
+        .removeWhere((e) => e.type == filter.type && e.title == filter.title);
     if (useRefresh) refresh();
   }
 
-  // @override
   Future popFilter(FilterAction filter) async {
     popSelectedFilter(filter, useRefresh: false);
     applyFilter();
   }
 
-  // @override
   Future applyFilter() async {
-    isLoading = true;
+    cardsLoading = true;
     appliedFilters = [...selectedFilters];
     refresh();
-    List tagIds = [];
+    List tagTitles = [];
     for (var e in appliedFilters) {
       if (e.type != FilterType.tag)
         repository.query(e.query);
       else
-        tagIds.add(e.value);
+        tagTitles.add(e.title);
     }
-    if (tagIds.isNotEmpty) repository.query({"tags": tagIds.join(",")});
+    repository.query({"tags": tagTitles.join(",")});
     cards = await repository.list();
-    isLoading = false;
+    cardsLoading = false;
     refresh();
   }
 
   List<FilterAction> get filters {
-    return filterSource.map((e) {
+    return repository.filters.map((e) {
       for (var item in selectedFilters) {
         if (item.type == e.type && item.value == e.value)
           return e.copyWith(selected: true);
@@ -123,51 +107,8 @@ mixin FilterMixin<M extends BaseModel, D extends CRUDGeneric>
       throw UnimplementedError("filterSource filters must be provided");
 }
 
-abstract class CRUDManager<T extends BaseModel, S extends CRUDGeneric>
-    extends BaseCRUDManager<T, S> with OrderingMixin, PaginationMixin {}
+abstract class CRUDManager<T extends CRUDGeneric> extends BaseCRUDManager<T>
+    with OrderingMixin, PaginationMixin {}
 
-abstract class FilterCRUDManager<T extends BaseModel, S extends CRUDGeneric>
-    extends CRUDManager<T, S> with FilterMixin {}
-
-
-
-
-
-
-
-
-
-
-
-
-// abstract class BaseFilterCRUDManager<M extends BaseModel,
-//         T extends CRUDGeneric<M>> extends BaseCRUDManager<M, T>
-//     with BaseFilterCRUD {}
-
-// abstract class FilterBaseManager extends BaseManager {
-//   List<FilterAction> selectedFilters = [];
-//   List<FilterAction> appliedFilters = [];
-
-//   void addFilter(FilterAction? filter);
-//   void popSelectedFilter(FilterAction filter, {bool useRefresh = true});
-//   Future<void> popFilter(FilterAction filter);
-//   Future<void> applyFilter();
-//   List<FilterAction> get filters;
-//   List<FilterAction> get filterSource;
-// }
-
-// abstract class OrderingManagerBase extends BaseManager {
-//   void orderBy(String key, {bool ascending = true});
-// }
-
-// abstract class PaginationManagerBase extends BaseManager {
-//   bool paginationLoad = false;
-//   Future paginate();
-//   bool get hasNext;
-// }
-
-// abstract class BaseCRUD extends BaseManager
-//     with OrderingManagerBase, PaginationManagerBase {}
-
-// abstract class BaseFilterCRUD extends FilterBaseManager
-//     with OrderingManagerBase, OrderingManagerBase {}
+abstract class FilterCRUDManager<T extends CRUDGeneric> extends CRUDManager<T>
+    with FilterMixin {}

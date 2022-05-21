@@ -56,7 +56,14 @@ class AppRouter extends RouterDelegate<AppLink>
         ],
         if (userManager.page == PageType.profile) ...[
           ProfilePageSelector.profile(),
-          if (profileManager.page == PageType.settings) ProfilePageSelector.profileSettings()
+          if (profileManager.page == PageType.settings) ProfilePageSelector.profileSettings(),
+          
+          if (profileManager.page == PageType.detail && profileManager.selectedVideoType == VideoType.video) 
+            ProfilePageSelector.detailList<VideoDetailManager>(videoType: profileManager.selectedVideoType),
+          if (profileManager.page == PageType.detail && profileManager.selectedVideoType == VideoType.short) 
+            ProfilePageSelector.detailList<ShortDetailManager>(videoType: profileManager.selectedVideoType),
+          if (profileManager.page == PageType.detail && profileManager.selectedVideoType == VideoType.favourite) 
+            ProfilePageSelector.detailList<FavouriteDetailManager>(videoType: profileManager.selectedVideoType),
         ],
         if (videoManager.page == PageType.create) CreatePage.videoCreate(),
         if (streamManager.page == PageType.create) CreatePage.streamCreate(),
