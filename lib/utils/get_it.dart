@@ -9,6 +9,7 @@ void startGet() {
   GetIt.I.registerSingleton<StreamRepository>(StreamRepository());
   GetIt.I.registerSingleton<ShortRepository>(ShortRepository());
   GetIt.I.registerSingleton<ProfileRepository>(ProfileRepository());
+  GetIt.I.registerSingleton<ChannelRepository>(ChannelRepository());
 }
 
 void registerModels() {

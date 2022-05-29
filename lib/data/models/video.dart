@@ -11,13 +11,15 @@ class Channel extends BaseModel {
       required this.name,
       this.avatar,
       this.createdAt,
-      this.descriprion});
+      this.descriprion,
+      this.subscriberCount});
 
   int? id;
   String name;
   String? avatar;
   String? createdAt;
   String? descriprion;
+  int? subscriberCount;
 
   factory Channel.fromJson(Map<dynamic, dynamic> data) {
     return Channel(
@@ -25,7 +27,8 @@ class Channel extends BaseModel {
         name: data["title"],
         descriprion: data["descriprion"],
         avatar: data["avatar"],
-        createdAt: data["created_at"].split("T")[0]);
+        createdAt: data["created_at"].split("T")[0],
+        subscriberCount: data["subscriber_count"]);
   }
 
   @override
@@ -35,7 +38,8 @@ class Channel extends BaseModel {
       'name': name,
       'avatar': avatar,
       "createdAt": createdAt,
-      "description": descriprion
+      "description": descriprion,
+      "subscriberCount": subscriberCount
     };
   }
 
@@ -54,7 +58,8 @@ class Video extends BaseModel {
       this.banner = "",
       this.description,
       this.type,
-      this.channel});
+      this.channel,
+      this.channel_id});
 
   int? id;
   String name;
@@ -66,6 +71,7 @@ class Video extends BaseModel {
   num viewCount = 0;
   num likeCount = 0;
   Channel? channel;
+  int? channel_id;
 
   static Video fromJson(Map<dynamic, dynamic> data) {
     return Video(
@@ -75,7 +81,8 @@ class Video extends BaseModel {
         viewCount: data["views"] ?? 0,
         likeCount: data["likes"] ?? 0,
         banner: data["banner"],
-        channel: Channel.fromJson(data["channel"]));
+        channel: Channel.fromJson(data["channel"]),
+        channel_id: data["channel_id"]);
   }
 
   static List<Video> fromJsonList(List<Map> data) {

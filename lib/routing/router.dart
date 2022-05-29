@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:oyboy/pages/short.dart';
 import '../data/export.dart';
 import "link.dart";
 import "/pages/export.dart";
@@ -49,25 +50,34 @@ class AppRouter extends RouterDelegate<AppLink>
         if (userManager.page == PageType.video) ...[
           VideoPage.videoPage(),
           if (videoManager.page == PageType.search) SearchPage.videoSearch(),
-        ], 
+        ],
         if (userManager.page == PageType.stream) ...[
           VideoPage.streamPage(),
           if (streamManager.page == PageType.search) SearchPage.streamSearch(),
         ],
         if (userManager.page == PageType.profile) ...[
           ProfilePageSelector.profile(),
-          if (profileManager.page == PageType.settings) ProfilePageSelector.profileSettings(),
-          
-          if (profileManager.page == PageType.detail && profileManager.selectedVideoType == VideoType.video) 
-            ProfilePageSelector.detailList<VideoDetailManager>(videoType: profileManager.selectedVideoType),
-          if (profileManager.page == PageType.detail && profileManager.selectedVideoType == VideoType.short) 
-            ProfilePageSelector.detailList<ShortDetailManager>(videoType: profileManager.selectedVideoType),
-          if (profileManager.page == PageType.detail && profileManager.selectedVideoType == VideoType.favourite) 
-            ProfilePageSelector.detailList<FavouriteDetailManager>(videoType: profileManager.selectedVideoType),
+          if (profileManager.page == PageType.settings)
+            ProfilePageSelector.profileSettings(),
+          if (profileManager.page == PageType.detail &&
+              profileManager.selectedVideoType == VideoType.video)
+            ProfilePageSelector.detailList<VideoDetailManager>(
+                videoType: profileManager.selectedVideoType),
+          if (profileManager.page == PageType.detail &&
+              profileManager.selectedVideoType == VideoType.short)
+            ProfilePageSelector.detailList<ShortDetailManager>(
+                videoType: profileManager.selectedVideoType),
+          if (profileManager.page == PageType.detail &&
+              profileManager.selectedVideoType == VideoType.favourite)
+            ProfilePageSelector.detailList<FavouriteDetailManager>(
+                videoType: profileManager.selectedVideoType),
         ],
         if (videoManager.page == PageType.create) CreatePage.videoCreate(),
         if (streamManager.page == PageType.create) CreatePage.streamCreate(),
         if (shortManager.page == PageType.create) CreatePage.shortCreate(),
+        if (userManager.page == PageType.short) ...[
+          ShortPage.page(),
+        ],
       ],
     );
   }
@@ -76,8 +86,15 @@ class AppRouter extends RouterDelegate<AppLink>
     if (!route.didPop(result)) {
       return false;
     }
-    if (route.settings.name == OyBoyPages.videoSearchPath) videoManager.goToPage();
-    if (route.settings.name == OyBoyPages.streamSearchPath) streamManager.goToPage();
+    if (route.settings.name == OyBoyPages.videoSearchPath)
+      videoManager.goToPage();
+    if (route.settings.name == OyBoyPages.streamSearchPath)
+      streamManager.goToPage();
+    if (route.settings.name == OyBoyPages.shortPath) {
+      userManager.goToPage(page: PageType.video);
+      shortManager.clear();
+    }
+
     return true;
   }
 

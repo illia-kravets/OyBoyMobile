@@ -65,6 +65,7 @@ class DefaultPage extends StatelessWidget {
       endDrawer: endDrawer,
       extendBody: extendBody,
       extendBodyBehindAppBar: extendBodyBehindAppBar,
+      backgroundColor: backgroundColor,
       bottomNavigationBar: FABBottomBar(
         floatingButtonLocation: FloatingButtonLocation.center,
         showSelectedLabels: true,
