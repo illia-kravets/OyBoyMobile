@@ -60,14 +60,14 @@ class DefaultPage extends StatelessWidget {
             ),
           ),
       floatingActionButtonLocation: floatingActionButtonLocation ??
-          FloatingActionButtonLocation.centerDocked,
+          FloatingActionButtonLocation.endDocked,
       drawer: drawer,
       endDrawer: endDrawer,
       extendBody: extendBody,
       extendBodyBehindAppBar: extendBodyBehindAppBar,
       backgroundColor: backgroundColor,
       bottomNavigationBar: FABBottomBar(
-        floatingButtonLocation: FloatingButtonLocation.center,
+        floatingButtonLocation: FloatingButtonLocation.right,
         showSelectedLabels: true,
         // showUnselectedLabels: true,
         actions: [
@@ -81,11 +81,11 @@ class DefaultPage extends StatelessWidget {
               selected: userManager.page == PageType.short,
               title: "Shorts",
               onPress: () => userManager.goToPage(page: PageType.short)),
-          PageNavigationItem(
-              icon: AppIcon.stream.icon,
-              selected: userManager.page == PageType.stream,
-              title: "Stream",
-              onPress: () => userManager.goToPage(page: PageType.stream)),
+          // PageNavigationItem(
+          //     icon: AppIcon.stream.icon,
+          //     selected: userManager.page == PageType.stream,
+          //     title: "Stream",
+          //     onPress: () => userManager.goToPage(page: PageType.stream)),
           PageNavigationItem(
               icon: AppIcon.profile.icon,
               selected: userManager.page == PageType.profile,

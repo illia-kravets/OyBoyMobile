@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:oyboy/data/managers/short.dart';
 import 'package:oyboy/data/repositories/profile.dart';
+import 'package:oyboy/my_icons.dart';
 import 'package:oyboy/widgets/default/default_page.dart';
 import 'package:provider/provider.dart';
 
@@ -95,6 +96,14 @@ class ShortDisplayPage extends StatefulWidget {
 }
 
 class _ShortDisplayPageState extends State<ShortDisplayPage> {
+  late bool expandedBar;
+
+  @override
+  void initState() {
+    expandedBar = false;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
@@ -113,41 +122,121 @@ class _ShortDisplayPageState extends State<ShortDisplayPage> {
           Positioned(
             bottom: 0,
             child: AnimatedContainer(
-              duration: const Duration(microseconds: 200),
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 25),
-              height: 200,
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 58),
+              curve: Curves.linear,
+              duration: const Duration(
+                milliseconds: 200,
+              ),
+              height: expandedBar ? 200 : null,
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.2),
                   borderRadius: const BorderRadius.all(Radius.circular(10))),
-              child: Column(children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.short.name),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        width: 20,
-                        height: 20,
-                        child: Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          color: theme.primaryColor,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[50],
-                          shape: BoxShape.circle,
-                        ),
+              child: Stack(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 40),
+                    child: Column(children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.short.name, 
+                            style: GoogleFonts.poppins(
+                              color: Colors.white, 
+                              fontSize: 18, 
+                              fontWeight: FontWeight.w500
+                            ),
+                          ),
+                          const SizedBox(width: 20,),
+                          GestureDetector(
+                            onTap: () => setState(() => expandedBar = !expandedBar),
+                            child: Container(
+                              width: 25,
+                              height: 25,
+                              child: Icon(
+                                expandedBar ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
+                                color: Colors.white,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.1),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          )
+                        ],
                       ),
-                    )
-                  ],
-                )
-              ]),
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        child: expandedBar ? Text(widget.short.description ?? "") : Container()
+                      )
+                    ]),
+                  ),
+                  Positioned(
+                    bottom: 10,
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(children: [
+                            const Icon(CustomIcon.video_view, color: Colors.white,),
+                            const SizedBox(width: 10,),
+                            Text(
+                              "${widget.short.viewCount.toString()} views", 
+                              style: GoogleFonts.poppins(color: Colors.white),
+                            )
+                          ],),
+                          Row(children: [
+                            const Icon(CustomIcon.video_heart, color: Colors.white,),
+                            const SizedBox(width: 10,),
+                            Text(
+                              "${widget.short.likeCount.toString()} likes", 
+                              style: GoogleFonts.poppins(color: Colors.white),
+                            )
+                          ],),
+                          const SizedBox(width: 35,),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
+          ),
+          Positioned(
+            right: 0, 
+            bottom: 230, 
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+              child: Column(
+                children: [
+                  sideBarButton(CustomIcon.short_heart, () {}),
+                  const SizedBox(height: 20,),
+                  sideBarButton(CustomIcon.comments, () {}),
+                  const SizedBox(height: 20,),
+                  sideBarButton(CustomIcon.reply, () {}),
+                ],
+              ),
+            )
           )
         ],
       ),
+    );
+  }
+
+  Widget sideBarButton(IconData icon, Function() onTap, {Color? color}) {
+    return Container(
+      width: 55,
+      height: 55,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Theme.of(context).primaryColor.withOpacity(0.4), Colors.yellow.withOpacity(0.4)]
+        ),
+        shape: BoxShape.circle
+      ),
+      child: GestureDetector(onTap: onTap, child: Icon(icon, size: 33, color: color ?? Colors.grey[300],))
     );
   }
 }

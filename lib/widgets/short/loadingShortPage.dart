@@ -62,6 +62,7 @@ class LoadingShortPage extends StatelessWidget {
                     color: Colors.grey[400],
                   ),
                   Container(height: 18, width: 130, color: Colors.grey[400]),
+                  const SizedBox(width: 35,)
                 ],
               )
             ]),
