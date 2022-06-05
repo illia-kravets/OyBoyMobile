@@ -49,22 +49,24 @@ class Channel extends BaseModel {
 
 class Video extends BaseModel {
   Video(
-      {this.id,
+      {required this.id,
       required this.name,
       this.duration,
       this.createdAt,
       this.viewCount = 0,
       this.likeCount = 0,
       this.banner = "",
+      this.video = "",
       this.description,
       this.type,
       this.channel,
       this.channel_id});
 
-  int? id;
+  int id;
   String name;
   String? duration;
   String? banner;
+  String? video;
   String? createdAt;
   String? description;
   String? type;
@@ -75,12 +77,14 @@ class Video extends BaseModel {
 
   static Video fromJson(Map<dynamic, dynamic> data) {
     return Video(
+        id: data["id"],
         name: data["name"],
         duration: data["duration"],
         createdAt: data['created_at'].split("T")[0],
         viewCount: data["views"] ?? 0,
         likeCount: data["likes"] ?? 0,
         banner: data["banner"],
+        video: data["video"],
         channel: Channel.fromJson(data["channel"]),
         channel_id: data["channel_id"]);
   }

@@ -1,15 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'theme.dart';
 import "routing/export.dart";
 import "data/export.dart";
 import '/utils/get_it.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
   startGet();
   registerModels();
-  runApp(const MyApp());
+  runApp(
+    EasyLocalization(
+      path: "assets/translations",
+      supportedLocales: const [
+        Locale("en"),
+        Locale("uk"),
+      ],
+      fallbackLocale: Locale('en'),
+      child: const MyApp()
+    )
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -60,6 +74,9 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<VideoDetailManager>(create: (context) => VideoDetailManager()),
       ],
       child: MaterialApp.router(
+        supportedLocales: context.supportedLocales,
+        localizationsDelegates: context.localizationDelegates,
+        locale: context.locale,
         title: 'Flutter Demo',
         theme: theme,
         routerDelegate: _appRouter,

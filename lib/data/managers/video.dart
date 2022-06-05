@@ -18,11 +18,11 @@ class HomeVideoGeneric<T extends BaseVideoRepository> extends VideoGeneric<T> {
     return [
       Tag(
           id: TagMarker.recomendations,
-          name: "Reccomendations",
+          name: "Рекомендовано",
           scope: TagScope.local),
       Tag(
           id: TagMarker.subscriptions,
-          name: "Subscribtions",
+          name: "Пiдписки",
           scope: TagScope.local),
       ...await repository.getTags()
     ];

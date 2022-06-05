@@ -42,6 +42,8 @@ dependencies:
   sliver_tools: ^0.2.5
   cached_network_image: ^3.2.0
   shared_preferences: ^2.0.13
+  flutter_share: 2.0.0
+  easy_localization: ^3.0.0
 
 dev_dependencies:
 
@@ -62,6 +64,7 @@ flutter:
   assets:
     - assets/gifs/
     - assets/images/
+    - assets/translations/
   
   fonts:
     - family: CustomIcon

@@ -139,14 +139,14 @@ class CreateModal extends StatelessWidget {
           Navigator.pop(context);
         },
       ),
-      ModalRow(
-        icon: AppIcon.stream.icon,
-        text: "Start live",
-        onTap: () {
-          context.read<StreamManager>().goToPage(page: PageType.create);
-          Navigator.pop(context);
-        },
-      ),
+      // ModalRow(
+      //   icon: AppIcon.stream.icon,
+      //   text: "Start live",
+      //   onTap: () {
+      //     context.read<StreamManager>().goToPage(page: PageType.create);
+      //     Navigator.pop(context);
+      //   },
+      // ),
       const SizedBox(
         height: 10,
       )

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:oyboy/data/managers/short.dart';
@@ -12,6 +13,7 @@ import 'package:provider/provider.dart';
 
 import '../../data/models/video.dart';
 import '../video/card.dart';
+import 'commentList.dart';
 import 'loadingShortPage.dart';
 import 'shortProfile.dart';
 
@@ -127,7 +129,7 @@ class _ShortDisplayPageState extends State<ShortDisplayPage> {
               duration: const Duration(
                 milliseconds: 200,
               ),
-              height: expandedBar ? 200 : null,
+              height: expandedBar ? 275 : 170,
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.2),
@@ -141,12 +143,25 @@ class _ShortDisplayPageState extends State<ShortDisplayPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            widget.short.name, 
-                            style: GoogleFonts.poppins(
-                              color: Colors.white, 
-                              fontSize: 18, 
-                              fontWeight: FontWeight.w500
+                          SizedBox(
+                            width: 300,
+                            child: Tooltip(
+                              waitDuration: const Duration(seconds: 3),
+                              margin: const EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.all(15),
+                              triggerMode: TooltipTriggerMode.tap,
+                              message: widget.short.name,
+                              child: Text(
+                                widget.short.name, 
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white, 
+                                  fontSize: 18, 
+                                  fontWeight: FontWeight.w500
+                                ),
+                                maxLines: 2,
+                                softWrap: true,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 20,),
@@ -169,7 +184,29 @@ class _ShortDisplayPageState extends State<ShortDisplayPage> {
                       ),
                       AnimatedSwitcher(
                         duration: const Duration(milliseconds: 200),
-                        child: expandedBar ? Text(widget.short.description ?? "") : Container()
+                        child: expandedBar 
+                          ? Tooltip(
+                              waitDuration: const Duration(seconds: 3),
+                              margin: const EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.all(15),
+                              triggerMode: TooltipTriggerMode.tap,
+                              message: widget.short.description,
+                              child: Container(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Text(
+                                  widget.short.description ?? "",
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white, 
+                                    fontSize: 15, 
+                                    fontWeight: FontWeight.w400
+                                  ),
+                                  maxLines: 4,
+                                  softWrap: true,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              )
+                          ) 
+                          : Container()
                       )
                     ]),
                   ),
@@ -205,18 +242,34 @@ class _ShortDisplayPageState extends State<ShortDisplayPage> {
               ),
             ),
           ),
-          Positioned(
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 200),
             right: 0, 
-            bottom: 230, 
+            bottom: expandedBar ? 290 : 230, 
             child: Container(
               padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
               child: Column(
                 children: [
                   sideBarButton(CustomIcon.short_heart, () {}),
                   const SizedBox(height: 20,),
-                  sideBarButton(CustomIcon.comments, () {}),
+                  sideBarButton(CustomIcon.comments, 
+                    () => showModalBottomSheet(
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(15),
+                              topRight: Radius.circular(15))),
+                      context: context,
+                      builder: (context) => CommentList(videoId: widget.short.id)),
+                  ),
                   const SizedBox(height: 20,),
-                  sideBarButton(CustomIcon.reply, () {}),
+                  sideBarButton(CustomIcon.reply, () async {
+                    await FlutterShare.share(
+                      title: widget.short.name,
+                      text: widget.short.name,
+                      linkUrl: widget.short.video,
+                      chooserTitle: widget.short.name
+                    );}
+                  ),
                 ],
               ),
             )
