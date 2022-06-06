@@ -37,12 +37,14 @@ class AuthRepository extends BaseRepository {
   Future<bool> verifyToken() async {
     final prefs = await SharedPreferences.getInstance();
     token = prefs.getString("accessToken") ?? "";
+
     if (token!.isEmpty) return false;
     await post(url: "token/verify/", body: {"token": token});
     return response.code == 200;
   }
 
   Future checkAuth() async {
+    // return false;
     final prefs = await SharedPreferences.getInstance();
 
     request.flush();

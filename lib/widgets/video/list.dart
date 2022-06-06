@@ -1,5 +1,6 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import "package:provider/provider.dart";
@@ -62,14 +63,16 @@ class _HomeVideoListState<T extends HomeVideoGeneric>
 }
 
 class GenericCardList<T extends CRUDManager> extends StatefulWidget {
-  const GenericCardList(
+  GenericCardList(
       {Key? key,
       this.scrollableType = ScrollableType.list,
-      this.cardConfig = const CardConfig()})
-      : super(key: key);
+      CardConfig? cardConfig})
+      : super(key: key) {
+        this.cardConfig = cardConfig ?? CardConfig();
+      }
 
   final ScrollableType scrollableType;
-  final CardConfig cardConfig;
+  late CardConfig cardConfig;
 
   @override
   State<GenericCardList> createState() => _GenericCardListState<T>();
@@ -172,21 +175,25 @@ class _GenericCardListState<T extends CRUDManager>
 }
 
 class CardConfig {
-  const CardConfig(
-      {this.endText = "That's all the folks",
+  CardConfig(
+      {
       this.count = 3,
       this.active,
       this.paginate,
       this.onPageEnd,
-      this.emptyListText = "Nothing was found!"});
+      String? endText,
+      String? emptyListText}) {
+        this.emptyListText = emptyListText ??  "nothingFound".tr();
+        this.endText = endText ?? "paginationEdge".tr();
+      }
 
   final bool? active;
   final int count;
 
   final bool? paginate;
   final Function()? onPageEnd;
-  final String endText;
-  final String emptyListText;
+  late String endText;
+  late String emptyListText;
 
   bool get activityAssert {
     if (active != null) return count > 0;
@@ -208,18 +215,20 @@ class VideoCardList<T extends CRUDManager> extends StatelessWidget {
       this.physics,
       this.shrinkWrap = false,
       this.controller,
-      this.config = const CardConfig()})
-      : assert(
-            config.activityAssert, "If you provide active - count must be > 0"),
-        assert(config.paginateAssert,
-            "onPageEnd callback must be provided if paginate=false"),
-        super(key: key);
+      CardConfig? config})
+      : super(key: key) {
+        this.config = config ?? CardConfig();
+        assert(
+            this.config.activityAssert, "If you provide active - count must be > 0");
+        assert(this.config.paginateAssert,
+            "onPageEnd callback must be provided if paginate=false");
+      }
 
   final bool? primary;
   final bool shrinkWrap;
   final ScrollPhysics? physics;
   final ScrollController? controller;
-  final CardConfig config;
+  late CardConfig config;
 
   @override
   Widget build(BuildContext context) {
@@ -330,18 +339,20 @@ class VideoCardGrid<T extends CRUDManager> extends StatelessWidget {
       this.physics,
       this.shrinkWrap = false,
       this.controller,
-      this.config = const CardConfig()})
-      : assert(
-            config.activityAssert, "If you provide active - count must be > 0"),
-        assert(config.paginateAssert,
-            "onPageEnd callback must be provided if paginate=false"),
-        super(key: key);
+      CardConfig? config})
+      : super(key: key) {
+        this.config = config ?? CardConfig(); 
+        assert(
+            this.config.activityAssert, "If you provide active - count must be > 0");
+        assert(this.config.paginateAssert,
+            "onPageEnd callback must be provided if paginate=false");
+      }
 
   final bool? primary;
   final bool shrinkWrap;
   final ScrollPhysics? physics;
   final ScrollController? controller;
-  final CardConfig config;
+  late CardConfig config;
   late T repository;
 
   @override

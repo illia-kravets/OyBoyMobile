@@ -1,1 +1,1 @@
-String host = "https://eighty-pianos-attack-195-88-139-243.loca.lt/api/";
+String host = "http://164.90.198.17/api/";

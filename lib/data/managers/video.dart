@@ -1,6 +1,7 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
 import 'dart:async';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:get_it/get_it.dart';
 
 import '/constants/export.dart';
@@ -18,11 +19,13 @@ class HomeVideoGeneric<T extends BaseVideoRepository> extends VideoGeneric<T> {
     return [
       Tag(
           id: TagMarker.recomendations,
-          name: "Рекомендовано",
+          name: "recomendation".tr(),
+          value: "recomendation",
           scope: TagScope.local),
       Tag(
           id: TagMarker.subscriptions,
-          name: "Пiдписки",
+          name: "subscribtion".tr(),
+          value: "subscribtion",
           scope: TagScope.local),
       ...await repository.getTags()
     ];
@@ -47,7 +50,7 @@ class HomeVideoGeneric<T extends BaseVideoRepository> extends VideoGeneric<T> {
     if (tag.scope == TagScope.external)
       repository.query({"tags": tag.name});
     else
-      repository.query({"q": tag.id});
+      repository.query({"q": tag.value});
 
     cards = await repository.list();
     cardLoading = false;

@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
@@ -137,7 +138,7 @@ class _SearchAppBarState<T extends SearchVideoGeneric>
             textInputAction: TextInputAction.search,
             cursorColor: theme.primaryColor,
             decoration: InputDecoration(
-                hintText: "Search...",
+                hintText: "search".tr(),
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
                 enabledBorder: const OutlineInputBorder(
@@ -251,7 +252,7 @@ class SearchResult<T extends SearchVideoGeneric> extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("Search results for: ",
+                        Text("searchResult".tr(),
                             style: theme.textTheme.bodyText2),
                         Text(
                           manager.searchText ?? "",
@@ -266,7 +267,7 @@ class SearchResult<T extends SearchVideoGeneric> extends StatelessWidget {
                         child: GenericCardList<T>(
                         cardConfig: CardConfig(
                             emptyListText:
-                                "Nothing was fount for request: ${manager.searchText}"),
+                                "${'requestNothingFound'.tr()}${manager.searchText}"),
                       )),
               ],
             ),

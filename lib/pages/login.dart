@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -37,10 +38,10 @@ class _LoginPageState extends State<LoginPage> {
               child: Image.asset("assets/gifs/logo.gif"),
             ),
             const SizedBox(height: 16),
-            LoginTextField(hint: "Username", controller: _usernameController),
+            LoginTextField(hint: "username".tr(), controller: _usernameController),
             const SizedBox(height: 16),
             LoginTextField(
-                hint: "Password",
+                hint: "password".tr(),
                 isPassword: true,
                 controller: _passwordController),
             const SizedBox(height: 16),
@@ -78,7 +79,7 @@ class LoginButton extends StatelessWidget {
               textStyle: const TextStyle(color: Colors.black)),
           child: !userManager.isLoading
               ? Text(
-                  "Login",
+                  "login".tr(),
                   style: Theme.of(context).textTheme.button,
                 )
               : const Loader(),

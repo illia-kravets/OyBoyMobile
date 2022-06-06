@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import 'generated/codegen_loader.g.dart';
 import 'theme.dart';
 import "routing/export.dart";
 import "data/export.dart";
@@ -20,7 +21,8 @@ void main() async {
         Locale("en"),
         Locale("uk"),
       ],
-      fallbackLocale: Locale('en'),
+      fallbackLocale: const Locale('en'),
+      assetLoader: const CodegenLoader(),
       child: const MyApp()
     )
   );
@@ -45,7 +47,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-
     _appRouter = AppRouter(
         userManager: _userManager,
         videoManager: _videoManager,

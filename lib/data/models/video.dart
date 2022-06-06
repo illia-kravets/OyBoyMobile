@@ -107,11 +107,13 @@ class Tag extends BaseModel {
       {required this.name,
       this.id,
       this.scope = TagScope.external,
-      this.description});
+      this.description,
+      this.value});
 
   String? id;
   String name;
   String? description;
+  String? value;
   TagScope scope;
 
   static Tag fromJson(Map<dynamic, dynamic> data) {

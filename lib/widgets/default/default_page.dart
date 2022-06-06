@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import "package:flutter/material.dart";
 import '../export.dart';
@@ -74,12 +75,12 @@ class DefaultPage extends StatelessWidget {
           PageNavigationItem(
               icon: AppIcon.video.icon,
               selected: userManager.page == PageType.video,
-              title: 'Video',
+              title: 'video'.tr(),
               onPress: () => userManager.goToPage(page: PageType.video)),
           PageNavigationItem(
               icon: AppIcon.short.icon,
               selected: userManager.page == PageType.short,
-              title: "Shorts",
+              title: "short".tr(),
               onPress: () => userManager.goToPage(page: PageType.short)),
           // PageNavigationItem(
           //     icon: AppIcon.stream.icon,
@@ -89,7 +90,7 @@ class DefaultPage extends StatelessWidget {
           PageNavigationItem(
               icon: AppIcon.profile.icon,
               selected: userManager.page == PageType.profile,
-              title: "Profile",
+              title: "profile".tr(),
               onPress: () => userManager.goToPage(page: PageType.profile))
         ],
       ),
