@@ -28,7 +28,7 @@ class Channel extends BaseModel {
         descriprion: data["descriprion"],
         avatar: data["avatar"],
         createdAt: data["created_at"].split("T")[0],
-        subscriberCount: data["subscriber_count"]);
+        subscriberCount: data["subscribers"]);
   }
 
   @override

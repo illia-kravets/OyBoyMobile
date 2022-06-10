@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:google_fonts/google_fonts.dart';
 import 'package:oyboy/constants/appstate.dart';
 import "package:provider/provider.dart";
 
@@ -30,23 +31,22 @@ class DefaultVideoPage<T extends HomeVideoGeneric> extends StatelessWidget {
               children: [
                 Image.asset(
                   "assets/images/logo.jpeg",
-                  height: 48,
+                  height: 40,
                 ),
-                const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: Text(
-                      "BOY",
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 224, 0, 112),
-                        fontSize: 18,
-                        letterSpacing: 3,
-                      ),
-                    ))
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Text("DAILY VIBE",
+                        style: GoogleFonts.poppins(
+                            color: Color.fromARGB(255, 224, 0, 112),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.5)))
               ],
             ),
             actions: <Widget>[
               IconButton(
-                  onPressed: () => context.read<T>().goToPage(page: PageType.search),
+                  onPressed: () =>
+                      context.read<T>().goToPage(page: PageType.search),
                   icon: const Icon(Icons.search))
             ],
           ),

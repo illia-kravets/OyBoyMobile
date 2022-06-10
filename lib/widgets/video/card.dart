@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import "package:cached_network_image/cached_network_image.dart";
 
@@ -60,7 +61,7 @@ class VideoCard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Text(
-                                "${video.viewCount.toString()} views",
+                                "${video.viewCount.toString()} ${'views'.tr()}",
                                 style: theme.textTheme.bodyText2,
                               ),
                               const SizedBox(
@@ -85,14 +86,14 @@ class VideoCard extends StatelessWidget {
 
   Widget getVideoBanner(String? url) {
     var placeholder = Image.asset("assets/images/video_placeholder.png");
-    return url != null && url.isNotEmpty 
-      ? CachedNetworkImage(
-        height: 220,
-        imageUrl: url,
-        placeholder: (context, url) => placeholder,
-        errorWidget: (context, url, error) => placeholder,
-      )
-      : placeholder;
+    return url != null && url.isNotEmpty
+        ? CachedNetworkImage(
+            height: 220,
+            imageUrl: url,
+            placeholder: (context, url) => placeholder,
+            errorWidget: (context, url, error) => placeholder,
+          )
+        : placeholder;
   }
 }
 

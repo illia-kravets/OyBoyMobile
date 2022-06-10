@@ -11,7 +11,6 @@ class ShortManager extends CRUDManager<ShortRepository> {
   void initialize() async {
     isLoading = true;
     cards = await repository.list();
-    await Future.delayed(Duration(seconds: 2));
     if (cards.isNotEmpty) activeShort = cards[0];
     isLoading = false;
     refresh();

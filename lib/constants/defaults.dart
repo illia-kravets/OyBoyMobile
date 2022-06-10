@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:image_picker/image_picker.dart';
 
 import "/data/models/helpers.dart";
@@ -65,25 +66,33 @@ class Filters {
     return [
       // Ordering filters
       FilterAction(
-          type: FilterType.ordering, value: "", title: "Default", head: true),
+          type: FilterType.ordering,
+          value: "",
+          title: "defaultOrdering".tr(),
+          head: true),
       FilterAction(
-          type: FilterType.ordering, value: "duration", title: "By Duration"),
+          type: FilterType.ordering,
+          value: "duration",
+          title: "durationOrdering".tr()),
       FilterAction(
           type: FilterType.ordering,
           value: "upload_date",
-          title: "By Upload date"),
+          title: "uploadOrdering".tr()),
 
       // Relevation filters
       FilterAction(
-          type: FilterType.relevation, value: "", title: "All", head: true),
+          type: FilterType.relevation,
+          value: "",
+          title: "all".tr(),
+          head: true),
       FilterAction(
           type: FilterType.relevation,
           value: "recommendation",
-          title: "Recomendations"),
+          title: "recomendation".tr()),
       FilterAction(
           type: FilterType.relevation,
           value: "subscription",
-          title: "Subscriptions"),
+          title: "subscribtion".tr()),
     ];
   }
 }
@@ -102,7 +111,7 @@ extension IconValue on AppIcon {
       case AppIcon.favourite:
         return Icons.stars_outlined;
       case AppIcon.profile:
-        return Icons.supervised_user_circle_outlined;
+        return Icons.account_circle_outlined;
     }
   }
 }

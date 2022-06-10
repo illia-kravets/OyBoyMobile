@@ -46,7 +46,8 @@ class AppRouter extends RouterDelegate<AppLink>
       onPopPage: _handlePopPage,
       pages: [
         if (userManager.page == PageType.splash) ...[SplashScreen.page()],
-        if (userManager.page == PageType.login) ...[LoginPage.page()],
+        if (userManager.page == PageType.login) ...[AuthPage.loginPage()],
+        if (userManager.page == PageType.register) ...[AuthPage.registerPage()],
         if (userManager.page == PageType.video) ...[
           VideoPage.videoPage(),
           if (videoManager.page == PageType.search) SearchPage.videoSearch(),

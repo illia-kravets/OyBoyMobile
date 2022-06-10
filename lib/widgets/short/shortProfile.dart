@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,7 +41,7 @@ class ShortProfile extends StatelessWidget {
                     fontSize: 16.0,
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
-            Text("${channel.subscriberCount.toString()} subscribers",
+            Text("${channel.subscriberCount.toString()} ${'subscribers'.tr()}",
                 style: GoogleFonts.poppins(
                     fontSize: 13.0,
                     fontWeight: FontWeight.w300,

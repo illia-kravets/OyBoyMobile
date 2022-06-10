@@ -44,7 +44,7 @@ class AuthRepository extends BaseRepository {
   }
 
   Future checkAuth() async {
-    // return false;
+    return false;
     final prefs = await SharedPreferences.getInstance();
 
     request.flush();

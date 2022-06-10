@@ -110,7 +110,7 @@ class CreateModal extends StatelessWidget {
         child: Row(
           children: [
             Text(
-              "Create",
+              "create".tr(),
               style: theme.textTheme.headline4,
             ),
             GestureDetector(
@@ -126,7 +126,7 @@ class CreateModal extends StatelessWidget {
       ),
       ModalRow(
         icon: AppIcon.video.icon,
-        text: "Upload video",
+        text: "addVideo".tr(),
         onTap: () {
           context.read<VideoManager>().goToPage(page: PageType.create);
           Navigator.pop(context);
@@ -134,7 +134,7 @@ class CreateModal extends StatelessWidget {
       ),
       ModalRow(
         icon: AppIcon.short.icon,
-        text: "Upload short",
+        text: "addShort".tr(),
         onTap: () {
           context.read<ShortManager>().goToPage(page: PageType.create);
           Navigator.pop(context);

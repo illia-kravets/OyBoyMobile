@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
 import 'package:oyboy/data/export.dart';
 import 'package:oyboy/data/managers/create.dart';
@@ -52,7 +53,7 @@ class VideoCreatePage extends StatelessWidget {
         ),
         centerTitle: true,
         title: Text(
-          "Create video",
+          "createVideo".tr(),
           style: theme.textTheme.headline4,
         ),
       ),
@@ -68,19 +69,18 @@ class StreamCreatePage extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     return DefaultPage(
-      appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () => context.read<StreamManager>().goToPage(),
-          child: const Icon(Icons.arrow_back),
+        appBar: AppBar(
+          leading: GestureDetector(
+            onTap: () => context.read<StreamManager>().goToPage(),
+            child: const Icon(Icons.arrow_back),
+          ),
+          centerTitle: true,
+          title: Text(
+            "Start live",
+            style: theme.textTheme.headline4,
+          ),
         ),
-        centerTitle: true,
-        title: Text(
-          "Start live",
-          style: theme.textTheme.headline4,
-        ),
-      ),
-      body: const BaseCreatePage(createType: VideoType.stream)
-    );
+        body: const BaseCreatePage(createType: VideoType.stream));
   }
 }
 
@@ -98,7 +98,7 @@ class ShortCreatePage extends StatelessWidget {
         ),
         centerTitle: true,
         title: Text(
-          "Create short",
+          "createShort".tr(),
           style: theme.textTheme.headline4,
         ),
       ),
@@ -134,7 +134,7 @@ class _BaseCreatePageState extends State<BaseCreatePage> {
     _descriptionController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
@@ -142,7 +142,7 @@ class _BaseCreatePageState extends State<BaseCreatePage> {
 
     final banner = context.select((CreateManager m) => m.banner);
     final video = context.select((CreateManager m) => m.video);
-    
+
     return SingleChildScrollView(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
@@ -157,7 +157,8 @@ class _BaseCreatePageState extends State<BaseCreatePage> {
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: _nameController,
                     validator: (value) {
-                      if (value == null || _nameController.text.isEmpty) return 'This field must not me empty';
+                      if (value == null || _nameController.text.isEmpty)
+                        return 'notEmptyField'.tr();
                       return null;
                     },
                     onTap: () => manager.tagInputSelected = false,
@@ -165,90 +166,108 @@ class _BaseCreatePageState extends State<BaseCreatePage> {
                     maxLength: 126,
                     cursorColor: theme.primaryColor,
                     decoration: InputDecoration(
-                      label: Container(
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
-                        child: const Text("Name")
-                      )
-                    ),
-                    buildCounter: (_, {required currentLength, maxLength, required isFocused})  {
-                        if (isFocused) {
-                          return Container(
+                        label: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100)),
+                            child: Text("videoName".tr()))),
+                    buildCounter: (_,
+                        {required currentLength,
+                        maxLength,
+                        required isFocused}) {
+                      if (isFocused) {
+                        return Container(
                             alignment: Alignment.topRight,
-                            child: Text(currentLength.toString() + "/" + maxLength.toString())
-                          );
-                        }
-                      },
+                            child: Text(currentLength.toString() +
+                                "/" +
+                                maxLength.toString()));
+                      }
+                    },
                   ),
-                  const SizedBox(height: 20,),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   TextFormField(
                     controller: _descriptionController,
                     style: theme.textTheme.bodyText1,
                     cursorColor: theme.primaryColor,
                     keyboardType: TextInputType.multiline,
-                    decoration: const InputDecoration(
-                      alignLabelWithHint: true, 
-                      label: Text("Desctiption"),
-                      contentPadding: EdgeInsets.fromLTRB(14, 10, 14, 6)
-                    ),
+                    decoration: InputDecoration(
+                        alignLabelWithHint: true,
+                        label: Text("description".tr()),
+                        contentPadding:
+                            const EdgeInsets.fromLTRB(14, 10, 14, 6)),
                     maxLines: 7,
                     minLines: 7,
                     onTap: () => manager.tagInputSelected = false,
                   ),
-                  const SizedBox(height: 20,),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   const InputTag(),
-                  const SizedBox(height: 10,),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (widget.createType != VideoType.stream)
-                      ...[
+                      if (widget.createType != VideoType.stream) ...[
                         Expanded(
-                          flex: 1, 
+                            flex: 1,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                    width: double.infinity,
+                                    height: 55,
+                                    child: ElevatedButton(
+                                      onPressed: () =>
+                                          showMediaModal(MediaType.video),
+                                      child: chooseButtonText(),
+                                    )),
+                                if (video != null)
+                                  Text(
+                                    video.name,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 12.0,
+                                        color: theme.primaryColor),
+                                  )
+                              ],
+                            )),
+                        const SizedBox(
+                          width: 10,
+                        )
+                      ],
+                      Expanded(
+                          flex: 1,
                           child: Column(
                             children: [
                               SizedBox(
-                                width: double.infinity,
-                                height: 55,
-                                child: ElevatedButton(
-                                  onPressed: () => showMediaModal(MediaType.video), 
-                                  child: chooseButtonText(),
+                                  width: double.infinity,
+                                  height: 55,
+                                  child: ElevatedButton(
+                                    onPressed: () =>
+                                        showMediaModal(MediaType.image),
+                                    child: Text(
+                                      "chooseBanner".tr(),
+                                      style: theme.textTheme.button,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  )),
+                              if (banner != null)
+                                Text(
+                                  banner.name,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 12.0,
+                                      color: theme.primaryColor),
                                 )
-                              ),
-                              if(video != null)
-                              Text(
-                                video.name, 
-                                overflow: TextOverflow.ellipsis, 
-                                style: GoogleFonts.poppins(fontSize: 12.0, color: theme.primaryColor),
-                              )
                             ],
-                          )
-                        ),
-                        const SizedBox(width: 10,)
-                      ],
-                      Expanded(
-                        flex: 1, 
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              width: double.infinity,
-                              height: 55,
-                              child: ElevatedButton(
-                                onPressed: () => showMediaModal(MediaType.image), 
-                                child: Text("Choose banner", style: theme.textTheme.button,),
-                              )
-                            ),
-                            if(banner != null)
-                            Text(
-                              banner.name, 
-                              overflow: TextOverflow.ellipsis, 
-                              style: GoogleFonts.poppins(fontSize: 12.0, color: theme.primaryColor),
-                            )
-                          ],
-                        )
-                      ),
+                          )),
                     ],
                   ),
-                  const SizedBox(height: 20,),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -256,19 +275,21 @@ class _BaseCreatePageState extends State<BaseCreatePage> {
                         width: 150,
                         height: 40,
                         child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              manager.publish(
-                                name: _nameController.text,
-                                type: widget.createType.value,
-                                description: _descriptionController.text
-                              );
-                            }
-                          },
-                          child: widget.createType == VideoType.stream
-                            ? Text("Start live", style: theme.textTheme.button,)
-                            : Text("Publish", style: theme.textTheme.button)
-                        ),
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                manager.publish(
+                                    name: _nameController.text,
+                                    type: widget.createType.value,
+                                    description: _descriptionController.text);
+                              }
+                            },
+                            child: widget.createType == VideoType.stream
+                                ? Text(
+                                    "startLive".tr(),
+                                    style: theme.textTheme.button,
+                                  )
+                                : Text("publish".tr(),
+                                    style: theme.textTheme.button)),
                       ),
                     ],
                   ),
@@ -281,39 +302,49 @@ class _BaseCreatePageState extends State<BaseCreatePage> {
     );
   }
 
-  void showMediaModal (MediaType type) {
+  void showMediaModal(MediaType type) {
     Duration? maxDuration;
-    if (widget.createType == VideoType.short && type != MediaType.image) maxDuration = const Duration(seconds: 30);
+    if (widget.createType == VideoType.short && type != MediaType.image)
+      maxDuration = const Duration(seconds: 30);
     showFileModalBottomSheet(
-      context: context,
-      type: type,
-      builder: (context) => PickMedia(type: type, maxDuration: maxDuration),
-      then: (value) {
-        if (value == null) return;
-        type == MediaType.image ? manager.banner = value : manager.video = value;
-        manager.refresh();
-      }
-    );
+        context: context,
+        type: type,
+        builder: (context) => PickMedia(type: type, maxDuration: maxDuration),
+        then: (value) {
+          if (value == null) return;
+          type == MediaType.image
+              ? manager.banner = value
+              : manager.video = value;
+          manager.refresh();
+        });
   }
 
-  Widget chooseButtonText () {
+  Widget chooseButtonText() {
     TextStyle? style = Theme.of(context).textTheme.button;
     return widget.createType == VideoType.video
-      ? Text("Choose video", style: style,)
-      : Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Choose video", style: style,),
-          Text("(Up to 30 seconds)", style: style,)
-        ],
-      );
+        ? Text(
+            "chooseVideo".tr(),
+            style: style,
+          )
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "chooseVideo".tr(),
+                style: style,
+              ),
+              Text(
+                "(${'upSeconds'.tr()})",
+                style: style,
+              )
+            ],
+          );
   }
 }
 
-
 class InputTag extends StatefulWidget {
   const InputTag({Key? key}) : super(key: key);
-  
+
   @override
   State<InputTag> createState() => _InputTagState();
 }
@@ -323,13 +354,12 @@ class _InputTagState extends State<InputTag> {
   late TextEditingController _tagController;
   late FocusNode _tagFocus;
 
-  void onTagChange () {
+  void onTagChange() {
     manager.updateTag(_tagController.text);
     if (manager.tagStr != _tagController.text) {
       _tagController.value = TextEditingValue(
-        text: manager.tagStr,
-        selection: TextSelection.collapsed(offset: manager.tagStr.length)
-      );
+          text: manager.tagStr,
+          selection: TextSelection.collapsed(offset: manager.tagStr.length));
     }
   }
 
@@ -353,11 +383,11 @@ class _InputTagState extends State<InputTag> {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     CreateManager manager = context.watch<CreateManager>();
-    
+
     return GestureDetector(
       onTap: () {
         _tagFocus.requestFocus();
-        setState(() => manager.tagInputSelected=true);
+        setState(() => manager.tagInputSelected = true);
       },
       child: Stack(
         children: [
@@ -365,22 +395,32 @@ class _InputTagState extends State<InputTag> {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
             decoration: BoxDecoration(
-              border: Border.all(color: manager.tagInputSelected ? theme.primaryColor : Colors.grey),
-              borderRadius: BorderRadius.circular(10)
-            ),
+                border: Border.all(
+                    color: manager.tagInputSelected
+                        ? theme.primaryColor
+                        : Colors.grey),
+                borderRadius: BorderRadius.circular(10)),
             child: Wrap(
               spacing: 6,
               children: [
                 ...List.generate(
-                  manager.tags.length, (i) => Chip(
-                    shadowColor: theme.primaryColor,
-                    label: Text(manager.tags[i].name, style: theme.textTheme.bodyText2,),
-                    deleteIcon: Icon(Icons.close, color: theme.primaryColor,),
-                    onDeleted: () => manager.popTag(manager.tags[i])
-                  ),
+                  manager.tags.length,
+                  (i) => Chip(
+                      shadowColor: theme.primaryColor,
+                      label: Text(
+                        manager.tags[i].name,
+                        style: theme.textTheme.bodyText2,
+                      ),
+                      deleteIcon: Icon(
+                        Icons.close,
+                        color: theme.primaryColor,
+                      ),
+                      onDeleted: () => manager.popTag(manager.tags[i])),
                 ),
                 SizedBox(
-                  width: _tagController.text.isEmpty ? 10 : manager.tagStr.length * 12,
+                  width: _tagController.text.isEmpty
+                      ? 10
+                      : manager.tagStr.length * 12,
                   child: TextFormField(
                       focusNode: _tagFocus,
                       controller: _tagController,
@@ -389,10 +429,9 @@ class _InputTagState extends State<InputTag> {
                       onTap: () => manager.tagInputSelected = true,
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.all(0),
-                        enabledBorder: InputBorder.none, 
-                        focusedBorder: InputBorder.none, 
-                      )
-                  ),
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                      )),
                 ),
               ],
             ),
@@ -402,20 +441,26 @@ class _InputTagState extends State<InputTag> {
           //   top: manager.hasTagContent ? -12 : 11,
           //   left: 12,
           //   child: Text(
-          //       "Tags", style: manager.hasTagContent 
+          //       "Tags", style: manager.hasTagContent
           //         ? GoogleFonts.poppins(fontSize: 15.0, color: theme.primaryColor, fontWeight: FontWeight.w500)
           //         : GoogleFonts.poppins(fontSize: 17.0, color: Colors.grey),
           //     ),
           // ),
           Transform.translate(
-            offset: manager.hasTagContent ? const Offset(12, -12) : const Offset(12, 11), 
+            offset: manager.hasTagContent
+                ? const Offset(12, -12)
+                : const Offset(12, 11),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 3),
               color: Colors.grey[50],
               child: Text(
-                "Tags", style: manager.hasTagContent 
-                  ? GoogleFonts.poppins(fontSize: 15.0, color: theme.primaryColor, fontWeight: FontWeight.w500)
-                  : GoogleFonts.poppins(fontSize: 17.0, color: Colors.grey),
+                "tags".tr(),
+                style: manager.hasTagContent
+                    ? GoogleFonts.poppins(
+                        fontSize: 15.0,
+                        color: theme.primaryColor,
+                        fontWeight: FontWeight.w500)
+                    : GoogleFonts.poppins(fontSize: 17.0, color: Colors.grey),
               ),
             ),
           ),

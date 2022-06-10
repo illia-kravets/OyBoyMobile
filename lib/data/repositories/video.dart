@@ -52,3 +52,11 @@ class StreamRepository extends BaseVideoRepository {
   @override
   List<FilterAction> get filters => Filters.video;
 }
+
+class ShortRepository extends BaseVideoRepository {
+  @override
+  List<FilterAction> get filters => Filters.video;
+
+  @override
+  String get videoType => VideoType.short.value;
+}

@@ -36,6 +36,8 @@ class UserManager extends BaseManager {
     return refresh();
   }
 
+  void register() {}
+
   void logout() {
     page = PageType.login;
     refresh();

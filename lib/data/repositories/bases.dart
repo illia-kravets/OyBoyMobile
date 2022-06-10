@@ -14,8 +14,9 @@ abstract class BaseRepository {
 
   Uri combineUrl(String url) => Uri.parse("$host$url?${request.queryString}");
 
-  void parseResponse(http.Response response) => this.response =
-      Response(code: response.statusCode, data: jsonDecode(utf8.decode(response.bodyBytes)));
+  void parseResponse(http.Response response) => this.response = Response(
+      code: response.statusCode,
+      data: jsonDecode(utf8.decode(response.bodyBytes)));
 
   void prepareRequest({Map? query, Map? body, Map? headers, Map? kwargs}) =>
       this
@@ -46,7 +47,7 @@ abstract class BaseRepository {
       Map kwargs = const {}}) async {
     prepareRequest(query: query, headers: headers, kwargs: kwargs);
     parseResponse(await http.get(combineUrl(url), headers: request.headers));
-    
+
     return response;
   }
 
@@ -132,15 +133,15 @@ class CRUDGeneric<T extends BaseModel> extends BaseRepository
   Future<List> list() async {
     await get();
     request;
-    
+
     return response.data.map((x) {
       return parseObj(x);
     }).toList();
   }
 
   Future<T> retrieve(dynamic id) async {
-    Map data = {};
-    return parseObj(data);
+    await get(url: "$id");
+    return parseObj(response.data);
   }
 
   Future<void> update(dynamic id, T instance) async {}
