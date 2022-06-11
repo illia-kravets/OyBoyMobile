@@ -9,12 +9,11 @@ void startGet() {
   GetIt.I.registerSingleton<StreamRepository>(StreamRepository());
   GetIt.I.registerSingleton<ShortRepository>(ShortRepository());
   GetIt.I.registerSingleton<ProfileRepository>(ProfileRepository());
-  GetIt.I.registerSingleton<ChannelRepository>(ChannelRepository());
 }
 
 void registerModels() {
-  GetIt.I.registerFactoryParam<Channel, Map, void>(
-      (data, _) => Channel.fromJson(data));
+  GetIt.I.registerFactoryParam<Profile, Map, void>(
+      (data, _) => Profile.fromJson(data));
   GetIt.I.registerFactoryParam<Video, Map, void>(
       (data, _) => Video.fromJson(data));
   GetIt.I.registerFactoryParam<Tag, Map, void>((data, _) => Tag.fromJson(data));

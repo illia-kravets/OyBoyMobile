@@ -1,51 +1,11 @@
 import 'dart:convert';
 
 import 'package:oyboy/constants/defaults.dart';
+import 'package:oyboy/data/models/profile.dart';
 
 import './helpers.dart';
 import 'dart:convert' show utf8;
 
-class Channel extends BaseModel {
-  Channel(
-      {this.id,
-      required this.name,
-      this.avatar,
-      this.createdAt,
-      this.descriprion,
-      this.subscriberCount});
-
-  int? id;
-  String name;
-  String? avatar;
-  String? createdAt;
-  String? descriprion;
-  int? subscriberCount;
-
-  factory Channel.fromJson(Map<dynamic, dynamic> data) {
-    return Channel(
-        id: data["id"],
-        name: data["title"],
-        descriprion: data["descriprion"],
-        avatar: data["avatar"],
-        createdAt: data["created_at"].split("T")[0],
-        subscriberCount: data["subscribers"]);
-  }
-
-  @override
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'avatar': avatar,
-      "createdAt": createdAt,
-      "description": descriprion,
-      "subscriberCount": subscriberCount
-    };
-  }
-
-  @override
-  String toJson() => json.encode(toMap());
-}
 
 class Video extends BaseModel {
   Video(
@@ -72,7 +32,7 @@ class Video extends BaseModel {
   String? type;
   num viewCount = 0;
   num likeCount = 0;
-  Channel? channel;
+  Profile? channel;
   int? channel_id;
 
   static Video fromJson(Map<dynamic, dynamic> data) {
@@ -85,7 +45,7 @@ class Video extends BaseModel {
         likeCount: data["likes"] ?? 0,
         banner: data["banner"],
         video: data["video"],
-        channel: Channel.fromJson(data["channel"]),
+        channel: Profile.fromJson(data["channel"]),
         channel_id: data["channel_id"]);
   }
 

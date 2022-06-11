@@ -9,9 +9,8 @@ class ProfileManager extends FilterCRUDManager<ProfileRepository> {
   bool tabLoading = false;
 
   late Profile profile;
-  
   Profile editProfile = Profile();
-  
+  late AuthRepository authRepo;
 
   @override
   void goToPage({PageType? page, VideoType? videoType}) {
@@ -24,15 +23,21 @@ class ProfileManager extends FilterCRUDManager<ProfileRepository> {
   @override
   void initialize() async {
     isLoading = true;
-    profile = await repository.retrieve(1);
+    authRepo = GetIt.I.get<AuthRepository>();
+    profile = authRepo.profile;
     editProfile = profile;
     isLoading = false;
     refresh();
   }
 
-  void updateProfile({String? username, String? name, String? description, String? photo, bool save = true}) {
-    profile = editProfile.copyWith(username: username, fullName: name, description: description, photo: photo);
+  void updateProfile({String? username, String? name, String? description, String? photo, bool save = true}) async {
+    isLoading = true;
+    // refresh();
+    profile = editProfile.copyWith(username: username, fullName: name, description: description);
+    await repository.update(profile.id, profile);
     editProfile = Profile();
+    await authRepo.fetchProfile();
+    refresh();
     // if (save) repository.update(1, editProfile);
   }
 }

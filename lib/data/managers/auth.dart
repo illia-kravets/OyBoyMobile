@@ -26,14 +26,15 @@ class UserManager extends BaseManager {
     bool isAuthorized =
         await repository.authorize(username: username, password: password);
 
-    if (isAuthorized) {
-      page = PageType.video;
+    if (!isAuthorized) {
+      clearState();
+      error = AppError(msg: repository.response.text);
       return refresh();
     }
-
-    clearState();
-    error = AppError(msg: repository.response.text);
+    
+    page = PageType.video;
     return refresh();
+    
   }
 
   void register() {}

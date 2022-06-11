@@ -83,12 +83,13 @@ mixin SequrityBase on BaseRepository {
   @override
   void prepareRequest({Map? query, Map? body, Map? headers, Map? kwargs}) {
     bool auth = kwargs?["auth"] ?? useAuth;
+    Map _headers = {...headers ?? {}};
     if (auth) {
-      // TODO - add auth headers logic
-      // headers?.addAll({});
+      String? token = GetIt.I.get<AuthRepository>().token;
+      _headers["Authorization"] = 'Bearer $token';
     }
     super.prepareRequest(
-        query: query, body: body, headers: headers, kwargs: kwargs);
+        query: query, body: body, headers: _headers, kwargs: kwargs);
   }
 }
 
@@ -144,7 +145,10 @@ class CRUDGeneric<T extends BaseModel> extends BaseRepository
     return parseObj(response.data);
   }
 
-  Future<void> update(dynamic id, T instance) async {}
+  Future<T> update(dynamic id, T instance) async {
+    await patch(url: "$id", body: instance.toMap());
+    return parseObj(response.data);
+  }
 
   Future<void> remove(dynamic id) async {}
 

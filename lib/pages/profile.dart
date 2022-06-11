@@ -197,7 +197,7 @@ class ProfileInfo extends StatelessWidget {
                 ),
                 CircleAvatar(
                   radius: 60,
-                  backgroundImage: AssetImage(profile.photo ?? ""),
+                  backgroundImage: AssetImage(profile.avatar ?? ""),
                 ),
                 const SizedBox(
                   height: 10,
@@ -352,7 +352,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                       CircleAvatar(
                         radius: 60,
                         backgroundImage:
-                            AssetImage(manager.profile.photo ?? ""),
+                            AssetImage(manager.profile.avatar ?? ""),
                       ),
                       Positioned(
                         right: 0,

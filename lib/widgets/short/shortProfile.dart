@@ -14,8 +14,8 @@ class ShortProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     Video? short = context.select((ShortManager v) => v.activeShort);
     if (short == null) return _loadingCard();
-    return FutureBuilder<Channel>(
-        future: GetIt.I.get<ChannelRepository>().retrieve(short.channel_id),
+    return FutureBuilder<Profile>(
+        future: GetIt.I.get<ProfileRepository>().retrieve(short.channel_id),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done ||
               snapshot.data == null) return _loadingCard();
@@ -23,7 +23,7 @@ class ShortProfile extends StatelessWidget {
         });
   }
 
-  Widget _card(BuildContext context, Channel? channel) {
+  Widget _card(BuildContext context, Profile? channel) {
     return Row(
       children: [
         NetworkCircularAvatar(
@@ -36,12 +36,12 @@ class ShortProfile extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(channel.name,
+            Text(channel.username ?? "",
                 style: GoogleFonts.poppins(
                     fontSize: 16.0,
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
-            Text("${channel.subscriberCount.toString()} ${'subscribers'.tr()}",
+            Text("${channel.subscribers.toString()} ${'subscribers'.tr()}",
                 style: GoogleFonts.poppins(
                     fontSize: 13.0,
                     fontWeight: FontWeight.w300,
