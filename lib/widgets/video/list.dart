@@ -68,8 +68,8 @@ class GenericCardList<T extends CRUDManager> extends StatefulWidget {
       this.scrollableType = ScrollableType.list,
       CardConfig? cardConfig})
       : super(key: key) {
-        this.cardConfig = cardConfig ?? CardConfig();
-      }
+    this.cardConfig = cardConfig ?? CardConfig();
+  }
 
   final ScrollableType scrollableType;
   late CardConfig cardConfig;
@@ -176,16 +176,15 @@ class _GenericCardListState<T extends CRUDManager>
 
 class CardConfig {
   CardConfig(
-      {
-      this.count = 3,
+      {this.count = 3,
       this.active,
       this.paginate,
       this.onPageEnd,
       String? endText,
       String? emptyListText}) {
-        this.emptyListText = emptyListText ??  "nothingFound".tr();
-        this.endText = endText ?? "paginationEdge".tr();
-      }
+    this.emptyListText = emptyListText ?? "nothingFound".tr();
+    this.endText = endText ?? "paginationEdge".tr();
+  }
 
   final bool? active;
   final int count;
@@ -208,6 +207,37 @@ class CardConfig {
   }
 }
 
+class NotFound extends StatelessWidget {
+  const NotFound({Key? key, this.text}) : super(key: key);
+
+  final String? text;
+
+  @override
+  Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+              height: 200,
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/404.jpg'),
+                      fit: BoxFit.fitHeight))),
+          if (text != null)
+            Text(
+              text!,
+              style: theme.textTheme.headline4,
+              textAlign: TextAlign.center,
+            )
+        ],
+      ),
+    );
+  }
+}
+
 class VideoCardList<T extends CRUDManager> extends StatelessWidget {
   VideoCardList(
       {Key? key,
@@ -217,12 +247,12 @@ class VideoCardList<T extends CRUDManager> extends StatelessWidget {
       this.controller,
       CardConfig? config})
       : super(key: key) {
-        this.config = config ?? CardConfig();
-        assert(
-            this.config.activityAssert, "If you provide active - count must be > 0");
-        assert(this.config.paginateAssert,
-            "onPageEnd callback must be provided if paginate=false");
-      }
+    this.config = config ?? CardConfig();
+    assert(this.config.activityAssert,
+        "If you provide active - count must be > 0");
+    assert(this.config.paginateAssert,
+        "onPageEnd callback must be provided if paginate=false");
+  }
 
   final bool? primary;
   final bool shrinkWrap;
@@ -248,22 +278,8 @@ class VideoCardList<T extends CRUDManager> extends StatelessWidget {
           itemBuilder: (context, index) => const LoadingVideoCard());
     if (repository.cards.isEmpty)
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset('assets/images/404.jpg'),
-              Text(
-                config.emptyListText,
-                style: theme.textTheme.headline4,
-                textAlign: TextAlign.center,
-              )
-            ],
-          ),
-        ),
-      );
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: NotFound(text: config.emptyListText));
     return ListView.separated(
       primary: primary,
       shrinkWrap: shrinkWrap,
@@ -341,12 +357,12 @@ class VideoCardGrid<T extends CRUDManager> extends StatelessWidget {
       this.controller,
       CardConfig? config})
       : super(key: key) {
-        this.config = config ?? CardConfig(); 
-        assert(
-            this.config.activityAssert, "If you provide active - count must be > 0");
-        assert(this.config.paginateAssert,
-            "onPageEnd callback must be provided if paginate=false");
-      }
+    this.config = config ?? CardConfig();
+    assert(this.config.activityAssert,
+        "If you provide active - count must be > 0");
+    assert(this.config.paginateAssert,
+        "onPageEnd callback must be provided if paginate=false");
+  }
 
   final bool? primary;
   final bool shrinkWrap;
@@ -361,17 +377,7 @@ class VideoCardGrid<T extends CRUDManager> extends StatelessWidget {
     repository = context.watch<T>();
 
     return repository.cards.isEmpty
-        ? Expanded(
-            child: Column(
-              children: [
-                Image.asset('assets/images/404.jpg'),
-                Text(
-                  config.emptyListText,
-                  style: theme.textTheme.headline3,
-                )
-              ],
-            ),
-          )
+        ? NotFound(text: config.emptyListText)
         : Container(
             decoration: BoxDecoration(
                 gradient: LinearGradient(

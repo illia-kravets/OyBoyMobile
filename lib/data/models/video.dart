@@ -6,7 +6,6 @@ import 'package:oyboy/data/models/profile.dart';
 import './helpers.dart';
 import 'dart:convert' show utf8;
 
-
 class Video extends BaseModel {
   Video(
       {required this.id,
@@ -96,19 +95,25 @@ class Tag extends BaseModel {
 
 class Suggestion extends BaseModel {
   Suggestion(
-      {required this.text, required this.type, this.searched = false, this.id});
+      {required this.text,
+      required this.type,
+      this.searched = false,
+      this.id,
+      this.profile});
 
   final int? id;
   final String text;
   final String type;
   final bool searched;
+  final String? profile;
 
   factory Suggestion.fromJson(Map<dynamic, dynamic> data) {
     return Suggestion(
         id: data["id"],
         text: data["text"],
         type: data["video_type"],
-        searched: data["searched"]);
+        searched: data["searched"],
+        profile: data["profile"]);
   }
 
   static List<Suggestion> fromJsonList(List<Map> data) {
@@ -117,18 +122,15 @@ class Suggestion extends BaseModel {
 
   factory Suggestion.fromMap(Map<String, dynamic> map) {
     return Suggestion(
-      id: map['id']?.toInt(),
-      text: map['text'] ?? '',
-      type: map['type'] ?? '',
-    );
+        id: map['id']?.toInt(),
+        text: map['text'] ?? '',
+        type: map['type'] ?? '',
+        profile: map["profile"] ?? "");
   }
 
   @override
   Map<String, dynamic> toMap() {
-    return {
-      'text': text,
-      'video_type': type,
-    };
+    return {'text': text, 'video_type': type, "profile": profile};
   }
 
   @override

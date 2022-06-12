@@ -62,6 +62,7 @@ class SearchVideoGeneric<T extends BaseVideoRepository>
     extends FilterCRUDManager<T> {
   SuggestionRepository suggestionRepository =
       GetIt.I.get<SuggestionRepository>();
+  AuthRepository authRepo = GetIt.I.get<AuthRepository>();
 
   bool isFocused = true;
   String? searchText;
@@ -96,7 +97,8 @@ class SearchVideoGeneric<T extends BaseVideoRepository>
     repository.request.flush();
     suggestionRepository.request.flush();
     repository.query({"search": text});
-    await suggestionRepository.create(Suggestion(text: text, type: "video"));
+    await suggestionRepository.create(
+        Suggestion(text: text, type: "video", profile: authRepo.profile.id));
     cards = await repository.list();
     isLoading = false;
     refresh();

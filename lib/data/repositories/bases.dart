@@ -12,11 +12,17 @@ abstract class BaseRepository {
   Request request = Request();
   bool needAuth = false;
 
-  Uri combineUrl(String url) => Uri.parse("$host$url?${request.queryString}");
+  Uri combineUrl(String url) {
+    String path = "$api/$url";
+    if (request.queryString.isNotEmpty) path += "?${request.queryString}";
+    return Uri.parse(path);
+  }
 
-  void parseResponse(http.Response response) => this.response = Response(
-      code: response.statusCode,
-      data: jsonDecode(utf8.decode(response.bodyBytes)));
+  void parseResponse(http.Response response) {
+    this.response = Response(
+        code: response.statusCode,
+        data: jsonDecode(utf8.decode(response.bodyBytes)));
+  }
 
   void prepareRequest({Map? query, Map? body, Map? headers, Map? kwargs}) =>
       this
@@ -61,6 +67,7 @@ abstract class BaseRepository {
     dynamic data = await http.post(combineUrl(url),
         headers: request.headers, body: request.body);
     parseResponse(data);
+
     return response;
   }
 
@@ -129,12 +136,12 @@ class CRUDGeneric<T extends BaseModel> extends BaseRepository
 
   @override
   Uri combineUrl(String url, {bool isAction = false}) =>
-      Uri.parse("$host$endpoint/$url?${request.queryString}");
+      Uri.parse("$api/$endpoint/$url?${request.queryString}");
 
   Future<List> list() async {
     await get();
     request;
-
+    
     return response.data.map((x) {
       return parseObj(x);
     }).toList();
@@ -146,7 +153,7 @@ class CRUDGeneric<T extends BaseModel> extends BaseRepository
   }
 
   Future<T> update(dynamic id, T instance) async {
-    await patch(url: "$id", body: instance.toMap());
+    await patch(url: "$id/", body: instance.toMap());
     return parseObj(response.data);
   }
 

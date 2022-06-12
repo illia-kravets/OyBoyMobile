@@ -10,6 +10,7 @@ import 'package:oyboy/data/managers/short.dart';
 import 'package:oyboy/data/repositories/profile.dart';
 import 'package:oyboy/my_icons.dart';
 import 'package:oyboy/widgets/default/default_page.dart';
+import 'package:oyboy/widgets/video/list.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/models/video.dart';
@@ -81,7 +82,9 @@ class _ShortPageListState extends State<ShortPageList> {
     ShortManager manager = context.watch<ShortManager>();
     if (manager.isLoading) return const LoadingShortPage();
     if (manager.cards.isEmpty) {
-      return Center(child: Image.asset("assets/images/404.jpg"));
+      return NotFound(
+        text: 'nothingFound'.tr(),
+      );
     }
     return PageView.builder(
         itemCount: manager.cards.length,

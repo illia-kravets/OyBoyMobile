@@ -1,5 +1,6 @@
 import 'dart:convert';
 import './helpers.dart';
+import 'package:oyboy/settings.dart';
 
 class Profile extends BaseModel {
   String? id;
@@ -8,32 +9,34 @@ class Profile extends BaseModel {
   String? description;
   String? avatar;
   String? email;
+  bool banned = false;
   num subscriptions = 0;
   num subscribers = 0;
-  Profile({
-    this.id,
-    this.username,
-    this.fullName,
-    this.description,
-    this.avatar,
-    this.email,
-    this.subscriptions = 0,
-    this.subscribers = 0,
-  });
+  Profile(
+      {this.id,
+      this.username,
+      this.fullName,
+      this.description,
+      this.avatar,
+      this.email,
+      this.subscriptions = 0,
+      this.subscribers = 0,
+      this.banned = false});
 
-  Profile copyWith({
-    String? id,
-    String? username,
-    String? fullName,
-    String? description,
-    String? avatar,
-    num? subscriptions,
-    num? subscribers,
-    String? email
-  }) {
+  Profile copyWith(
+      {String? id,
+      String? username,
+      String? fullName,
+      String? description,
+      String? avatar,
+      num? subscriptions,
+      num? subscribers,
+      bool? banned,
+      String? email}) {
     return Profile(
       id: id ?? this.id,
       username: username ?? this.username,
+      banned: banned ?? this.banned,
       fullName: fullName ?? this.fullName,
       description: description ?? this.description,
       avatar: avatar ?? this.avatar,
@@ -46,27 +49,26 @@ class Profile extends BaseModel {
   @override
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
-    if(id != null){
+    result.addAll({'banned': id});
+    if (id != null) {
       result.addAll({'id': id});
     }
-    if(email != null){
+    if (email != null) {
       result.addAll({'email': email});
     }
-    if(username != null){
+    if (username != null) {
       result.addAll({'username': username});
     }
-    if(fullName != null){
-      result.addAll({'fullName': fullName});
+    if (fullName != null) {
+      result.addAll({'full_name': fullName});
     }
-    if(description != null){
+    if (description != null) {
       result.addAll({'description': description});
     }
-    if(avatar != null){
-      result.addAll({'photo': avatar});
-    }
-    result.addAll({'subscriptions': subscriptions});
-    result.addAll({'subscribers': subscribers});
-  
+    // if (avatar != null) {
+    //   result.addAll({'photo': avatar});
+    // }
+
     return result;
   }
 
@@ -77,7 +79,8 @@ class Profile extends BaseModel {
       username: map['username'],
       fullName: map['full_name'],
       description: map['description'],
-      avatar: map['avatar'],
+      banned: map['banned'],
+      avatar: host + map['avatar'],
       subscriptions: map['subscription_count'] ?? 0,
       subscribers: map['subscriber_count'] ?? 0,
     );
@@ -95,25 +98,26 @@ class Profile extends BaseModel {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is Profile &&
-      other.id == id &&
-      other.email == email &&
-      other.username == username &&
-      other.fullName == fullName &&
-      other.description == description &&
-      other.avatar == avatar &&
-      other.subscriptions == subscriptions &&
-      other.subscribers == subscribers;
+        other.id == id &&
+        other.banned == banned &&
+        other.email == email &&
+        other.username == username &&
+        other.fullName == fullName &&
+        other.description == description &&
+        other.avatar == avatar &&
+        other.subscriptions == subscriptions &&
+        other.subscribers == subscribers;
   }
 
   @override
   int get hashCode {
     return username.hashCode ^
-      fullName.hashCode ^
-      description.hashCode ^
-      avatar.hashCode ^
-      subscriptions.hashCode ^
-      subscribers.hashCode;
+        fullName.hashCode ^
+        description.hashCode ^
+        avatar.hashCode ^
+        subscriptions.hashCode ^
+        subscribers.hashCode;
   }
 }
