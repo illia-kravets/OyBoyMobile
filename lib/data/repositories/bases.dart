@@ -122,11 +122,36 @@ mixin PaginationRepository on BaseRepository {
     key = ascending ? key : "-$key";
     request.update(data: {"ordering": key});
   }
+
+  @override
+  void parseResponse(http.Response response) {
+    var data = jsonDecode(utf8.decode(response.bodyBytes));
+    if (!_isPaginated(data)) return super.parseResponse(response);
+    this.response = Response(
+        code: response.statusCode,
+        data: data["results"],
+        count: data["count"],
+        next: data["next"],
+        previous: data['previous']
+    );
+  }
+
+  bool _isPaginated(var data) => data is Map && data.containsKey("next") && data.containsKey("previous");
 }
 
 mixin FilterRepository on BaseRepository {
   List<FilterAction> get filters =>
       throw UnimplementedError("Filters not implemented");
+}
+
+mixin ReportRepository on BaseRepository {
+  
+  Future<void> sendReport(String id, String text) async {
+
+    await post(url: "$id/report/", body: {"text": text});
+    response;
+    
+  }
 }
 
 class CRUDGeneric<T extends BaseModel> extends BaseRepository

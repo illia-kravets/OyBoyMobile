@@ -35,9 +35,9 @@ abstract class BaseVideoRepository extends CRUDGeneric<Video>
   String get endpoint => "video/video";
 }
 
-class VideoRepository extends BaseVideoRepository {
+class VideoRepository extends BaseVideoRepository with ReportRepository {
   VideoRepository();
-
+  
   @override
   List<FilterAction> get filters => Filters.video;
 

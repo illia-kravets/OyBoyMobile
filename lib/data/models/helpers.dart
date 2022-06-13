@@ -13,12 +13,13 @@ class AppError implements Exception {
 }
 
 class Response {
-  Response({this.code, this.data, this.text, this.next, this.previous});
+  Response({this.code, this.data, this.text, this.next, this.previous, this.count});
   final int? code;
   final dynamic data;
   final String? text;
   final String? next;
   final String? previous;
+  final int? count;
 
   bool get success => code == 200;
   AppError? get error => !success ? AppError(msg: text) : null;

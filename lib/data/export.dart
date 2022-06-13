@@ -1,4 +1,5 @@
 export 'models/video.dart';
+export 'models/comment.dart';
 export 'models/helpers.dart';
 export 'models/profile.dart';
 
@@ -11,5 +12,5 @@ export 'managers/profile.dart';
 export "repositories/bases.dart";
 export "repositories/auth.dart";
 export 'repositories/video.dart';
-export 'repositories/short.dart';
+export 'repositories/comment.dart';
 export 'repositories/profile.dart';

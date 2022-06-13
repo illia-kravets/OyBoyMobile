@@ -8,14 +8,15 @@ import '../../data/export.dart';
 import '../video/card.dart';
 
 class ShortProfile extends StatelessWidget {
-  const ShortProfile({Key? key}) : super(key: key);
+  const ShortProfile({Key? key, this.channelId}) : super(key: key);
+
+  final int? channelId;
 
   @override
   Widget build(BuildContext context) {
-    Video? short = context.select((ShortManager v) => v.activeShort);
-    if (short == null) return _loadingCard();
+    if (channelId == null) return _loadingCard();
     return FutureBuilder<Profile>(
-        future: GetIt.I.get<ProfileRepository>().retrieve(short.channel_id),
+        future: GetIt.I.get<ProfileRepository>().retrieve(channelId),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done ||
               snapshot.data == null) return _loadingCard();

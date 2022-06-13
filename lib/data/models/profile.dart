@@ -73,6 +73,11 @@ class Profile extends BaseModel {
   }
 
   factory Profile.fromJson(Map map) {
+    String avatar = map["avatar"] ?? "";
+    avatar = Uri.parse(avatar).isAbsolute 
+      ? avatar
+      : host + avatar;
+      
     return Profile(
       id: map["id"].toString(),
       email: map["email"],
@@ -80,7 +85,7 @@ class Profile extends BaseModel {
       fullName: map['full_name'],
       description: map['description'],
       banned: map['banned'],
-      avatar: host + map['avatar'],
+      avatar: avatar,
       subscriptions: map['subscription_count'] ?? 0,
       subscribers: map['subscriber_count'] ?? 0,
     );

@@ -9,6 +9,7 @@ void startGet() {
   GetIt.I.registerSingleton<StreamRepository>(StreamRepository());
   GetIt.I.registerSingleton<ShortRepository>(ShortRepository());
   GetIt.I.registerSingleton<ProfileRepository>(ProfileRepository());
+  GetIt.I.registerSingleton<CommentRepository>(CommentRepository());
 }
 
 void registerModels() {
@@ -19,4 +20,5 @@ void registerModels() {
   GetIt.I.registerFactoryParam<Tag, Map, void>((data, _) => Tag.fromJson(data));
   GetIt.I.registerFactoryParam<Suggestion, Map, void>(
       (data, _) => Suggestion.fromJson(data));
+  GetIt.I.registerFactoryParam<Comment, Map, void>((data, _) => Comment.fromJson(data));
 }

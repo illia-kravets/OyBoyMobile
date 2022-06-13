@@ -15,7 +15,8 @@ import 'package:provider/provider.dart';
 
 import '../../data/models/video.dart';
 import '../video/card.dart';
-import 'commentList.dart';
+import '../comments/commentPage.dart';
+import 'detailAppbar.dart';
 import 'loadingShortPage.dart';
 import 'shortProfile.dart';
 
@@ -34,27 +35,13 @@ class _ShortListState extends State<ShortList> {
       child: DefaultPage(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(60.0),
-          child: AppBar(
-            leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios),
-                onPressed: () => Navigator.of(context).pop(),
-                color: theme.primaryColor),
-            backgroundColor: Colors.transparent.withOpacity(0.1),
-            title: const ShortProfile(),
-            titleSpacing: 0,
-            elevation: 0,
-            flexibleSpace: ClipRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
-                child: Container(
-                  color: Colors.transparent,
-                ),
-              ),
-            ),
-          ),
+          child: Selector<ShortManager, Video?>(
+            selector: (_, manager) => manager.activeShort,
+            builder: (_, short, __) => DetailVideoAppBar(video: short)
+          )
         ),
         extendBodyBehindAppBar: true,
-        extendBody: true,
+        extendBody: true, 
         body: const ShortPageList(),
       ),
     );
@@ -174,6 +161,7 @@ class _ShortDisplayPageState extends State<ShortDisplayPage> {
                           const SizedBox(
                             width: 20,
                           ),
+                          if(widget.short.description != null && widget.short.description!.isNotEmpty)
                           GestureDetector(
                             onTap: () =>
                                 setState(() => expandedBar = !expandedBar),
@@ -208,6 +196,7 @@ class _ShortDisplayPageState extends State<ShortDisplayPage> {
                                     padding: const EdgeInsets.only(top: 8),
                                     child: Text(
                                       widget.short.description ?? "",
+                                      textAlign: TextAlign.start,
                                       style: GoogleFonts.poppins(
                                           color: Colors.white,
                                           fontSize: 15,
@@ -289,7 +278,7 @@ class _ShortDisplayPageState extends State<ShortDisplayPage> {
                                   topRight: Radius.circular(15))),
                           context: context,
                           builder: (context) =>
-                              CommentList(videoId: widget.short.id)),
+                              CommentPage(videoId: widget.short.id)),
                     ),
                     const SizedBox(
                       height: 20,

@@ -208,9 +208,9 @@ class CardConfig {
 }
 
 class NotFound extends StatelessWidget {
-  const NotFound({Key? key, this.text}) : super(key: key);
+  NotFound({Key? key, this.text}) : super(key: key);
 
-  final String? text;
+  String? text;
 
   @override
   Widget build(BuildContext context) {

@@ -59,5 +59,15 @@
     "haveAccount": "Вже зарестрованi? ",
     "isRegistered": "Не створили аккаунт?",
     "iRadTerms": "Я ознайомився з ",
-    "terms": "правилами"
+    "terms": "правилами",
+
+    "report": "Поскаржитись",
+    "reportVideo": "На вмiст вiдео",
+    "reportProfile": "На профiль",
+    "detailReportPlaceholder": "Детально опишiть причину скарги",
+    "sendReport": "Вiдправити",
+    "reportSent": "Скаргу вiдправлено",
+
+    "comments": "коментарi",
+    "commentPlaceholder": "Введiть текст коментаря"
 }

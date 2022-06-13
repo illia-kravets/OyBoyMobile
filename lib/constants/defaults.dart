@@ -10,9 +10,24 @@ enum FloatingButtonLocation { left, center, right }
 
 enum RequestDataType { headers, query, body }
 
-enum VideoType { video, stream, short, favourite }
-
 enum ScrollableType { list, grid }
+
+
+enum ReportType {channel, video}
+
+extension RadioTitle on ReportType {
+  String get title {
+    switch(this) {
+      case ReportType.channel:
+        return 'reportProfile'.tr();
+      case ReportType.video:
+        return 'reportVideo'.tr();
+    }
+  }
+}
+
+
+enum VideoType { video, stream, short, favourite }
 
 extension CreateValue on VideoType {
   String get value {

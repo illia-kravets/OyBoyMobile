@@ -35,6 +35,7 @@ class Video extends BaseModel {
   int? channel_id;
 
   static Video fromJson(Map<dynamic, dynamic> data) {
+
     return Video(
         id: data["id"],
         name: data["name"],
@@ -44,8 +45,9 @@ class Video extends BaseModel {
         likeCount: data["likes"] ?? 0,
         banner: data["banner"],
         video: data["video"],
-        channel: Profile.fromJson(data["channel"]),
-        channel_id: data["channel_id"]);
+        description: data["description"],
+        channel: Profile.fromJson(data["profile"]),
+        channel_id: data["profile_id"]);
   }
 
   static List<Video> fromJsonList(List<Map> data) {

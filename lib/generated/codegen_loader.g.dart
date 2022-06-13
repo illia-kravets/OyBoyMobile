@@ -14,7 +14,38 @@ class CodegenLoader extends AssetLoader{
     return Future.value(mapLocales[locale.toString()]);
   }
 
-  static const Map<String,dynamic> uk = {
+  static const Map<String,dynamic> en = {
+  "video": "",
+  "short": "",
+  "profile": "",
+  "recomendation": "",
+  "subscribtion": "",
+  "search": "",
+  "searchResult": "",
+  "paginationEdge": "",
+  "sorting": "",
+  "ascending": "",
+  "descending": "",
+  "filter": "",
+  "all": "",
+  "views": "",
+  "likes": "",
+  "subscriptions": "",
+  "subscribers": "",
+  "username": "",
+  "name": "",
+  "description": "",
+  "saveChanges": "",
+  "createVideo": "",
+  "videoName": "",
+  "tags": "",
+  "chooseVideo": "",
+  "chooseBanner": "",
+  "publish": "",
+  "addVideo": "",
+  "addShort": ""
+};
+static const Map<String,dynamic> uk = {
   "video": "Вiдео",
   "short": "Стрiчка",
   "profile": "Профiль",
@@ -67,38 +98,15 @@ class CodegenLoader extends AssetLoader{
   "haveAccount": "Вже зарестрованi? ",
   "isRegistered": "Не створили аккаунт?",
   "iRadTerms": "Я ознайомився з ",
-  "terms": "правилами"
+  "terms": "правилами",
+  "report": "Поскаржитись",
+  "reportVideo": "На вмiст вiдео",
+  "reportProfile": "На профiль",
+  "detailReportPlaceholder": "Детально опишiть причину скарги",
+  "sendReport": "Вiдправити",
+  "reportSent": "Скаргу вiдправлено",
+  "comments": "коментарi",
+  "commentPlaceholder": "Введiть текст коментаря"
 };
-static const Map<String,dynamic> en = {
-  "video": "",
-  "short": "",
-  "profile": "",
-  "recomendation": "",
-  "subscribtion": "",
-  "search": "",
-  "searchResult": "",
-  "paginationEdge": "",
-  "sorting": "",
-  "ascending": "",
-  "descending": "",
-  "filter": "",
-  "all": "",
-  "views": "",
-  "likes": "",
-  "subscriptions": "",
-  "subscribers": "",
-  "username": "",
-  "name": "",
-  "description": "",
-  "saveChanges": "",
-  "createVideo": "",
-  "videoName": "",
-  "tags": "",
-  "chooseVideo": "",
-  "chooseBanner": "",
-  "publish": "",
-  "addVideo": "",
-  "addShort": ""
-};
-static const Map<String, Map<String,dynamic>> mapLocales = {"uk": uk, "en": en};
+static const Map<String, Map<String,dynamic>> mapLocales = {"en": en, "uk": uk};
 }
