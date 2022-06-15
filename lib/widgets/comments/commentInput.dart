@@ -59,7 +59,10 @@ class _CommentInputState extends State<CommentInput> {
           ),
           // const SizedBox(width: 16),
           GestureDetector(
-            onTap: () => manager.addComment(_commentController.text),
+            onTap: () {
+              manager.addComment(_commentController.text);
+              _commentController.text = "";
+            },
             child: Container(
               height: 40, 
               width: 40, 

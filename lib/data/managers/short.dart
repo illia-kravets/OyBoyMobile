@@ -19,6 +19,7 @@ class ShortManager extends CRUDManager<ShortRepository> {
   }
 
   void setActiveShort(Video short) {
+    if (activeShort == short) return;
     activeShort = short;
     refresh();
   }

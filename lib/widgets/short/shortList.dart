@@ -57,11 +57,27 @@ class ShortPageList extends StatefulWidget {
 
 class _ShortPageListState extends State<ShortPageList> {
   late ShortManager manager;
+  late PageController _controller;
+
+  void onPageChange () {
+
+    // manager.setActiveShort(manager.cards[page]);
+  }
 
   @override
   void initState() {
     context.read<ShortManager>().initialize();
+    _controller = PageController();
+    _controller.addListener(onPageChange);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _controller.removeListener(onPageChange);
+    _controller.dispose();
+    super.dispose();
   }
 
   @override

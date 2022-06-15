@@ -5,7 +5,7 @@ class CommentManager extends CRUDManager<CommentRepository> {
   CommentManager({required this.videoId});
 
   final int videoId;
-  late int? count;
+  int? count;
 
   @override 
   void initialize() async {

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import "package:cached_network_image/cached_network_image.dart";
 
+import '../detailVideo/detailVideoPage.dart';
 import "/data/models/video.dart";
 
 class VideoCard extends StatelessWidget {
@@ -12,74 +13,79 @@ class VideoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(2),
-      decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            theme.primaryColor,
-            Colors.white,
-          ], begin: Alignment.bottomCenter, end: Alignment.topCenter),
-          borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(10))),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (ctx) => DetailVideo(video: video,)));
+      },
       child: Container(
-        height: 300,
-        padding: const EdgeInsets.all(3),
+        padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(18)),
-        child: Column(children: [
-          getVideoBanner(video.banner),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.only(left: 15, right: 15),
-              child: Row(
-                children: [
-                  GestureDetector(
-                      onTap: () {},
-                      child: NetworkCircularAvatar(
-                        url: video.channel!.avatar ?? "",
-                        radius: 25,
-                      )),
-                  const SizedBox(width: 4),
-                  Container(
-                    height: double.infinity,
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width: 275,
-                            child: Text(
-                              video.name,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: theme.textTheme.headline5,
+            gradient: LinearGradient(colors: [
+              theme.primaryColor,
+              Colors.white,
+            ], begin: Alignment.bottomCenter, end: Alignment.topCenter),
+            borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(10))),
+        child: Container(
+          height: 300,
+          padding: const EdgeInsets.all(3),
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(18)),
+          child: Column(children: [
+            getVideoBanner(video.banner),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                        onTap: () {},
+                        child: NetworkCircularAvatar(
+                          url: video.channel!.avatar ?? "",
+                          radius: 25,
+                        )),
+                    const SizedBox(width: 4),
+                    Container(
+                      height: double.infinity,
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width: 275,
+                              child: Text(
+                                video.name,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: theme.textTheme.headline5,
+                              ),
                             ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                "${video.viewCount.toString()} ${'views'.tr()}",
-                                style: theme.textTheme.bodyText2,
-                              ),
-                              const SizedBox(
-                                width: 100,
-                              ),
-                              Text(
-                                video.createdAt ?? "",
-                                style: theme.textTheme.bodyText2,
-                              )
-                            ],
-                          )
-                        ]),
-                  ),
-                ],
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  "${video.viewCount.toString()} ${'views'.tr()}",
+                                  style: theme.textTheme.bodyText2,
+                                ),
+                                const SizedBox(
+                                  width: 100,
+                                ),
+                                Text(
+                                  video.createdAt ?? "",
+                                  style: theme.textTheme.bodyText2,
+                                )
+                              ],
+                            )
+                          ]),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          )
-        ]),
+            )
+          ]),
+        ),
       ),
     );
   }

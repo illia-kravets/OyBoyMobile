@@ -46,7 +46,7 @@ class Comment extends BaseModel {
 
   @override
   Map<String, dynamic> toMap() {
-    return {'name': name, 'desription': description, "profile_id": profileId, "videoId": videoId};
+    return {'name': name, 'description': description ?? "", "profile_id": profileId, "video_id": videoId};
   }
 
   @override

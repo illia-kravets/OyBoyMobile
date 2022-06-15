@@ -8,6 +8,7 @@ export 'managers/auth.dart';
 export 'managers/video.dart';
 export 'managers/short.dart';
 export 'managers/profile.dart';
+export 'managers/detailVideo.dart';
 
 export "repositories/bases.dart";
 export "repositories/auth.dart";

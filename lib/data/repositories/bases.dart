@@ -185,6 +185,7 @@ class CRUDGeneric<T extends BaseModel> extends BaseRepository
   Future<void> remove(dynamic id) async {}
 
   Future<void> create(T instance) async {
+    
     request.update(type: RequestDataType.body, data: instance.toMap());
     await post();
   }
