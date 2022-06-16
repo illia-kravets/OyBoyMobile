@@ -5,20 +5,17 @@ class DetailVideoManager extends CRUDManager<VideoRepository> {
   DetailVideoManager({required this.video});
 
   final Video video;
+  List<Video> authorCards = [];
 
-  @override 
+  @override
   void initialize() async {
     isLoading = false;
+    authorCards.add(video);
   }
 
-  void like(String text) async {
-  }
+  void like() async {}
 
-  void favourite(String text) async {
+  void favourite() async {}
 
-  }
-
-  void view(String text) async {
-
-  }
+  void view() async {}
 }

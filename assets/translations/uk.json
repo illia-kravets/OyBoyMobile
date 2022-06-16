@@ -69,5 +69,8 @@
     "reportSent": "Скаргу вiдправлено",
 
     "comments": "коментарi",
-    "commentPlaceholder": "Введiть текст коментаря"
+    "commentPlaceholder": "Введiть текст коментаря",
+    "share": "Подiлитися",
+    "toFavourite": "До улюблених",
+    "channelVideos": "Iншi вiдео автора"
 }

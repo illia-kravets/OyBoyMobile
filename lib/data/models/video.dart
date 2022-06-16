@@ -14,6 +14,7 @@ class Video extends BaseModel {
       this.createdAt,
       this.viewCount = 0,
       this.likeCount = 0,
+      this.liked = false,
       this.banner = "",
       this.video = "",
       this.description,
@@ -29,18 +30,19 @@ class Video extends BaseModel {
   String? createdAt;
   String? description;
   String? type;
+  bool liked = false;
   num viewCount = 0;
   num likeCount = 0;
   Profile? channel;
   int? channel_id;
 
   static Video fromJson(Map<dynamic, dynamic> data) {
-
     return Video(
         id: data["id"],
         name: data["name"],
         duration: data["duration"],
         createdAt: data['created_at'].split("T")[0],
+        liked: data["liked"] ?? false,
         viewCount: data["views"] ?? 0,
         likeCount: data["likes"] ?? 0,
         banner: data["banner"],

@@ -14,38 +14,7 @@ class CodegenLoader extends AssetLoader{
     return Future.value(mapLocales[locale.toString()]);
   }
 
-  static const Map<String,dynamic> en = {
-  "video": "",
-  "short": "",
-  "profile": "",
-  "recomendation": "",
-  "subscribtion": "",
-  "search": "",
-  "searchResult": "",
-  "paginationEdge": "",
-  "sorting": "",
-  "ascending": "",
-  "descending": "",
-  "filter": "",
-  "all": "",
-  "views": "",
-  "likes": "",
-  "subscriptions": "",
-  "subscribers": "",
-  "username": "",
-  "name": "",
-  "description": "",
-  "saveChanges": "",
-  "createVideo": "",
-  "videoName": "",
-  "tags": "",
-  "chooseVideo": "",
-  "chooseBanner": "",
-  "publish": "",
-  "addVideo": "",
-  "addShort": ""
-};
-static const Map<String,dynamic> uk = {
+  static const Map<String,dynamic> uk = {
   "video": "Вiдео",
   "short": "Стрiчка",
   "profile": "Профiль",
@@ -106,7 +75,41 @@ static const Map<String,dynamic> uk = {
   "sendReport": "Вiдправити",
   "reportSent": "Скаргу вiдправлено",
   "comments": "коментарi",
-  "commentPlaceholder": "Введiть текст коментаря"
+  "commentPlaceholder": "Введiть текст коментаря",
+  "share": "Подiлитися",
+  "toFavourite": "До улюблених",
+  "channelVideos": "Iншi вiдео автора"
 };
-static const Map<String, Map<String,dynamic>> mapLocales = {"en": en, "uk": uk};
+static const Map<String,dynamic> en = {
+  "video": "",
+  "short": "",
+  "profile": "",
+  "recomendation": "",
+  "subscribtion": "",
+  "search": "",
+  "searchResult": "",
+  "paginationEdge": "",
+  "sorting": "",
+  "ascending": "",
+  "descending": "",
+  "filter": "",
+  "all": "",
+  "views": "",
+  "likes": "",
+  "subscriptions": "",
+  "subscribers": "",
+  "username": "",
+  "name": "",
+  "description": "",
+  "saveChanges": "",
+  "createVideo": "",
+  "videoName": "",
+  "tags": "",
+  "chooseVideo": "",
+  "chooseBanner": "",
+  "publish": "",
+  "addVideo": "",
+  "addShort": ""
+};
+static const Map<String, Map<String,dynamic>> mapLocales = {"uk": uk, "en": en};
 }

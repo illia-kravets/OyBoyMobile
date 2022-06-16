@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import "package:cached_network_image/cached_network_image.dart";
 
+import '../default/loadingVideoBanner.dart';
 import '../detailVideo/detailVideoPage.dart';
 import "/data/models/video.dart";
 
@@ -15,7 +16,12 @@ class VideoCard extends StatelessWidget {
     ThemeData theme = Theme.of(context);
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (ctx) => DetailVideo(video: video,)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (ctx) => DetailVideo(
+                      video: video,
+                    )));
       },
       child: Container(
         padding: const EdgeInsets.all(2),
@@ -33,7 +39,7 @@ class VideoCard extends StatelessWidget {
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(18)),
           child: Column(children: [
-            getVideoBanner(video.banner),
+            LoadingVideoBanner(url: video.banner, height: 220),
             Expanded(
               child: Container(
                 padding: const EdgeInsets.only(left: 15, right: 15),
@@ -90,18 +96,9 @@ class VideoCard extends StatelessWidget {
     );
   }
 
-  Widget getVideoBanner(String? url) {
-    var placeholder = Image.asset("assets/images/video_placeholder.png");
-    return url != null && url.isNotEmpty
-        ? CachedNetworkImage(
-            height: 220,
-            imageUrl: url,
-            placeholder: (context, url) => placeholder,
-            errorWidget: (context, url, error) => placeholder,
-          )
-        : placeholder;
-  }
 }
+
+
 
 class NetworkCircularAvatar extends StatelessWidget {
   const NetworkCircularAvatar(
