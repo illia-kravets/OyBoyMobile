@@ -32,7 +32,7 @@ class ShortProfile extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (ctx) => ProfilePage(
-                      channelId: channelId.toString(),
+                      profileId: channelId.toString(),
                     )));
       },
       child: Row(

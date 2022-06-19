@@ -28,7 +28,6 @@ class ProfileManager extends FilterCRUDManager<ProfileRepository> {
     editProfile = profile;
   }
 
-<<<<<<< HEAD
   void initializeProfile(String? profileId) async {
     isLoading = true;
     profile = await repository.retrieve(profileId);
@@ -39,18 +38,10 @@ class ProfileManager extends FilterCRUDManager<ProfileRepository> {
 
   void subscribe () {
     profile = profile.copyWith(subscribed: !profile.subscribed);
+    repository.subscribe(profile.id.toString());
     refresh();
   }
 
-
-=======
-  void initializeProfile(String profileId) async {
-    profile = await repository.retrieve(profileId);
-    editProfile = profile;
-    refresh();
-  }
-
->>>>>>> 62d9c3ea19bf213c48cd12e2b6efd646ede795b7
   void updateProfile(
       {String? username,
       String? name,
@@ -67,10 +58,6 @@ class ProfileManager extends FilterCRUDManager<ProfileRepository> {
     profile = authRepo.profile;
     isLoading = false;
     refresh();
-  }
-
-  void subscribe() async {
-    repository.subscribe(profile.id.toString());
   }
 }
 
