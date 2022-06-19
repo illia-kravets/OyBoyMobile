@@ -20,6 +20,14 @@ class LoadingVideoBanner extends StatelessWidget {
             height: height,
             width: width,
             imageUrl: url!,
+            imageBuilder: (context, imageProvider) => Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
             placeholder: (context, url) => placeholder,
             errorWidget: (context, url, error) => placeholder,
           )

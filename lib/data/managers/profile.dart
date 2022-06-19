@@ -8,7 +8,7 @@ class ProfileManager extends FilterCRUDManager<ProfileRepository> {
 
   bool tabLoading = false;
 
-  late Profile profile;
+  Profile profile = Profile();
   Profile editProfile = Profile();
   late AuthRepository authRepo;
 
@@ -25,6 +25,12 @@ class ProfileManager extends FilterCRUDManager<ProfileRepository> {
     authRepo = GetIt.I.get<AuthRepository>();
     profile = authRepo.profile;
     editProfile = profile;
+  }
+
+  void initializeProfile(String profileId) async {
+    profile = await repository.retrieve(profileId);
+    editProfile = profile;
+    refresh();
   }
 
   void updateProfile(
@@ -44,29 +50,56 @@ class ProfileManager extends FilterCRUDManager<ProfileRepository> {
     isLoading = false;
     refresh();
   }
+
+  void subscribe() async {
+    repository.subscribe(profile.id.toString());
+  }
 }
 
 class BaseDetailProfileManager<T extends CRUDGeneric>
     extends FilterCRUDManager<T> {
+  BaseDetailProfileManager({required this.profileId});
+  String profileId;
+
   @override
   void initialize() async {
     isLoading = true;
-    await Future.delayed(const Duration(seconds: 1));
+    repository.request.flush();
+    repository.query(defaultFilters);
     cards = await repository.list();
     isLoading = false;
     refresh();
   }
+
+  void initializeProfile(Profile profile) async {}
 
   void clear() async {
     repository.request.flush();
     cards = await repository.list();
     refresh();
   }
+
+  Map get defaultFilters => {};
 }
 
-class ShortDetailManager extends BaseDetailProfileManager<ShortRepository> {}
+class ShortDetailManager extends BaseDetailProfileManager<ShortRepository> {
+  ShortDetailManager({required String profileId}) : super(profileId: profileId);
+
+  @override
+  Map get defaultFilters => {"profiles": profileId};
+}
 
 class FavouriteDetailManager extends BaseDetailProfileManager<VideoRepository> {
+  FavouriteDetailManager({required String profileId})
+      : super(profileId: profileId);
+
+  @override
+  Map get defaultFilters => {"favourite_profiles": profileId};
 }
 
-class VideoDetailManager extends BaseDetailProfileManager<VideoRepository> {}
+class VideoDetailManager extends BaseDetailProfileManager<VideoRepository> {
+  VideoDetailManager({required String profileId}) : super(profileId: profileId);
+
+  @override
+  Map get defaultFilters => {"profiles": profileId};
+}

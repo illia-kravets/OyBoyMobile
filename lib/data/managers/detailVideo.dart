@@ -13,9 +13,15 @@ class DetailVideoManager extends CRUDManager<VideoRepository> {
     authorCards.add(video);
   }
 
-  void like() async {}
+  void like() async {
+    repository.like(video.id.toString());
+  }
 
-  void favourite() async {}
+  void favourite() async {
+    repository.favourite(video.id.toString());
+  }
 
-  void view() async {}
+  void view() async {
+    repository.view(video.id.toString());
+  }
 }

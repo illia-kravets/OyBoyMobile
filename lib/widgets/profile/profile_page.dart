@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:oyboy/data/export.dart';
 import 'package:oyboy/utils/utils.dart';
 import 'package:oyboy/widgets/export.dart';
@@ -7,14 +8,35 @@ import 'package:provider/provider.dart';
 import '../../constants/export.dart';
 import 'profile_info.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({Key? key, required this.profileId}) : super(key: key);
+  final String profileId;
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ShortDetailManager>(
+            create: (context) => ShortDetailManager(profileId: profileId)),
+        ChangeNotifierProvider<FavouriteDetailManager>(
+            create: (context) => FavouriteDetailManager(profileId: profileId)),
+        ChangeNotifierProvider<VideoDetailManager>(
+            create: (context) => VideoDetailManager(profileId: profileId)),
+      ],
+      child: ProfileSkeleton(profileId: profileId),
+    );
+  }
 }
 
-class _ProfilePageState extends State<ProfilePage>
+class ProfileSkeleton extends StatefulWidget {
+  const ProfileSkeleton({Key? key, required this.profileId}) : super(key: key);
+  final String profileId;
+
+  @override
+  State<ProfileSkeleton> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfileSkeleton>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late ProfileManager manager;
@@ -32,7 +54,7 @@ class _ProfilePageState extends State<ProfilePage>
     _tabController.addListener(onTabChange);
     super.initState();
     manager = context.read<ProfileManager>();
-    manager.initialize();
+    manager.initializeProfile(widget.profileId);
     context.read<VideoDetailManager>().initialize();
     context.read<ShortDetailManager>().initialize();
     context.read<FavouriteDetailManager>().initialize();

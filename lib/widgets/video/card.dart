@@ -95,10 +95,7 @@ class VideoCard extends StatelessWidget {
       ),
     );
   }
-
 }
-
-
 
 class NetworkCircularAvatar extends StatelessWidget {
   const NetworkCircularAvatar(
@@ -227,70 +224,72 @@ class ShortVideoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       color: Colors.grey[50],
-      child: Container(
-          decoration: BoxDecoration(
-            color: Colors.black,
-            image: DecorationImage(
-              image: AssetImage(video.banner ?? ""),
-              fit: BoxFit.fitHeight,
-            ),
+      child: Stack(
+        children: [
+          LoadingVideoBanner(
+            url: video.banner,
+            height: 400,
+            width: 400,
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                video.name,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodyText2!.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+          Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    video.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodyText2!.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15),
+                  ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Icon(
-                        Icons.favorite,
-                        color: theme.primaryColor,
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text(video.likeCount.toString(),
-                          style: theme.textTheme.bodyText2!.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.favorite,
+                            color: theme.primaryColor,
                           ),
-                          overflow: TextOverflow.ellipsis)
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(video.likeCount.toString(),
+                              style: theme.textTheme.bodyText2!.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              overflow: TextOverflow.ellipsis)
+                        ],
+                      ),
+                      const SizedBox(width: 10),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.remove_red_eye_outlined,
+                            color: theme.primaryColor,
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(video.viewCount.toString(),
+                              style: theme.textTheme.bodyText2!.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              overflow: TextOverflow.ellipsis)
+                        ],
+                      )
                     ],
                   ),
-                  const SizedBox(width: 10),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.remove_red_eye_outlined,
-                        color: theme.primaryColor,
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text(video.viewCount.toString(),
-                          style: theme.textTheme.bodyText2!.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          overflow: TextOverflow.ellipsis)
-                    ],
-                  )
                 ],
-              ),
-            ],
-          )),
+              )),
+        ],
+      ),
     );
   }
 }

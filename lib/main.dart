@@ -70,9 +70,6 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<StreamManager>(create: (context) => _steamManager),
         ChangeNotifierProvider<ShortManager>(create: (context) => _shortManager),
         ChangeNotifierProvider<ProfileManager>(create: (context) => _profileManager),
-        ChangeNotifierProvider<ShortDetailManager>(create: (context) => ShortDetailManager()),
-        ChangeNotifierProvider<FavouriteDetailManager>(create: (context) => FavouriteDetailManager()),
-        ChangeNotifierProvider<VideoDetailManager>(create: (context) => VideoDetailManager()),
       ],
       child: MaterialApp.router(
         supportedLocales: context.supportedLocales,
@@ -82,6 +79,7 @@ class _MyAppState extends State<MyApp> {
         theme: theme,
         routerDelegate: _appRouter,
         routeInformationParser: _parser,
+        backButtonDispatcher: RootBackButtonDispatcher()
       ),
     );
   }
