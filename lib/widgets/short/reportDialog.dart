@@ -84,7 +84,7 @@ class _ReportDialogState extends State<ReportDialog> {
                               String text = _reportController.text;
                               if (reportType == ReportType.channel)
                                 GetIt.I.get<ProfileRepository>().sendReport(
-                                  widget.video.channel_id.toString(), text);
+                                  widget.video.channelId.toString(), text);
                               else GetIt.I.get<VideoRepository>().sendReport(
                                 widget.video.id.toString(), text);
                               

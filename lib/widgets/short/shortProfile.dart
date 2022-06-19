@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:oyboy/widgets/profile/profile_page.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/export.dart';
@@ -25,31 +26,41 @@ class ShortProfile extends StatelessWidget {
   }
 
   Widget _card(BuildContext context, Profile? channel) {
-    return Row(
-      children: [
-        NetworkCircularAvatar(
-          url: channel!.avatar ?? "",
-          radius: 23,
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(channel.username ?? "",
-                style: GoogleFonts.poppins(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white)),
-            Text("${channel.subscribers.toString()} ${'subscribers'.tr()}",
-                style: GoogleFonts.poppins(
-                    fontSize: 13.0,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.white)),
-          ],
-        )
-      ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (ctx) => ProfilePage(
+                      channelId: channelId.toString(),
+                    )));
+      },
+      child: Row(
+        children: [
+          NetworkCircularAvatar(
+            url: channel!.avatar ?? "",
+            radius: 23,
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(channel.username ?? "",
+                  style: GoogleFonts.poppins(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white)),
+              Text("${channel.subscribers.toString()} ${'subscribers'.tr()}",
+                  style: GoogleFonts.poppins(
+                      fontSize: 13.0,
+                      fontWeight: FontWeight.w300,
+                      color: Colors.white)),
+            ],
+          )
+        ],
+      ),
     );
   }
 

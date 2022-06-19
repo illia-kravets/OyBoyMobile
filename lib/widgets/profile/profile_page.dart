@@ -1,3 +1,5 @@
+// ignore_for_file: curly_braces_in_flow_control_structures
+
 import 'package:flutter/material.dart';
 import 'package:oyboy/data/export.dart';
 import 'package:oyboy/utils/utils.dart';
@@ -8,7 +10,10 @@ import '../../constants/export.dart';
 import 'profile_info.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({Key? key, this.fromMainPage=false, this.channelId}) : super(key: key);
+
+  final bool fromMainPage;
+  final String? channelId;
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -18,29 +23,25 @@ class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late ProfileManager manager;
-  final Map tabs = {
-    0: VideoType.video,
-    1: VideoType.short,
-    2: VideoType.favourite
-  };
-
-  void onTabChange() {}
 
   @override
   void initState() {
-    _tabController = TabController(vsync: this, length: tabs.length);
-    _tabController.addListener(onTabChange);
+    _tabController = TabController(vsync: this, length: widget.fromMainPage ? 3 : 2);
+    
     super.initState();
     manager = context.read<ProfileManager>();
-    manager.initialize();
+    if (widget.channelId != null && widget.channelId!.isNotEmpty)
+      manager.initializeProfile(widget.channelId);
+    else manager.initialize();
+    
     context.read<VideoDetailManager>().initialize();
     context.read<ShortDetailManager>().initialize();
-    context.read<FavouriteDetailManager>().initialize();
+    if (widget.fromMainPage)
+      context.read<FavouriteDetailManager>().initialize();
   }
 
   @override
   void dispose() {
-    _tabController.removeListener(onTabChange);
     _tabController.dispose();
     super.dispose();
   }
@@ -51,13 +52,15 @@ class _ProfilePageState extends State<ProfilePage>
     if (profile.fullName != null && profile.fullName!.isNotEmpty) height += 40;
     if (profile.description != null && profile.description!.isNotEmpty)
       height += 65;
+    if (profile.banned) height += 30;
     return height;
   }
 
   @override
   Widget build(BuildContext context) {
     manager = context.watch<ProfileManager>();
-    return DefaultPage(
+    return manager.isLoading ? Loader(height: 30, width: 30,)
+    : DefaultPage(
       extendBody: true,
       body: manager.isLoading
           ? const Loader(
@@ -75,7 +78,7 @@ class _ProfilePageState extends State<ProfilePage>
                     backgroundColor: Colors.grey[50],
                     collapsedHeight: getHeight(),
                     expandedHeight: getHeight(),
-                    flexibleSpace: const ProfileInfo(),
+                    flexibleSpace: ProfileInfo(fromMainPage: widget.fromMainPage),
                   ),
                   SliverPersistentHeader(
                     delegate: PreferedSizeSliverDelegate(
@@ -85,6 +88,7 @@ class _ProfilePageState extends State<ProfilePage>
                         tabs: [
                           Tab(icon: Icon(AppIcon.video.icon)),
                           Tab(icon: Icon(AppIcon.short.icon)),
+                          if(widget.fromMainPage)
                           Tab(icon: Icon(AppIcon.favourite.icon)),
                         ],
                       ),
@@ -112,6 +116,7 @@ class _ProfilePageState extends State<ProfilePage>
                       onPageEnd: () => manager.goToPage(
                           page: PageType.detail, videoType: VideoType.short)),
                 ),
+                if(widget.fromMainPage)
                 VideoCardList<FavouriteDetailManager>(
                   config: CardConfig(
                       active: !context

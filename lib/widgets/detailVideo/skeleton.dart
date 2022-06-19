@@ -47,6 +47,7 @@ class _DetailVideoSkeletonState extends State<DetailVideoSkeleton> {
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   const DetailVideoPlayer(),
                   const SizedBox(
@@ -59,12 +60,14 @@ class _DetailVideoSkeletonState extends State<DetailVideoSkeleton> {
                   ),
                   const IconsBar(),
                   const SizedBox(
-                    height: 14,
+                    height: 24,
                   ),
-                  // const MoreChannelVideos()
+                  const MoreChannelVideos(),
+                  const SizedBox(height: 30,)
                 ],
               ),
-            )),
+            ),
+            ),
         Positioned(
           bottom: 0,
           child: CommentCount(

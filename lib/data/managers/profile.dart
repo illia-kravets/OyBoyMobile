@@ -9,6 +9,7 @@ class ProfileManager extends FilterCRUDManager<ProfileRepository> {
   bool tabLoading = false;
 
   late Profile profile;
+  int? profileId;
   Profile editProfile = Profile();
   late AuthRepository authRepo;
 
@@ -26,6 +27,20 @@ class ProfileManager extends FilterCRUDManager<ProfileRepository> {
     profile = authRepo.profile;
     editProfile = profile;
   }
+
+  void initializeProfile(String? profileId) async {
+    isLoading = true;
+    profile = await repository.retrieve(profileId);
+    editProfile = profile;
+    isLoading = false;
+    refresh();
+  }
+
+  void subscribe () {
+    profile = profile.copyWith(subscribed: !profile.subscribed);
+    refresh();
+  }
+
 
   void updateProfile(
       {String? username,

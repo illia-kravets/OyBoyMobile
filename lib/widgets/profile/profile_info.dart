@@ -1,13 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:oyboy/data/export.dart';
+import 'package:oyboy/widgets/video/card.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants/export.dart';
 import 'profile_avatar.dart';
 
 class ProfileInfo extends StatelessWidget {
-  const ProfileInfo({Key? key}) : super(key: key);
+  const ProfileInfo({Key? key, required this.fromMainPage}) : super(key: key);
+
+  final bool fromMainPage;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +31,45 @@ class ProfileInfo extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                ProfileAvatar(
-                  url: profile.avatar,
-                  width: 120,
+                Stack(
+                  children: [
+                    NetworkCircularAvatar(
+                      url: profile.avatar ?? "",
+                      radius: 60,
+                    ),
+                    if(!fromMainPage)
+                    Positioned(
+                      right: -3,
+                      bottom: -3,
+                      child: GestureDetector(
+                        onTap: () => manager.subscribe(),
+                        child: Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
+                            color: Colors.grey[50],
+                          ),
+                          child: Container(
+                            width: 35,
+                            height: 35,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: !manager.profile.subscribed ? theme.primaryColor : null,
+                              gradient: manager.profile.subscribed ? LinearGradient(
+                                colors: [theme.primaryColor, Colors.yellow]) : null
+                            ),
+                            child: Icon(
+                              manager.profile.subscribed 
+                                ? Icons.check
+                                : Icons.add,
+                              color: Colors.white,
+                            )
+                          ),
+                        ),
+                      ),  
+                    )
+                  ],
                 ),
                 const SizedBox(
                   height: 10,
@@ -109,6 +148,7 @@ class ProfileInfo extends StatelessWidget {
               ],
             ),
           ),
+          if (fromMainPage)
           Positioned(
               top: 0,
               right: -5,

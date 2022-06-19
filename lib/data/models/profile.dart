@@ -12,6 +12,7 @@ class Profile extends BaseModel {
   bool banned = false;
   num subscriptions = 0;
   num subscribers = 0;
+  bool subscribed = false;
   Profile(
       {this.id,
       this.username,
@@ -21,7 +22,8 @@ class Profile extends BaseModel {
       this.email,
       this.subscriptions = 0,
       this.subscribers = 0,
-      this.banned = false});
+      this.banned = false,
+      this.subscribed = false});
 
   Profile copyWith(
       {String? id,
@@ -32,7 +34,8 @@ class Profile extends BaseModel {
       num? subscriptions,
       num? subscribers,
       bool? banned,
-      String? email}) {
+      String? email,
+      bool? subscribed}) {
     return Profile(
       id: id ?? this.id,
       username: username ?? this.username,
@@ -43,6 +46,7 @@ class Profile extends BaseModel {
       email: email ?? this.email,
       subscriptions: subscriptions ?? this.subscriptions,
       subscribers: subscribers ?? this.subscribers,
+      subscribed: subscribed ?? false
     );
   }
 
@@ -50,6 +54,7 @@ class Profile extends BaseModel {
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
     result.addAll({'banned': id});
+    result.addAll({'subscribed': subscribed});
     if (id != null) {
       result.addAll({'id': id});
     }
@@ -88,6 +93,7 @@ class Profile extends BaseModel {
       avatar: avatar,
       subscriptions: map['subscription_count'] ?? 0,
       subscribers: map['subscriber_count'] ?? 0,
+      subscribed: map["subscribed"] ?? false
     );
   }
 
@@ -113,7 +119,8 @@ class Profile extends BaseModel {
         other.description == description &&
         other.avatar == avatar &&
         other.subscriptions == subscriptions &&
-        other.subscribers == subscribers;
+        other.subscribers == subscribers &&
+        other.subscribed == subscribed;
   }
 
   @override

@@ -18,7 +18,7 @@ class DetailVideoAppBar extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
           color: theme.primaryColor),
       backgroundColor: Colors.transparent.withOpacity(0.1),
-      title: ShortProfile(channelId: video?.channel_id),
+      title: ShortProfile(channelId: video?.channelId),
       titleSpacing: 0,
       elevation: 0,
       flexibleSpace: ClipRect(

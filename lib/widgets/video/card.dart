@@ -98,8 +98,6 @@ class VideoCard extends StatelessWidget {
 
 }
 
-
-
 class NetworkCircularAvatar extends StatelessWidget {
   const NetworkCircularAvatar(
       {Key? key, required this.url, this.radius, this.backgroundColor})

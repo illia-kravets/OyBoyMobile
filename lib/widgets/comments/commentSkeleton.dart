@@ -28,7 +28,7 @@ class _CommentPageSkeletonState extends State<CommentPageSkeleton> {
   Widget build(BuildContext context) {
     bool loading = context.select((CommentManager m) => m.isLoading);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      padding: const EdgeInsets.only(left: 14, right: 14, top: 0, bottom: 10),
       constraints: const BoxConstraints(maxHeight: 600),
       child: loading 
         ? const Loader(width: 30, height: 30,)
@@ -36,7 +36,7 @@ class _CommentPageSkeletonState extends State<CommentPageSkeleton> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CommentCount(onTap: () => Navigator.of(context).pop(),),
-            const SizedBox(height: 12,),
+            const SizedBox(height: 6,),
             const CommentInput(),
             const SizedBox(height: 12,),
             const CommentList()

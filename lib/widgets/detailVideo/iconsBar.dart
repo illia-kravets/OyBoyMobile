@@ -29,6 +29,7 @@ class IconsBar extends StatelessWidget {
             AppIcon.favourite.icon,
             "toFavourite".tr(),
             onTap: () => manager.favourite(),
+            selected: video.favourite
           ),
           iconItem(
             context,

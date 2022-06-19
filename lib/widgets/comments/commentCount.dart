@@ -17,7 +17,7 @@ class CommentCount extends StatelessWidget {
     
     return Container(
       width: MediaQuery.of(context).size.width,
-      color: Colors.white,
+      color: Colors.grey[50],
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

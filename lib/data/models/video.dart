@@ -15,12 +15,13 @@ class Video extends BaseModel {
       this.viewCount = 0,
       this.likeCount = 0,
       this.liked = false,
+      this.favourite = false,
       this.banner = "",
       this.video = "",
       this.description,
       this.type,
       this.channel,
-      this.channel_id});
+      this.channelId});
 
   int id;
   String name;
@@ -31,10 +32,43 @@ class Video extends BaseModel {
   String? description;
   String? type;
   bool liked = false;
+  bool favourite = false;
   num viewCount = 0;
   num likeCount = 0;
   Profile? channel;
-  int? channel_id;
+  int? channelId;
+
+  Video copyWith(
+      {int? id,
+      String? name,
+      String? duration,
+      String? banner,
+      String? description,
+      String? video,
+      String? createdAt,
+      bool? liked,
+      bool? favourite,
+      num? viewCount,
+      num? likeCount,
+      Profile? channel,
+      int? channelId
+      }) {
+    return Video(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      duration: duration ?? this.duration,
+      banner: banner ?? this.banner,
+      description: description ?? this.description,
+      video: video ?? this.video,
+      createdAt: createdAt ?? this.createdAt,
+      liked: liked ?? this.liked,
+      favourite: favourite ?? this.favourite,
+      viewCount: viewCount ?? this.viewCount,
+      likeCount: likeCount ?? this.likeCount,
+      channel: channel ?? this.channel,
+      channelId: channelId ?? this.channelId
+    );
+  }
 
   static Video fromJson(Map<dynamic, dynamic> data) {
     return Video(
@@ -43,13 +77,14 @@ class Video extends BaseModel {
         duration: data["duration"],
         createdAt: data['created_at'].split("T")[0],
         liked: data["liked"] ?? false,
+        favourite: data["favourite"] ?? false,
         viewCount: data["views"] ?? 0,
         likeCount: data["likes"] ?? 0,
         banner: data["banner"],
         video: data["video"],
         description: data["description"],
         channel: Profile.fromJson(data["profile"]),
-        channel_id: data["profile_id"]);
+        channelId: data["profile_id"]);
   }
 
   static List<Video> fromJsonList(List<Map> data) {

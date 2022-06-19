@@ -16,7 +16,7 @@ class ProfilePageSelector {
         name: OyBoyPages.profilePath,
         key: ValueKey(OyBoyPages.profilePath),
         arguments: {"test", "new"},
-        child: ProfilePage());
+        child: ProfilePage(fromMainPage: true,));
   }
 
   static MaterialPage profileSettings() {
