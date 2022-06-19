@@ -1,6 +1,7 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:oyboy/data/export.dart';
 import 'package:oyboy/utils/utils.dart';
 import 'package:oyboy/widgets/export.dart';
@@ -9,17 +10,38 @@ import 'package:provider/provider.dart';
 import '../../constants/export.dart';
 import 'profile_info.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key, this.fromMainPage=false, this.channelId}) : super(key: key);
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({Key? key, this.fromMainPage=false, required this.profileId}) : super(key: key);
 
   final bool fromMainPage;
-  final String? channelId;
+  final String profileId;
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ShortDetailManager>(
+            create: (context) => ShortDetailManager(profileId: profileId)),
+        ChangeNotifierProvider<FavouriteDetailManager>(
+            create: (context) => FavouriteDetailManager(profileId: profileId)),
+        ChangeNotifierProvider<VideoDetailManager>(
+            create: (context) => VideoDetailManager(profileId: profileId)),
+      ],
+      child: ProfileSkeleton(profileId: profileId, fromMainPage: fromMainPage,),
+    );
+  }
 }
 
-class _ProfilePageState extends State<ProfilePage>
+class ProfileSkeleton extends StatefulWidget {
+  const ProfileSkeleton({Key? key, required this.profileId, required this.fromMainPage}) : super(key: key);
+  final String profileId;
+  final bool fromMainPage;
+
+  @override
+  State<ProfileSkeleton> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfileSkeleton>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late ProfileManager manager;
@@ -30,10 +52,7 @@ class _ProfilePageState extends State<ProfilePage>
     
     super.initState();
     manager = context.read<ProfileManager>();
-    if (widget.channelId != null && widget.channelId!.isNotEmpty)
-      manager.initializeProfile(widget.channelId);
-    else manager.initialize();
-    
+    manager.initializeProfile(widget.profileId);
     context.read<VideoDetailManager>().initialize();
     context.read<ShortDetailManager>().initialize();
     if (widget.fromMainPage)

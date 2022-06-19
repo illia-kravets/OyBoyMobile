@@ -30,6 +30,11 @@ class ShortManager extends CRUDManager<ShortRepository> {
 
   void like() async {
     // activeShort = activeShort.copyWith(liked: !activeShort.liked);
+    repository.like(activeShort!.id.toString());
     refresh();
+  }
+
+  void view() async {
+    repository.view(activeShort!.id.toString());
   }
 }

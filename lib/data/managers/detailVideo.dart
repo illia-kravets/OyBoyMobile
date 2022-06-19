@@ -21,13 +21,17 @@ class DetailVideoManager extends CRUDManager<VideoRepository> {
 
   void like() async {
     video = video.copyWith(liked: !video.liked);
+    repository.like(video.id.toString());
     refresh();
   }
 
   void favourite() async {
     video = video.copyWith(favourite: !video.favourite);
+    repository.favourite(video.id.toString());
     refresh();
   }
 
-  void view() async {}
+  void view() async {
+    repository.view(video.id.toString());
+  }
 }

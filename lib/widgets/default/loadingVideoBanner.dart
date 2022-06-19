@@ -16,17 +16,24 @@ class LoadingVideoBanner extends StatelessWidget {
       width: width,
       height: height,
     );
-    return Container(
-      color: color,
-      child: url != null && url!.isNotEmpty
-          ? CachedNetworkImage(
-              height: height,
-              width: width,
-              imageUrl: url!,
-              placeholder: (context, url) => placeholder,
-              errorWidget: (context, url, error) => placeholder,
-            )
-          : placeholder,
-    );
+
+    return url != null && url!.isNotEmpty
+        ? CachedNetworkImage(
+            height: height,
+            width: width,
+            imageUrl: url!,
+            color: color,
+            imageBuilder: (context, imageProvider) => Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            placeholder: (context, url) => placeholder,
+            errorWidget: (context, url, error) => placeholder,
+          )
+        : placeholder;
   }
 }

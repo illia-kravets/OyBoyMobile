@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
+import 'package:get_it/get_it.dart';
 import 'package:oyboy/widgets/profile/data_page.dart';
 import 'package:oyboy/widgets/profile/profile_page.dart';
 import 'package:oyboy/widgets/profile/profile_settings.dart';
@@ -12,11 +13,11 @@ import "package:provider/provider.dart";
 
 class ProfilePageSelector {
   static MaterialPage profile() {
-    return const MaterialPage(
+    return MaterialPage(
         name: OyBoyPages.profilePath,
         key: ValueKey(OyBoyPages.profilePath),
         arguments: {"test", "new"},
-        child: ProfilePage(fromMainPage: true,));
+        child: ProfilePage(fromMainPage: true, profileId: GetIt.I.get<AuthRepository>().profile.id ?? "",));
   }
 
   static MaterialPage profileSettings() {

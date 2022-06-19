@@ -28,6 +28,18 @@ abstract class BaseVideoRepository extends CRUDGeneric<Video>
     return await tagRepository.list();
   }
 
+  Future view(String id) async {
+    await post(url: "$id/view/");
+  }
+
+  Future favourite(String id) async {
+    await post(url: "$id/favourite/");
+  }
+
+  Future like(String id) async {
+    await post(url: "$id/like/");
+  }
+
   String get videoType =>
       throw UnimplementedError("Video type must be implemented");
 
