@@ -8,8 +8,8 @@ import 'dart:convert' show utf8;
 
 class Video extends BaseModel {
   Video(
-      {required this.id,
-      required this.name,
+      {this.id,
+      this.name,
       this.duration,
       this.createdAt,
       this.viewCount = 0,
@@ -23,8 +23,8 @@ class Video extends BaseModel {
       this.channel,
       this.channelId});
 
-  int id;
-  String name;
+  int? id;
+  String? name;
   String? duration;
   String? banner;
   String? video;
@@ -71,13 +71,14 @@ class Video extends BaseModel {
   }
 
   static Video fromJson(Map<dynamic, dynamic> data) {
+    
     return Video(
         id: data["id"],
         name: data["name"],
         duration: data["duration"],
         createdAt: data['created_at'].split("T")[0],
         liked: data["liked"] ?? false,
-        favourite: data["favourite"] ?? false,
+        favourite: data["favourited"] ?? false,
         viewCount: data["views"] ?? 0,
         likeCount: data["likes"] ?? 0,
         banner: data["banner"],
@@ -93,7 +94,7 @@ class Video extends BaseModel {
 
   @override
   Map<String, dynamic> toMap() {
-    return {'name': name, 'desription': description};
+    return {'name': name, 'desription': description, "type": type};
   }
 
   @override

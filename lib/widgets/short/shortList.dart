@@ -163,7 +163,7 @@ class _ShortDisplayPageState extends State<ShortDisplayPage> {
                               triggerMode: TooltipTriggerMode.tap,
                               message: widget.short.name,
                               child: Text(
-                                widget.short.name,
+                                widget.short.name ?? "",
                                 style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontSize: 18,
@@ -294,14 +294,14 @@ class _ShortDisplayPageState extends State<ShortDisplayPage> {
                                   topRight: Radius.circular(15))),
                           context: context,
                           builder: (context) =>
-                              CommentPage(videoId: widget.short.id)),
+                              CommentPage(videoId: widget.short.id.toString())),
                     ),
                     const SizedBox(
                       height: 20,
                     ),
                     sideBarButton(CustomIcon.reply, () async {
                       await FlutterShare.share(
-                          title: widget.short.name,
+                          title: widget.short.name ?? "",
                           text: widget.short.name,
                           linkUrl: widget.short.video,
                           chooserTitle: widget.short.name);

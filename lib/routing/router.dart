@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:oyboy/pages/short.dart';
+import 'package:oyboy/widgets/detailVideo/detailVideoPage.dart';
 import '../data/export.dart';
 import "link.dart";
 import "/pages/export.dart";
@@ -57,7 +58,7 @@ class AppRouter extends RouterDelegate<AppLink>
           if (streamManager.page == PageType.search) SearchPage.streamSearch(),
         ],
         if (userManager.page == PageType.profile) ...[
-          ProfilePageSelector.profile(),
+          ProfilePageSelector.profile(fromMainPage: true),
           if (profileManager.page == PageType.settings)
             ProfilePageSelector.profileSettings(),
           if (profileManager.page == PageType.detail &&
@@ -79,6 +80,9 @@ class AppRouter extends RouterDelegate<AppLink>
         if (userManager.page == PageType.short) ...[
           ShortPage.page(),
         ],
+
+      if (videoManager.idSetted) DetailVideoPage.page(videoManager.selectedId ?? ""),
+      if (profileManager.idSetted) ProfilePageSelector.profile(profileId: profileManager.selectedId)
       ],
     );
   }
@@ -95,7 +99,8 @@ class AppRouter extends RouterDelegate<AppLink>
       userManager.goToPage(page: PageType.video);
       shortManager.clear();
     }
-
+    if (route.settings.name == OyBoyPages.detailVideoPath) videoManager.selectedId = null;
+    if (route.settings.name == OyBoyPages.profilePath) profileManager.selectedId = null;
     return true;
   }
 

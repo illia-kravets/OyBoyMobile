@@ -2,25 +2,30 @@ import 'package:get_it/get_it.dart';
 import 'package:oyboy/data/export.dart';
 
 class DetailVideoManager extends CRUDManager<VideoRepository> {
-  DetailVideoManager({required this.video});
+  DetailVideoManager({required this.videoId});
 
-  Video video;
+  String videoId;
+  Video video = Video();
   List authorCards = [];
 
   @override
   void initialize() async {
     isLoading = true;
-
-    repository.query({"profile_id": video.channelId.toString()});
+    
+    video = await repository.retrieve(videoId);
+    repository.query({"profile_id": video.channelId.toString(), "exclude": video.id.toString()});
     authorCards = await repository.list();
     repository.request.flush();
-    
+    view();
     isLoading = false;
     refresh();
   }
 
   void like() async {
-    video = video.copyWith(liked: !video.liked);
+    video = video.copyWith(
+      liked: !video.liked, 
+      likeCount: video.liked ? video.likeCount - 1 : video.likeCount + 1
+    );
     repository.like(video.id.toString());
     refresh();
   }

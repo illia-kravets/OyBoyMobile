@@ -139,36 +139,39 @@ class MoreVideoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    return Container(
-      width: width,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Center(
-        child: Container(
-          decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10)),
-              color: Colors.grey[400],
-          ),
-          child: Column(
-            children: [
-              LoadingVideoBanner(
-                color: Colors.grey,
-                url: video.banner,
-                height: 175,
-              ),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Text(
-                    video.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodyText2,
-                  ),
+    return GestureDetector(
+      onTap: () => context.read<VideoManager>().selectId(video.id.toString()),
+      child: Container(
+        width: width,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Center(
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10)),
+                color: Colors.grey[400],
+            ),
+            child: Column(
+              children: [
+                LoadingVideoBanner(
+                  color: Colors.grey,
+                  url: video.banner,
+                  height: 175,
                 ),
-              )
-            ],
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      video.name ?? "",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyText2,
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

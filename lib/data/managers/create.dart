@@ -21,13 +21,21 @@ class CreateManager extends BaseManager {
   @override
   void initialize() {}
 
-  void publish ({required String name, required String type, String? description}) {
+  Future<bool> publish ({required String name, required String type, String? description}) async {
     List createTags = List.generate(tags.length, (i) => {"name": tags[i].name});
-
-    // repository
-    //   ..body({"tags": createTags})
-    //   ..create(Video(name: name, description: description, type: type));
-  }
+    return await repository.createWithFiles(
+      data: {
+        "name": name, 
+        "description": description, 
+        "dtype": type,
+        "profile_id": GetIt.I.get<AuthRepository>().profile.id
+      },
+      files: {
+        "banner": banner,
+        "video": video
+      }
+    );
+   }
 
   void addTag(String text) {
     for(var tag in tags) {

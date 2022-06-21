@@ -8,6 +8,7 @@ abstract class BaseManager extends ChangeNotifier {
   PageType? page;
   bool isLoading = false;
   bool cardsLoading = false;
+  String? selectedId;
   static Type? parent;
 
   bool get hasError => error.msg == null ? false : true;
@@ -19,11 +20,26 @@ abstract class BaseManager extends ChangeNotifier {
     this.page = page;
     notifyListeners();
   }
+
+  void selectId(dynamic id) {
+    selectedId = id;
+    refresh();
+  }
+
+  bool get idSetted => selectedId != null && selectedId!.isNotEmpty;
 }
 
 abstract class BaseCRUDManager<T extends CRUDGeneric> extends BaseManager {
   List<dynamic> cards = [];
   T repository = GetIt.I.get<T>();
+
+  @override
+  void goToPage({PageType? page}) {
+    this.page = page;
+    notifyListeners();
+    repository.request.flush();
+  }
+
 }
 
 mixin PaginationMixin<T extends CRUDGeneric> on BaseCRUDManager<T> {

@@ -27,14 +27,7 @@ class ShortProfile extends StatelessWidget {
 
   Widget _card(BuildContext context, Profile? channel) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (ctx) => ProfilePage(
-                      profileId: channelId.toString(),
-                    )));
-      },
+      onTap: () => context.read<ProfileManager>().selectId(channelId.toString()),
       child: Row(
         children: [
           NetworkCircularAvatar(

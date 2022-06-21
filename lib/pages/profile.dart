@@ -1,3 +1,5 @@
+// ignore_for_file: curly_braces_in_flow_control_structures
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
@@ -12,12 +14,18 @@ import "/data/export.dart";
 import "package:provider/provider.dart";
 
 class ProfilePageSelector {
-  static MaterialPage profile() {
+  static MaterialPage profile({String? profileId, bool fromMainPage = false}) {
+    if (profileId != null && profileId.isNotEmpty) 
+      fromMainPage = profileId == GetIt.I.get<AuthRepository>().profile.id;
+    
     return MaterialPage(
         name: OyBoyPages.profilePath,
-        key: ValueKey(OyBoyPages.profilePath),
-        arguments: {"test", "new"},
-        child: ProfilePage(fromMainPage: true, profileId: GetIt.I.get<AuthRepository>().profile.id ?? "",));
+        key: const ValueKey(OyBoyPages.profilePath),
+        child: ProfilePage(
+          fromMainPage: fromMainPage, 
+          profileId: profileId ?? GetIt.I.get<AuthRepository>().profile.id ?? "",
+        )
+      );
   }
 
   static MaterialPage profileSettings() {

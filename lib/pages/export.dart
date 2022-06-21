@@ -4,3 +4,4 @@ export 'video.dart';
 export 'search.dart';
 export 'create.dart';
 export 'profile.dart';
+export 'detailVideo.dart';

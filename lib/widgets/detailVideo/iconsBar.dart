@@ -27,7 +27,7 @@ class IconsBar extends StatelessWidget {
           iconItem(
             context,
             AppIcon.favourite.icon,
-            "toFavourite".tr(),
+            video.favourite ? "inFavourite".tr() : "toFavourite".tr(),
             onTap: () => manager.favourite(),
             selected: video.favourite
           ),
@@ -37,7 +37,7 @@ class IconsBar extends StatelessWidget {
             "share".tr(),
             onTap: () async {
               await FlutterShare.share(
-                  title: video.name,
+                  title: video.name ?? "",
                   text: video.name,
                   linkUrl: video.video,
                   chooserTitle: video.name);
@@ -56,7 +56,7 @@ class IconsBar extends StatelessWidget {
       child: Column(
         children: [
           Icon(icon, color: selected ? theme.primaryColor : Colors.grey),
-          Text(text, style: theme.textTheme.subtitle1)
+          Text(text, style: theme.textTheme.subtitle1?.copyWith(color: selected ? theme.primaryColor : null),)
         ],
       ),
     );

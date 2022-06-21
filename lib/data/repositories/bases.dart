@@ -1,3 +1,5 @@
+// ignore_for_file: curly_braces_in_flow_control_structures
+
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -185,11 +187,27 @@ class CRUDGeneric<T extends BaseModel> extends BaseRepository
   Future<void> remove(dynamic id) async {}
 
   Future<void> create(T instance) async {
-    
     request.update(type: RequestDataType.body, data: instance.toMap());
     await post();
   }
 
+  Future<bool> createWithFiles({String url = "", Map data = const {}, Map files = const {}, String method = "POST"}) async {
+    var request = http.MultipartRequest(method, combineUrl(url));
+    prepareRequest();
+    request.headers.addAll(this.request.headers);
+    
+    data.forEach((k,v) => request.fields[k] = v);
+    files.forEach((k,v) async {
+      if (v != null)
+        request.files.add(
+          await http.MultipartFile.fromPath(k, v.path)
+        );
+    });
+    return request.send().then((response) {
+      return [201, 200].contains(response.statusCode);
+    });
+  }
+  
   @override
   Future<List> next() async {
     List data = await super.next();

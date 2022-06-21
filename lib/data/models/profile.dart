@@ -53,14 +53,14 @@ class Profile extends BaseModel {
   @override
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
-    result.addAll({'banned': id});
-    result.addAll({'subscribed': subscribed});
-    if (id != null) {
-      result.addAll({'id': id});
-    }
-    if (email != null) {
-      result.addAll({'email': email});
-    }
+    // result.addAll({'banned': id});
+    // result.addAll({'subscribed': subscribed});
+    // if (id != null) {
+    //   result.addAll({'id': id});
+    // }
+    // if (email != null) {
+    //   result.addAll({'email': email});
+    // }
     if (username != null) {
       result.addAll({'username': username});
     }
@@ -91,7 +91,7 @@ class Profile extends BaseModel {
       description: map['description'],
       banned: map['banned'],
       avatar: avatar,
-      subscriptions: map['subscription_count'] ?? 0,
+      subscriptions: map['subscribtion_count'] ?? 0,
       subscribers: map['subscriber_count'] ?? 0,
       subscribed: map["subscribed"] ?? false
     );

@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:oyboy/constants/export.dart';
 import "package:get_it/get_it.dart";
 
@@ -30,6 +31,7 @@ class ProfileManager extends FilterCRUDManager<ProfileRepository> {
 
   void initializeProfile(String? profileId) async {
     isLoading = true;
+    authRepo = GetIt.I.get<AuthRepository>();
     profile = await repository.retrieve(profileId);
     editProfile = profile;
     isLoading = false;
@@ -37,27 +39,35 @@ class ProfileManager extends FilterCRUDManager<ProfileRepository> {
   }
 
   void subscribe () {
-    profile = profile.copyWith(subscribed: !profile.subscribed);
+    profile = profile.copyWith(
+      subscribed: !profile.subscribed,
+      subscribers: profile.subscribed ? profile.subscribers - 1 : profile.subscribers + 1
+    );
     repository.subscribe(profile.id.toString());
     refresh();
   }
 
-  void updateProfile(
+  Future<bool> updateProfile(
       {String? username,
       String? name,
       String? description,
-      String? photo,
+      XFile? photo,
       bool save = true}) async {
-    isLoading = true;
-    // refresh();
     profile = editProfile.copyWith(
         username: username, fullName: name, description: description);
-    await repository.update(profile.id, profile);
+    
+    bool success = await repository.createWithFiles(
+      url: "${profile.id}/",
+      data: profile.toMap(), 
+      files: {"avatar": photo}, 
+      method: 'PATCH'
+    );
+    if (!success) return success;
+
     editProfile = Profile();
     await authRepo.fetchProfile();
     profile = authRepo.profile;
-    isLoading = false;
-    refresh();
+    return success;
   }
 }
 
@@ -84,14 +94,14 @@ class BaseDetailProfileManager<T extends CRUDGeneric>
     refresh();
   }
 
-  Map get defaultFilters => {};
+  Map get defaultFilters => {"show_own": "true", "show_banned": "true"};
 }
 
 class ShortDetailManager extends BaseDetailProfileManager<ShortRepository> {
   ShortDetailManager({required String profileId}) : super(profileId: profileId);
 
   @override
-  Map get defaultFilters => {"profiles": profileId};
+  Map get defaultFilters => {"profiles": profileId, ...super.defaultFilters};
 }
 
 class FavouriteDetailManager extends BaseDetailProfileManager<VideoRepository> {
@@ -106,5 +116,5 @@ class VideoDetailManager extends BaseDetailProfileManager<VideoRepository> {
   VideoDetailManager({required String profileId}) : super(profileId: profileId);
 
   @override
-  Map get defaultFilters => {"profiles": profileId};
+  Map get defaultFilters => {"profiles": profileId, ...super.defaultFilters};
 }

@@ -1,10 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:oyboy/data/export.dart';
 import 'package:oyboy/utils/utils.dart';
 import 'package:oyboy/widgets/default/filepicker.dart';
 import 'package:oyboy/widgets/export.dart';
 import 'package:oyboy/widgets/profile/profile_avatar.dart';
+import 'package:oyboy/widgets/video/card.dart';
 import 'package:provider/provider.dart';
 
 class ProfileSettingsPage extends StatefulWidget {
@@ -21,6 +23,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
   late TextEditingController _usernameController;
   late TextEditingController _nameController;
   late TextEditingController _descriptionController;
+  XFile? _photo;
 
   @override
   void initState() {
@@ -74,20 +77,14 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                       context: context,
                       then: (file) {
                         if (file == null) return;
-                        // TODO: show xfile photo
-                        // manager.editProfile = manager.editProfile.copyWith(photo: file.path);
-                        manager.updateProfile(save: false);
+                        setState(() => _photo = file);
                       }),
                   child: Stack(
                     children: [
-                      // CircleAvatar(
-                      //   radius: 60,
-                      //   backgroundImage:
-                      //       AssetImage(manager.profile.avatar ?? ""),
-                      // ),
-                      ProfileAvatar(
-                        url: manager.profile.avatar,
-                        width: 120,
+                      NetworkCircularAvatar(
+                        url: (_photo == null ? manager.profile.avatar : _photo!.path) ?? "",
+                        radius: 60,
+                        local: _photo != null
                       ),
                       Positioned(
                         right: 0,
@@ -168,16 +165,19 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                           width: 150,
                           height: 40,
                           child: ElevatedButton(
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  manager.updateProfile(
-                                      username: _usernameController.text,
-                                      name: _nameController.text,
-                                      description: _descriptionController.text);
-                                  manager.goToPage();
-                                  showSnackbar(context, "profileUpdated".tr(),
-                                      color: theme.primaryColor);
-                                }
+                              onPressed: () async {
+                                if (!_formKey.currentState!.validate()) return;
+                                showDialog(context: context, builder: (_) => const AbsorbLoading());
+                                bool success = await manager.updateProfile(
+                                    username: _usernameController.text,
+                                    name: _nameController.text,
+                                    description: _descriptionController.text,
+                                    photo: _photo);
+                                Navigator.of(context).pop();
+                                if (!success) return showSnackbar(context, "errorOcurs".tr(), color: Colors.red);
+                                showSnackbar(context, "profileUpdated".tr(),
+                                    color: theme.primaryColor);
+                                manager.goToPage();
                               },
                               child: Text(
                                 "saveChanges".tr(),

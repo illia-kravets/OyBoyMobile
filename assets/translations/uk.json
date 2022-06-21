@@ -49,6 +49,8 @@
     "create": "Створити",
     "addVideo": "Додати вiдео",
     "addShort": "Додати коротке вiдео",
+    "errorOcurs": "Помилка! Спробуйте пізніше",
+    "videoAdded": "Відео завантажено!",
     
     "password": "Пароль",
     "repeatPassword": "Повторити пароль",
@@ -67,10 +69,12 @@
     "detailReportPlaceholder": "Детально опишiть причину скарги",
     "sendReport": "Вiдправити",
     "reportSent": "Скаргу вiдправлено",
+    "accountBanned": "Ваш профiль приховано у зв’язку з порушенням правил користування додатком",
 
     "comments": "коментарi",
     "commentPlaceholder": "Введiть текст коментаря",
     "share": "Подiлитися",
     "toFavourite": "До улюблених",
+    "inFavourite": "В улюблених",
     "channelVideos": "Iншi вiдео автора"
 }

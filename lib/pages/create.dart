@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
 import 'package:oyboy/data/export.dart';
 import 'package:oyboy/data/managers/create.dart';
+import 'package:oyboy/utils/utils.dart';
 import "/constants/export.dart";
 import "/widgets/export.dart";
 import "package:provider/provider.dart";
@@ -275,13 +276,17 @@ class _BaseCreatePageState extends State<BaseCreatePage> {
                         width: 150,
                         height: 40,
                         child: ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                manager.publish(
-                                    name: _nameController.text,
-                                    type: widget.createType.value,
-                                    description: _descriptionController.text);
-                              }
+                            onPressed: () async {
+                              if (!_formKey.currentState!.validate()) return;
+                              showDialog(context: context, builder: (_) => const AbsorbLoading());
+                              bool success = await manager.publish(
+                                  name: _nameController.text,
+                                  type: widget.createType.value,
+                                  description: _descriptionController.text);
+                              Navigator.of(context).pop();
+                              if (!success) return showSnackbar(context, "errorOcurs".tr(), color: Colors.red);
+                              showSnackbar(context, "videoAdded".tr(), color: theme.primaryColor);
+                              Navigator.of(context).pop();
                             },
                             child: widget.createType == VideoType.stream
                                 ? Text(

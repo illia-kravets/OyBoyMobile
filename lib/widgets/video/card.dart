@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import "package:cached_network_image/cached_network_image.dart";
+import 'package:oyboy/data/export.dart';
+import 'package:oyboy/data/managers/video.dart';
+import 'package:provider/provider.dart';
 
 import '../default/loadingVideoBanner.dart';
 import '../detailVideo/detailVideoPage.dart';
@@ -15,14 +20,7 @@ class VideoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (ctx) => DetailVideo(
-                      video: video,
-                    )));
-      },
+      onTap: () => context.read<VideoManager>().selectId(video.id.toString()),
       child: Container(
         padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(
@@ -46,7 +44,7 @@ class VideoCard extends StatelessWidget {
                 child: Row(
                   children: [
                     GestureDetector(
-                        onTap: () {},
+                        onTap: () => context.read<ProfileManager>().selectId(video.channelId.toString()),
                         child: NetworkCircularAvatar(
                           url: video.channel!.avatar ?? "",
                           radius: 25,
@@ -62,7 +60,7 @@ class VideoCard extends StatelessWidget {
                             SizedBox(
                               width: 275,
                               child: Text(
-                                video.name,
+                                video.name ?? "",
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                                 style: theme.textTheme.headline5,
@@ -99,28 +97,37 @@ class VideoCard extends StatelessWidget {
 
 class NetworkCircularAvatar extends StatelessWidget {
   const NetworkCircularAvatar(
-      {Key? key, required this.url, this.radius, this.backgroundColor})
+      {Key? key, required this.url, this.radius, this.backgroundColor, this.local=false})
       : super(key: key);
 
   final String url;
   final double? radius;
   final Color? backgroundColor;
+  final bool local;
 
   @override
   Widget build(BuildContext context) {
     return url.isNotEmpty
-        ? CachedNetworkImage(
-            imageUrl: url,
-            imageBuilder: (context, imageProvider) => CircleAvatar(
-              radius: radius,
-              backgroundColor: backgroundColor,
-              backgroundImage: imageProvider,
-            ),
-            placeholder: (context, url) => placeholder,
-            errorWidget: (context, url, error) => placeholder,
-          )
+        ? local ? localImage : networkImage
         : placeholder;
   }
+
+  Widget get localImage => CircleAvatar(
+      radius: radius,
+      backgroundColor: backgroundColor,
+      backgroundImage: FileImage(File(url)),
+    );
+
+  Widget get networkImage => CachedNetworkImage(
+      imageUrl: url,
+      imageBuilder: (context, imageProvider) => CircleAvatar(
+        radius: radius,
+        backgroundColor: backgroundColor,
+        backgroundImage: imageProvider,
+      ),
+      placeholder: (context, url) => placeholder,
+      errorWidget: (context, url, error) => placeholder,
+    );
 
   Widget get placeholder => CircleAvatar(
         radius: radius,
@@ -238,7 +245,7 @@ class ShortVideoCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    video.name,
+                    video.name ?? "",
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodyText2!.copyWith(

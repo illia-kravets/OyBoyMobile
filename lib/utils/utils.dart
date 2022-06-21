@@ -42,3 +42,21 @@ class Loader extends StatelessWidget {
     );
   }
 }
+
+class AbsorbLoading extends StatelessWidget {
+  const AbsorbLoading({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AbsorbPointer(
+      child: Center(
+        child: WillPopScope(
+          child: const Loader(width: 30, height: 30,),
+          onWillPop: () async {
+            return true;
+          },
+        ),
+      ),
+    );
+  }
+}

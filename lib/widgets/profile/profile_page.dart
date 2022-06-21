@@ -71,15 +71,14 @@ class _ProfilePageState extends State<ProfileSkeleton>
     if (profile.fullName != null && profile.fullName!.isNotEmpty) height += 40;
     if (profile.description != null && profile.description!.isNotEmpty)
       height += 65;
-    if (profile.banned) height += 30;
+    if (profile.banned) height += 45;
     return height;
   }
 
   @override
   Widget build(BuildContext context) {
     manager = context.watch<ProfileManager>();
-    return manager.isLoading ? Loader(height: 30, width: 30,)
-    : DefaultPage(
+    return DefaultPage(
       extendBody: true,
       body: manager.isLoading
           ? const Loader(

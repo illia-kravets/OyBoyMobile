@@ -4,7 +4,7 @@ import 'package:oyboy/data/export.dart';
 class CommentManager extends CRUDManager<CommentRepository> {
   CommentManager({required this.videoId});
 
-  final int videoId;
+  final String videoId;
   int? count;
 
   @override 

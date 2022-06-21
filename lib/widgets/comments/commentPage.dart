@@ -7,7 +7,7 @@ import 'commentSkeleton.dart';
 
 class CommentPage extends StatelessWidget {
   const CommentPage({ Key? key, required this.videoId }) : super(key: key);
-  final int videoId;
+  final String videoId;
 
   @override
   Widget build(BuildContext context) {

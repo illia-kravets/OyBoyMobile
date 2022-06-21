@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:oyboy/data/managers/comment.dart';
 import 'package:oyboy/data/managers/detailVideo.dart';
+import 'package:oyboy/utils/utils.dart';
 import 'package:oyboy/widgets/default/default_page.dart';
 import 'package:oyboy/widgets/detailVideo/videoPlayer.dart';
 import 'package:provider/provider.dart';
@@ -33,12 +34,14 @@ class _DetailVideoSkeletonState extends State<DetailVideoSkeleton> {
 
   @override
   Widget build(BuildContext context) {
+    bool loading = context.select((DetailVideoManager m) => m.isLoading);
+
     return DefaultPage(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60.0),
         child: DetailVideoAppBar(video: videoManager.video),
       ),
-      body: Stack(children: [
+      body: loading ? const Loader(width: 30, height: 30,) : Stack(children: [
         Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
             color: Colors.grey[200],

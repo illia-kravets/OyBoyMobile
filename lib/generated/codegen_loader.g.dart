@@ -14,7 +14,38 @@ class CodegenLoader extends AssetLoader{
     return Future.value(mapLocales[locale.toString()]);
   }
 
-  static const Map<String,dynamic> uk = {
+  static const Map<String,dynamic> en = {
+  "video": "",
+  "short": "",
+  "profile": "",
+  "recomendation": "",
+  "subscribtion": "",
+  "search": "",
+  "searchResult": "",
+  "paginationEdge": "",
+  "sorting": "",
+  "ascending": "",
+  "descending": "",
+  "filter": "",
+  "all": "",
+  "views": "",
+  "likes": "",
+  "subscriptions": "",
+  "subscribers": "",
+  "username": "",
+  "name": "",
+  "description": "",
+  "saveChanges": "",
+  "createVideo": "",
+  "videoName": "",
+  "tags": "",
+  "chooseVideo": "",
+  "chooseBanner": "",
+  "publish": "",
+  "addVideo": "",
+  "addShort": ""
+};
+static const Map<String,dynamic> uk = {
   "video": "Вiдео",
   "short": "Стрiчка",
   "profile": "Профiль",
@@ -58,6 +89,8 @@ class CodegenLoader extends AssetLoader{
   "create": "Створити",
   "addVideo": "Додати вiдео",
   "addShort": "Додати коротке вiдео",
+  "errorOcurs": "Помилка! Спробуйте пізніше",
+  "videoAdded": "Відео завантажено!",
   "password": "Пароль",
   "repeatPassword": "Повторити пароль",
   "matchPassword": "Паролі не співпадають",
@@ -74,42 +107,13 @@ class CodegenLoader extends AssetLoader{
   "detailReportPlaceholder": "Детально опишiть причину скарги",
   "sendReport": "Вiдправити",
   "reportSent": "Скаргу вiдправлено",
+  "accountBanned": "Ваш профiль приховано у зв’язку з порушенням правил користування додатком",
   "comments": "коментарi",
   "commentPlaceholder": "Введiть текст коментаря",
   "share": "Подiлитися",
   "toFavourite": "До улюблених",
+  "inFavourite": "В улюблених",
   "channelVideos": "Iншi вiдео автора"
 };
-static const Map<String,dynamic> en = {
-  "video": "",
-  "short": "",
-  "profile": "",
-  "recomendation": "",
-  "subscribtion": "",
-  "search": "",
-  "searchResult": "",
-  "paginationEdge": "",
-  "sorting": "",
-  "ascending": "",
-  "descending": "",
-  "filter": "",
-  "all": "",
-  "views": "",
-  "likes": "",
-  "subscriptions": "",
-  "subscribers": "",
-  "username": "",
-  "name": "",
-  "description": "",
-  "saveChanges": "",
-  "createVideo": "",
-  "videoName": "",
-  "tags": "",
-  "chooseVideo": "",
-  "chooseBanner": "",
-  "publish": "",
-  "addVideo": "",
-  "addShort": ""
-};
-static const Map<String, Map<String,dynamic>> mapLocales = {"uk": uk, "en": en};
+static const Map<String, Map<String,dynamic>> mapLocales = {"en": en, "uk": uk};
 }

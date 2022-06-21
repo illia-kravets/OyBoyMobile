@@ -29,7 +29,7 @@ class _TitleDropdownState extends State<TitleDropdown> {
         children: [
           SizedBox(
             width: MediaQuery.of(context).size.width - 80,
-            child: Text(widget.video.name,
+            child: Text(widget.video.name ?? "",
                 style: theme.textTheme.headline4, softWrap: true),
           ),
           const SizedBox(

@@ -7,18 +7,18 @@ import '/data/managers/comment.dart';
 import 'skeleton.dart';
 
 class DetailVideo extends StatelessWidget {
-  const DetailVideo({ Key? key, required this.video }) : super(key: key);
-  final Video video;
+  const DetailVideo({ Key? key, required this.videoId }) : super(key: key);
+  final String videoId;
 
   @override
   Widget build(BuildContext context) {
     return  MultiProvider(
       providers: [
         ChangeNotifierProvider<DetailVideoManager>(
-          create: (context) => DetailVideoManager(video: video),
+          create: (context) => DetailVideoManager(videoId: videoId),
         ),
         ChangeNotifierProvider<CommentManager>(
-          create: (context) => CommentManager(videoId: video.id),
+          create: (context) => CommentManager(videoId: videoId),
         ),
       ], 
       child: const DetailVideoSkeleton());
