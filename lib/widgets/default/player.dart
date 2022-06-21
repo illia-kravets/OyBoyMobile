@@ -13,11 +13,12 @@ class AppVideoPlayer extends StatefulWidget {
 
 class _AppVideoPlayerState extends State<AppVideoPlayer> {
   late VideoPlayerController _controller;
+  bool paused = true;
 
   @override
   void initState() {
     super.initState();
-    
+    widget.video;
     _controller = VideoPlayerController.network(widget.video.video ?? "")
       ..initialize().then((_) {
         setState(() {});
@@ -26,13 +27,19 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: _controller.value.isInitialized
-          ? AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: VideoPlayer(_controller),
-            )
-          : Container(),
+    return GestureDetector(
+      onTap: () {
+        setState(() => paused = !paused);
+        paused ? _controller.pause() : _controller.play();
+      },
+      child: Container(
+        child: _controller.value.isInitialized
+            ? AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              )
+            : Container(),
+      ),
     );
   }
 
