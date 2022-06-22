@@ -12,6 +12,8 @@ enum RequestDataType { headers, query, body }
 
 enum ScrollableType { list, grid }
 
+enum VideoScrollType { back, ahead }
+
 
 enum ReportType {channel, video}
 

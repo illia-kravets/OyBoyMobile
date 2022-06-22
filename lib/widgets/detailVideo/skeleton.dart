@@ -59,7 +59,10 @@ class _DetailVideoSkeletonState extends State<DetailVideoSkeleton> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AppVideoPlayer(video: videoManager.video),
+                      AppVideoPlayer(
+                        video: videoManager.video,
+                        height: 200,
+                      ),
                       const SizedBox(
                         height: 14,
                       ),
