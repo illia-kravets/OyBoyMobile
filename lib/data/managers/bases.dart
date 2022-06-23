@@ -21,6 +21,12 @@ abstract class BaseManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clearRoute() {
+    page = null;
+    selectedId = null;
+    refresh();
+  }
+
   void selectId(dynamic id) {
     selectedId = id;
     refresh();
@@ -32,6 +38,7 @@ abstract class BaseManager extends ChangeNotifier {
 abstract class BaseCRUDManager<T extends CRUDGeneric> extends BaseManager {
   List<dynamic> cards = [];
   T repository = GetIt.I.get<T>();
+  dynamic selectedCard;
 
   @override
   void goToPage({PageType? page}) {
@@ -39,6 +46,19 @@ abstract class BaseCRUDManager<T extends CRUDGeneric> extends BaseManager {
     notifyListeners();
     repository.request.flush();
   }
+
+  @override
+  void clearRoute() {
+    selectedCard = null;
+    super.clearRoute();
+  }
+
+  void selectCard(dynamic card) {
+    selectedCard = card;
+    refresh();
+  }
+
+  bool get cardSetted => selectedCard != null;
 
 }
 

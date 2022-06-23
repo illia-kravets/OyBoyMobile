@@ -95,7 +95,6 @@ class _GenericCardListState<T extends CRUDManager>
   @override
   Widget build(BuildContext context) {
     repository = context.watch<T>();
-
     return Stack(
       children: [
         widget.scrollableType == ScrollableType.list

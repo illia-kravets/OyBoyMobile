@@ -11,9 +11,13 @@ class DetailVideoManager extends CRUDManager<VideoRepository> {
   @override
   void initialize() async {
     isLoading = true;
-    
+
+    repository.query({"show_banned": "true", "show_own": "true"});
     video = await repository.retrieve(videoId);
-    repository.query({"profile_id": video.channelId.toString(), "exclude": video.id.toString()});
+    repository.query({
+      "profile_id": video.channelId.toString(),
+      "exclude": video.id.toString()
+    });
     authorCards = await repository.list();
     repository.request.flush();
     view();
@@ -23,9 +27,8 @@ class DetailVideoManager extends CRUDManager<VideoRepository> {
 
   void like() async {
     video = video.copyWith(
-      liked: !video.liked, 
-      likeCount: video.liked ? video.likeCount - 1 : video.likeCount + 1
-    );
+        liked: !video.liked,
+        likeCount: video.liked ? video.likeCount - 1 : video.likeCount + 1);
     repository.like(video.id.toString());
     refresh();
   }

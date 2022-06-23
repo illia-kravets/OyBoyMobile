@@ -1,8 +1,15 @@
+import 'dart:convert';
+
 import '/data/export.dart';
 import "/constants/export.dart";
 import "package:get_it/get_it.dart";
 
 class TagRepository extends CRUDGeneric<Tag> with SequrityBase {
+  Future<dynamic> bulk(List data) async {
+    await post(url: "bulk/", body: {"tags": jsonEncode(data)});
+    return response.data;
+  }
+
   @override
   String get endpoint => "video/tag";
 }
@@ -17,7 +24,7 @@ abstract class BaseVideoRepository extends CRUDGeneric<Video>
   TagRepository tagRepository = GetIt.I.get<TagRepository>();
 
   @override
-  void prepareRequest({Map? query, Map? body, Map? headers, Map? kwargs}) {
+  void prepareRequest({Map? query, dynamic body, Map? headers, Map? kwargs}) {
     query = {"dtype": videoType, ...(query ?? {})};
     super.prepareRequest(
         query: query, body: body, headers: headers, kwargs: kwargs);

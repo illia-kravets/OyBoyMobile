@@ -19,27 +19,19 @@ class UserManager extends BaseManager {
     refresh();
   }
 
-  void login({required String username, required String password}) async {
+  Future<bool> login({required String username, required String password}) async {
     isLoading = true;
     refresh();
-
-    bool isAuthorized =
-        await repository.authorize(username: username, password: password);
-
-    if (!isAuthorized) {
-      clearState();
-      error = AppError(msg: repository.response.text);
-      return refresh();
-    }
-    
-    page = PageType.video;
-    return refresh();
-    
+    bool authorized = await repository.authorize(username: username, password: password);
+    isLoading = false;
+    refresh();
+    return authorized;
   }
 
   void register() {}
 
-  void logout() {
+  void logout() async {
+    repository.logout();
     page = PageType.login;
     refresh();
   }

@@ -12,7 +12,7 @@ class ShortManager extends CRUDManager<ShortRepository> {
     isLoading = true;
 
     cards = await repository.list();
-    
+
     if (cards.isNotEmpty) activeShort = cards[0];
     isLoading = false;
     refresh();
@@ -29,7 +29,13 @@ class ShortManager extends CRUDManager<ShortRepository> {
   }
 
   void like() async {
-    // activeShort = activeShort.copyWith(liked: !activeShort.liked);
+    activeShort = activeShort!.copyWith(
+      liked: !activeShort!.liked, 
+      likeCount: activeShort!.liked ? activeShort!.likeCount - 1 : activeShort!.likeCount + 1);
+    cards = cards.map((e) {
+      if (e!.id == activeShort!.id) return activeShort;
+      return e;
+    }).toList();
     repository.like(activeShort!.id.toString());
     refresh();
   }

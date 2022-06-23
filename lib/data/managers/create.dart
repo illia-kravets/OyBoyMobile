@@ -22,14 +22,28 @@ class CreateManager extends BaseManager {
   void initialize() {}
 
   Future<bool> publish ({required String name, required String type, String? description}) async {
-    List createTags = List.generate(tags.length, (i) => {"name": tags[i].name});
+    Video video = Video(
+      banned: true,
+      name: name,
+      description: description,
+      type: type,
+      channelId: GetIt.I.get<AuthRepository>().profile.id
+    );
+    try {
+      video = await repository.create(video);
+      // List createTags = List.generate(
+      //   tags.length, (i) => {"name": tags[i].name, "video_id": video.id.toString()}
+      // );
+      // dynamic data = await GetIt.I.get<TagRepository>().bulk(createTags);
+    } catch(e) {return false;}
+    // video = await repository.create(video);
+    // List createTags = List.generate(
+    //   tags.length, (i) => {"name": tags[i].name, "video_id": video.id.toString()}
+    // );
+    // dynamic data = await GetIt.I.get<TagRepository>().bulk(createTags);
+
     return await repository.createWithFiles(
-      data: {
-        "name": name, 
-        "description": description, 
-        "dtype": type,
-        "profile_id": GetIt.I.get<AuthRepository>().profile.id
-      },
+      data: {"banned": "false",},
       files: {
         "banner": banner,
         "video": video

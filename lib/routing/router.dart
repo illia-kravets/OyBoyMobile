@@ -74,15 +74,17 @@ class AppRouter extends RouterDelegate<AppLink>
             ProfilePageSelector.detailList<FavouriteDetailManager>(
                 videoType: profileManager.selectedVideoType),
         ],
-        if (videoManager.page == PageType.create) CreatePage.videoCreate(),
-        if (streamManager.page == PageType.create) CreatePage.streamCreate(),
-        if (shortManager.page == PageType.create) CreatePage.shortCreate(),
         if (userManager.page == PageType.short) ...[
           ShortPage.page(),
         ],
 
-      if (videoManager.idSetted) DetailVideoPage.page(videoManager.selectedId ?? ""),
-      if (profileManager.idSetted) ProfilePageSelector.profile(profileId: profileManager.selectedId)
+      if (videoManager.cardSetted) DetailVideoPage.page(videoManager.selectedCard),
+      if (shortManager.cardSetted) DetailShortRoute.page(shortManager.selectedCard),
+      if (profileManager.idSetted) ProfilePageSelector.profile(profileId: profileManager.selectedId),
+
+      if (videoManager.page == PageType.create) CreatePage.videoCreate(),
+      if (streamManager.page == PageType.create) CreatePage.streamCreate(),
+      if (shortManager.page == PageType.create) CreatePage.shortCreate(),
       ],
     );
   }
@@ -99,8 +101,9 @@ class AppRouter extends RouterDelegate<AppLink>
       userManager.goToPage(page: PageType.video);
       shortManager.clear();
     }
-    if (route.settings.name == OyBoyPages.detailVideoPath) videoManager.selectedId = null;
     if (route.settings.name == OyBoyPages.profilePath) profileManager.selectedId = null;
+    if (route.settings.name == OyBoyPages.detailVideoPath) videoManager.selectedCard = null;
+    if (route.settings.name == OyBoyPages.detailShortPath) shortManager.selectedCard = null;
     return true;
   }
 

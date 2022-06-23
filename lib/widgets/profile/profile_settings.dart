@@ -52,7 +52,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
 
-    return DefaultPage(
+    return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text(
@@ -182,7 +182,19 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                               child: Text(
                                 "saveChanges".tr(),
                                 style: theme.textTheme.button,
-                              )),
+                              ))
+                        ),
+                        const SizedBox(height: 6,),
+                        ElevatedButton(
+                          onPressed: () async {
+                            clearPages(context);
+                            context.read<UserManager>().logout();
+                          },
+                          style: ElevatedButton.styleFrom(side: const BorderSide(color: Colors.red, width: 2)),
+                          child: Text(
+                            "logout".tr(),
+                            style: theme.textTheme.button!.copyWith(color: Colors.red),
+                          )
                         ),
                       ],
                     ))

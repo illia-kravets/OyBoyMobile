@@ -14,38 +14,7 @@ class CodegenLoader extends AssetLoader{
     return Future.value(mapLocales[locale.toString()]);
   }
 
-  static const Map<String,dynamic> en = {
-  "video": "",
-  "short": "",
-  "profile": "",
-  "recomendation": "",
-  "subscribtion": "",
-  "search": "",
-  "searchResult": "",
-  "paginationEdge": "",
-  "sorting": "",
-  "ascending": "",
-  "descending": "",
-  "filter": "",
-  "all": "",
-  "views": "",
-  "likes": "",
-  "subscriptions": "",
-  "subscribers": "",
-  "username": "",
-  "name": "",
-  "description": "",
-  "saveChanges": "",
-  "createVideo": "",
-  "videoName": "",
-  "tags": "",
-  "chooseVideo": "",
-  "chooseBanner": "",
-  "publish": "",
-  "addVideo": "",
-  "addShort": ""
-};
-static const Map<String,dynamic> uk = {
+  static const Map<String,dynamic> uk = {
   "video": "Вiдео",
   "short": "Стрiчка",
   "profile": "Профiль",
@@ -101,6 +70,8 @@ static const Map<String,dynamic> uk = {
   "isRegistered": "Не створили аккаунт?",
   "iRadTerms": "Я ознайомився з ",
   "terms": "правилами",
+  "authorizeError": "Неправильний логiн або пароль",
+  "logout": "Вихiд з аккаунту",
   "report": "Поскаржитись",
   "reportVideo": "На вмiст вiдео",
   "reportProfile": "На профiль",
@@ -115,5 +86,36 @@ static const Map<String,dynamic> uk = {
   "inFavourite": "В улюблених",
   "channelVideos": "Iншi вiдео автора"
 };
-static const Map<String, Map<String,dynamic>> mapLocales = {"en": en, "uk": uk};
+static const Map<String,dynamic> en = {
+  "video": "",
+  "short": "",
+  "profile": "",
+  "recomendation": "",
+  "subscribtion": "",
+  "search": "",
+  "searchResult": "",
+  "paginationEdge": "",
+  "sorting": "",
+  "ascending": "",
+  "descending": "",
+  "filter": "",
+  "all": "",
+  "views": "",
+  "likes": "",
+  "subscriptions": "",
+  "subscribers": "",
+  "username": "",
+  "name": "",
+  "description": "",
+  "saveChanges": "",
+  "createVideo": "",
+  "videoName": "",
+  "tags": "",
+  "chooseVideo": "",
+  "chooseBanner": "",
+  "publish": "",
+  "addVideo": "",
+  "addShort": ""
+};
+static const Map<String, Map<String,dynamic>> mapLocales = {"uk": uk, "en": en};
 }

@@ -30,6 +30,11 @@ class AuthRepository extends BaseRepository {
     return await fetchProfile();
   }
 
+  void logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+  }
+
   Future<bool> refreshToken() async {
     final prefs = await SharedPreferences.getInstance();
     String? rToken = prefs.getString("refreshToken") ?? "";

@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:oyboy/utils/utils.dart';
 import 'package:provider/provider.dart';
 import "package:flutter/material.dart";
 import '../export.dart';
@@ -76,12 +77,18 @@ class DefaultPage extends StatelessWidget {
               icon: AppIcon.video.icon,
               selected: userManager.page == PageType.video,
               title: 'video'.tr(),
-              onPress: () => userManager.goToPage(page: PageType.video)),
+              onPress: () {
+                clearPages(context); 
+                userManager.goToPage(page: PageType.video);
+              }),
           PageNavigationItem(
               icon: AppIcon.short.icon,
               selected: userManager.page == PageType.short,
               title: "short".tr(),
-              onPress: () => userManager.goToPage(page: PageType.short)),
+              onPress: () {
+                clearPages(context); 
+                userManager.goToPage(page: PageType.short);
+              }),
           // PageNavigationItem(
           //     icon: AppIcon.stream.icon,
           //     selected: userManager.page == PageType.stream,
@@ -91,7 +98,10 @@ class DefaultPage extends StatelessWidget {
               icon: AppIcon.profile.icon,
               selected: userManager.page == PageType.profile,
               title: "profile".tr(),
-              onPress: () => userManager.goToPage(page: PageType.profile))
+              onPress: () {
+                clearPages(context);
+                userManager.goToPage(page: PageType.profile);
+              })
         ],
       ),
     );

@@ -10,6 +10,8 @@ import 'package:oyboy/data/managers/short.dart';
 import 'package:oyboy/data/repositories/profile.dart';
 import 'package:oyboy/my_icons.dart';
 import 'package:oyboy/widgets/default/default_page.dart';
+import 'package:oyboy/widgets/short/player.dart';
+import 'package:oyboy/widgets/short/shortDisplayPage.dart';
 import 'package:oyboy/widgets/video/list.dart';
 import 'package:provider/provider.dart';
 
@@ -34,14 +36,12 @@ class _ShortListState extends State<ShortList> {
     return SafeArea(
       child: DefaultPage(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(60.0),
-          child: Selector<ShortManager, Video?>(
-            selector: (_, manager) => manager.activeShort,
-            builder: (_, short, __) => DetailVideoAppBar(video: short)
-          )
-        ),
+            preferredSize: const Size.fromHeight(60.0),
+            child: Selector<ShortManager, Video?>(
+                selector: (_, manager) => manager.activeShort,
+                builder: (_, short, __) => DetailVideoAppBar(video: short))),
         extendBodyBehindAppBar: true,
-        extendBody: true, 
+        extendBody: true,
         body: const ShortPageList(),
       ),
     );
@@ -59,8 +59,7 @@ class _ShortPageListState extends State<ShortPageList> {
   late ShortManager manager;
   late PageController _controller;
 
-  void onPageChange () {
-
+  void onPageChange() {
     // manager.setActiveShort(manager.cards[page]);
   }
 
@@ -91,257 +90,10 @@ class _ShortPageListState extends State<ShortPageList> {
     }
     return PageView.builder(
         itemCount: manager.cards.length,
-        itemBuilder: (context, i) => ShortDisplayPage(short: manager.cards[i]),
+        itemBuilder: (context, i) => Scaffold(body: ShortDisplayPage(short: manager.cards[i])),
         scrollDirection: Axis.vertical,
         onPageChanged: (page) => manager.setActiveShort(manager.cards[page]));
   }
 }
 
-class ShortDisplayPage extends StatefulWidget {
-  const ShortDisplayPage({Key? key, required this.short}) : super(key: key);
-  final Video short;
-  @override
-  State<ShortDisplayPage> createState() => _ShortDisplayPageState();
-}
 
-class _ShortDisplayPageState extends State<ShortDisplayPage> {
-  late bool expandedBar;
-
-  @override
-  void initState() {
-    expandedBar = false;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-    return Scaffold(
-      backgroundColor: Colors.grey,
-      extendBodyBehindAppBar: true,
-      body: Stack(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage("assets/images/short.jpeg"),
-                  fit: BoxFit.cover),
-            ),
-            // child: getVideoBanner(widget.short.banner),
-          ),
-          Positioned(
-            bottom: 0,
-            child: AnimatedContainer(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 58),
-              curve: Curves.linear,
-              duration: const Duration(
-                milliseconds: 200,
-              ),
-              height: expandedBar ? 275 : 170,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.2),
-                  borderRadius: const BorderRadius.all(Radius.circular(10))),
-              child: Stack(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 40),
-                    child: Column(children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: 300,
-                            child: Tooltip(
-                              waitDuration: const Duration(seconds: 3),
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              padding: const EdgeInsets.all(15),
-                              triggerMode: TooltipTriggerMode.tap,
-                              message: widget.short.name,
-                              child: Text(
-                                widget.short.name ?? "",
-                                style: GoogleFonts.poppins(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500),
-                                maxLines: 2,
-                                softWrap: true,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          if(widget.short.description != null && widget.short.description!.isNotEmpty)
-                          GestureDetector(
-                            onTap: () =>
-                                setState(() => expandedBar = !expandedBar),
-                            child: Container(
-                              width: 25,
-                              height: 25,
-                              child: Icon(
-                                expandedBar
-                                    ? Icons.keyboard_arrow_down_rounded
-                                    : Icons.keyboard_arrow_up_rounded,
-                                color: Colors.white,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.1),
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 200),
-                          child: expandedBar
-                              ? Tooltip(
-                                  waitDuration: const Duration(seconds: 3),
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  padding: const EdgeInsets.all(15),
-                                  triggerMode: TooltipTriggerMode.tap,
-                                  message: widget.short.description,
-                                  child: Container(
-                                    padding: const EdgeInsets.only(top: 8),
-                                    child: Text(
-                                      widget.short.description ?? "",
-                                      textAlign: TextAlign.start,
-                                      style: GoogleFonts.poppins(
-                                          color: Colors.white,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400),
-                                      maxLines: 4,
-                                      softWrap: true,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ))
-                              : Container())
-                    ]),
-                  ),
-                  Positioned(
-                    bottom: 10,
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                CustomIcon.video_view,
-                                color: Colors.white,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "${widget.short.viewCount.toString()} ${'views'.tr()}",
-                                style: GoogleFonts.poppins(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Icon(
-                                CustomIcon.video_heart,
-                                color: Colors.white,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "${widget.short.likeCount.toString()} ${'likes'.tr()}",
-                                style: GoogleFonts.poppins(color: Colors.white),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            width: 35,
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          AnimatedPositioned(
-              duration: const Duration(milliseconds: 200),
-              right: 0,
-              bottom: expandedBar ? 290 : 230,
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                child: Column(
-                  children: [
-                    sideBarButton(CustomIcon.short_heart, () {}),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    sideBarButton(
-                      CustomIcon.comments,
-                      () => showModalBottomSheet(
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(15),
-                                  topRight: Radius.circular(15))),
-                          context: context,
-                          builder: (context) =>
-                              CommentPage(videoId: widget.short.id.toString())),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    sideBarButton(CustomIcon.reply, () async {
-                      await FlutterShare.share(
-                          title: widget.short.name ?? "",
-                          text: widget.short.name,
-                          linkUrl: widget.short.video,
-                          chooserTitle: widget.short.name);
-                    }),
-                  ],
-                ),
-              ))
-        ],
-      ),
-    );
-  }
-
-  Widget getVideoBanner(String? url) {
-    return Image.asset("assets/images/short.jpeg");
-    // return url != null && url.isNotEmpty
-    //     ? CachedNetworkImage(
-    //         height: 220,
-    //         imageUrl: url,
-    //         placeholder: (context, url) => placeholder,
-    //         errorWidget: (context, url, error) => placeholder,
-    //       )
-    //     : placeholder;
-  }
-
-  Widget sideBarButton(IconData icon, Function() onTap, {Color? color}) {
-    return Container(
-        width: 55,
-        height: 55,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-              Theme.of(context).primaryColor.withOpacity(0.4),
-              Colors.yellow.withOpacity(0.4)
-            ]),
-            shape: BoxShape.circle),
-        child: GestureDetector(
-            onTap: onTap,
-            child: Icon(
-              icon,
-              size: 33,
-              color: color ?? Colors.grey[300],
-            )));
-  }
-}

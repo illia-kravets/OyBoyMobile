@@ -3,13 +3,13 @@ import "/data/export.dart";
 
 void startGet() {
   GetIt.I.registerSingleton<AuthRepository>(AuthRepository());
-  GetIt.I.registerSingleton<TagRepository>(TagRepository());
-  GetIt.I.registerSingleton<SuggestionRepository>(SuggestionRepository());
-  GetIt.I.registerSingleton<VideoRepository>(VideoRepository());
-  GetIt.I.registerSingleton<StreamRepository>(StreamRepository());
-  GetIt.I.registerSingleton<ShortRepository>(ShortRepository());
-  GetIt.I.registerSingleton<ProfileRepository>(ProfileRepository());
-  GetIt.I.registerSingleton<CommentRepository>(CommentRepository());
+  GetIt.I.registerFactory<TagRepository>(() => TagRepository());
+  GetIt.I.registerFactory<SuggestionRepository>(() => SuggestionRepository());
+  GetIt.I.registerFactory<VideoRepository>(() => VideoRepository());
+  GetIt.I.registerFactory<StreamRepository>(() => StreamRepository());
+  GetIt.I.registerFactory<ShortRepository>(() => ShortRepository());
+  GetIt.I.registerFactory<ProfileRepository>(() => ProfileRepository());
+  GetIt.I.registerFactory<CommentRepository>(() => CommentRepository());
 }
 
 void registerModels() {

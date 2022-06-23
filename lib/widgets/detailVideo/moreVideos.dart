@@ -140,7 +140,7 @@ class MoreVideoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     return GestureDetector(
-      onTap: () => context.read<VideoManager>().selectId(video.id.toString()),
+      onTap: () => context.read<VideoManager>().selectCard(video),
       child: Container(
         width: width,
         padding: const EdgeInsets.symmetric(horizontal: 20),

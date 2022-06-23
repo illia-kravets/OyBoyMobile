@@ -186,9 +186,10 @@ class CRUDGeneric<T extends BaseModel> extends BaseRepository
 
   Future<void> remove(dynamic id) async {}
 
-  Future<void> create(T instance) async {
+  Future<T> create(T instance) async {
     request.update(type: RequestDataType.body, data: instance.toMap());
     await post();
+    return parseObj(response.data);
   }
 
   Future<bool> createWithFiles({String url = "", Map data = const {}, Map files = const {}, String method = "POST"}) async {
@@ -204,6 +205,7 @@ class CRUDGeneric<T extends BaseModel> extends BaseRepository
         );
     });
     return request.send().then((response) {
+      
       return [201, 200].contains(response.statusCode);
     });
   }

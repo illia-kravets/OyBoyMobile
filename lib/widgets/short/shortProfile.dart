@@ -11,7 +11,7 @@ import '../video/card.dart';
 class ShortProfile extends StatelessWidget {
   const ShortProfile({Key? key, this.channelId}) : super(key: key);
 
-  final int? channelId;
+  final String? channelId;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class ShortProfile extends StatelessWidget {
 
   Widget _card(BuildContext context, Profile? channel) {
     return GestureDetector(
-      onTap: () => context.read<ProfileManager>().selectId(channelId.toString()),
+      onTap: () => context.read<ProfileManager>().selectId(channelId),
       child: Row(
         children: [
           NetworkCircularAvatar(

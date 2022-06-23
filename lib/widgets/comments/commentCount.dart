@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:oyboy/data/managers/comment.dart';
+import 'package:oyboy/data/models/video.dart';
 import 'package:provider/provider.dart';
 
 class CommentCount extends StatelessWidget {
@@ -13,7 +14,7 @@ class CommentCount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    int? count = context.select((CommentManager m) => m.count);
+    Video video = context.select((CommentManager m) => m.video);
     
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -23,7 +24,7 @@ class CommentCount extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "${count ?? ""} ${'comments'.tr()}", 
+            "${video.commentCount} ${'comments'.tr()}", 
             style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600),
           ),
           const SizedBox(width: 10,),

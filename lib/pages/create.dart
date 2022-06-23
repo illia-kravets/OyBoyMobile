@@ -46,7 +46,7 @@ class VideoCreatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    return DefaultPage(
+    return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () => context.read<VideoManager>().goToPage(),
@@ -69,7 +69,7 @@ class StreamCreatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    return DefaultPage(
+    return Scaffold(
         appBar: AppBar(
           leading: GestureDetector(
             onTap: () => context.read<StreamManager>().goToPage(),
@@ -91,7 +91,7 @@ class ShortCreatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    return DefaultPage(
+    return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () => context.read<ShortManager>().goToPage(),

@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '/data/export.dart';
 
 void showSnackbar(BuildContext context, String text, {Color? color}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(content: Text(text), backgroundColor: color,)
   );
+}
+
+void clearPages(BuildContext context) {
+  context.read<VideoManager>().clearRoute();
+  context.read<ProfileManager>().clearRoute();
+  context.read<ShortManager>().clearRoute();
 }
 
 void handleError(BuildContext context, AppError error) {
@@ -14,6 +21,13 @@ void handleError(BuildContext context, AppError error) {
     content: Text(error.msg ?? ""),
     backgroundColor: Colors.red,
   ));
+}
+
+String printDuration(Duration duration) {
+  String twoDigits(int n) => n.toString().padLeft(2, "0");
+  String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+  return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
 }
 
 class Loader extends StatelessWidget {

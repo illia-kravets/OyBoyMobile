@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:oyboy/constants/defaults.dart';
 import 'package:oyboy/data/models/profile.dart';
+import 'package:oyboy/widgets/comments/commentCount.dart';
 
 import './helpers.dart';
 import 'dart:convert' show utf8;
@@ -14,6 +15,8 @@ class Video extends BaseModel {
       this.createdAt,
       this.viewCount = 0,
       this.likeCount = 0,
+      this.banned=false,
+      this.commentCount = 0,
       this.liked = false,
       this.favourite = false,
       this.banner = "",
@@ -33,10 +36,12 @@ class Video extends BaseModel {
   String? type;
   bool liked = false;
   bool favourite = false;
+  bool banned = false;
   num viewCount = 0;
   num likeCount = 0;
+  num commentCount = 0;
   Profile? channel;
-  int? channelId;
+  String? channelId;
 
   Video copyWith(
       {int? id,
@@ -48,10 +53,12 @@ class Video extends BaseModel {
       String? createdAt,
       bool? liked,
       bool? favourite,
+      bool? banned,
       num? viewCount,
       num? likeCount,
       Profile? channel,
-      int? channelId
+      String? channelId,
+      num? commentCount 
       }) {
     return Video(
       id: id ?? this.id,
@@ -63,10 +70,12 @@ class Video extends BaseModel {
       createdAt: createdAt ?? this.createdAt,
       liked: liked ?? this.liked,
       favourite: favourite ?? this.favourite,
+      banned: banned ?? this.banned,
       viewCount: viewCount ?? this.viewCount,
       likeCount: likeCount ?? this.likeCount,
       channel: channel ?? this.channel,
-      channelId: channelId ?? this.channelId
+      channelId: channelId ?? this.channelId,
+      commentCount: commentCount ?? this.commentCount
     );
   }
 
@@ -79,13 +88,15 @@ class Video extends BaseModel {
         createdAt: data['created_at'].split("T")[0],
         liked: data["liked"] ?? false,
         favourite: data["favourited"] ?? false,
+        banned: data["banned"] ?? false,
         viewCount: data["views"] ?? 0,
         likeCount: data["likes"] ?? 0,
+        commentCount: data["comments"] ?? 0,
         banner: data["banner"],
         video: data["video"],
         description: data["description"],
         channel: Profile.fromJson(data["profile"]),
-        channelId: data["profile_id"]);
+        channelId: data["profile_id"].toString());
   }
 
   static List<Video> fromJsonList(List<Map> data) {
@@ -94,7 +105,13 @@ class Video extends BaseModel {
 
   @override
   Map<String, dynamic> toMap() {
-    return {'name': name, 'desription': description, "type": type};
+    return {
+      'name': name, 
+      'desription': description, 
+      "dtype": type, 
+      "banned": banned.toString(), 
+      "profile_id": channelId
+    };
   }
 
   @override

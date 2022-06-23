@@ -3,7 +3,7 @@ import 'package:oyboy/data/managers/comment.dart';
 import 'package:oyboy/data/managers/detailVideo.dart';
 import 'package:oyboy/utils/utils.dart';
 import 'package:oyboy/widgets/default/default_page.dart';
-import 'package:oyboy/widgets/default/player.dart';
+import 'package:oyboy/widgets/detailVideo/player.dart';
 import 'package:oyboy/widgets/detailVideo/videoPlayer.dart';
 import 'package:provider/provider.dart';
 
@@ -37,7 +37,7 @@ class _DetailVideoSkeletonState extends State<DetailVideoSkeleton> {
   Widget build(BuildContext context) {
     bool loading = context.select((DetailVideoManager m) => m.isLoading);
 
-    return DefaultPage(
+    return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60.0),
         child: DetailVideoAppBar(video: videoManager.video),
@@ -61,7 +61,7 @@ class _DetailVideoSkeletonState extends State<DetailVideoSkeleton> {
                     children: [
                       AppVideoPlayer(
                         video: videoManager.video,
-                        height: 200,
+                        height: 180,
                       ),
                       const SizedBox(
                         height: 14,

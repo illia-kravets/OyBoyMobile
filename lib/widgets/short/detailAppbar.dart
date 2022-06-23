@@ -38,7 +38,7 @@ class DetailVideoAppBar extends StatelessWidget {
               builder: (context) => ReportDialog(video: video!)
             );
           }, 
-          icon: Icon(Icons.info, color: theme.primaryColor, size: 28,)
+          icon: Icon(Icons.error, color: theme.primaryColor, size: 28,)
         )
       ],
     );

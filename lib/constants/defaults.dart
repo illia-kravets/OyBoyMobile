@@ -14,6 +14,8 @@ enum ScrollableType { list, grid }
 
 enum VideoScrollType { back, ahead }
 
+enum ShortTapType { pause, like }
+
 
 enum ReportType {channel, video}
 
